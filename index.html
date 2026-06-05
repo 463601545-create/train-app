@@ -297,7 +297,7 @@ function ghGetData(cb) {
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d && d.content) {
       try {
-        var json = JSON.parse(atob(d.content.replace(/\n/g,'')));
+        var json = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
         _ghSha = d.sha;
         if (cb) cb(json);
         return;
