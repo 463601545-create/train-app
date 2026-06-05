@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>3个月成长计划</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f0f2f5;color:#333;min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+
+/* Loading */
+.loading-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:#f0f2f5;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.loading-screen .spinner{width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-screen p{margin-top:16px;color:#888;font-size:14px}
+
+/* Top Bar */
+.topbar{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(91,33,182,.3);display:flex;align-items:center;justify-content:space-between}
+.topbar-left h1{font-size:18px;font-weight:700}
+.topbar-left .sub{font-size:12px;opacity:.85;margin-top:2px}
+.topbar-left .pbar{height:4px;background:rgba(255,255,255,.25);margin-top:8px;border-radius:2px;width:200px}
+.topbar-left .pbar-fill{height:100%;background:#fff;border-radius:2px;transition:width .4s}
+.topbar-right{display:flex;gap:8px}
+.topbar-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
+
+/* Users Screen */
+.screen{display:none}
+.screen.active{display:block}
+.users-header{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;padding:40px 20px 30px;text-align:center}
+.users-header h1{font-size:24px;font-weight:800}
+.users-header p{font-size:13px;opacity:.8;margin-top:6px}
+.users-list{max-width:480px;margin:16px auto;padding:0 16px}
+.user-card{background:#fff;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.user-card:active{transform:scale(.98);background:#fafafa}
+.user-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0}
+.user-info{flex:1}
+.user-info .name{font-size:16px;font-weight:700}
+.user-info .progress{font-size:12px;color:#888;margin-top:2px}
+.user-info .progress b{color:#7c3aed}
+.add-user-btn{background:#fff;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;color:#7c3aed;font-size:15px;font-weight:600;border:2px dashed #c4b5fd}
+
+/* Student Screen */
+.name-bar{background:#fff;border-bottom:1px solid #eee;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.name-bar .left{display:flex;align-items:center;gap:8px}
+.name-bar .uname{font-size:14px;font-weight:600;color:#5b21b6}
+.name-bar .urole{font-size:11px;background:#ede9fe;color:#7c3aed;padding:2px 8px;border-radius:4px;font-weight:600}
+.name-bar .switch-btn{font-size:12px;color:#999;cursor:pointer;padding:4px 8px}
+.wrap{max-width:640px;margin:0 auto;padding:12px 12px 90px}
+.month-title{text-align:center;padding:12px 0 6px;font-size:15px;font-weight:700;color:#7c3aed}
+.week{background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.week-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.week-head:active{background:#fafafa}
+.week-label{display:flex;align-items:center;gap:8px}
+.week-num{background:#7c3aed;color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px}
+.week-date{font-size:13px;color:#888}
+.week-status{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px}
+.week-status.pending{background:#f0f0f0;color:#999}
+.week-status.doing{background:#fef3c7;color:#92400e}
+.week-status.done{background:#dcfce7;color:#16a34a}
+.week-body{padding:0 16px 14px;display:none}
+.week-body.open{display:block}
+.day-card{background:#f9fafb;border-radius:10px;padding:12px;margin-bottom:8px}
+.day-card:last-child{margin-bottom:0}
+.day-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.day-left{display:flex;align-items:center;gap:6px}
+.day-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
+.day-tag.learn{background:#3b82f6}
+.day-tag.exam{background:#ef4444}
+.day-tag.practice{background:#f59e0b}
+.day-date{font-size:12px;color:#999}
+.day-right{display:flex;align-items:center;gap:6px}
+.checkin-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.checkin-badge.yes{background:#dcfce7;color:#16a34a}
+.checkin-badge.no{background:#fee2e2;color:#dc2626}
+.proj-list{margin-bottom:10px}
+.proj{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;margin-bottom:4px;background:#fff}
+.proj:last-child{margin-bottom:0}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.proj-name{flex:1;font-size:13px;font-weight:500}
+.proj-cat{font-size:11px;color:#aaa;margin-left:4px}
+.exam-status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.exam-status.pass{background:#dcfce7;color:#16a34a}
+.exam-status.pending{background:#fef3c7;color:#92400e}
+.exam-status.fail{background:#fee2e2;color:#dc2626}
+.exam-btn{font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;background:#7c3aed;color:#fff}
+.exam-btn:active{background:#6d28d9}
+.timer-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.timer-progress{flex:1;min-width:80px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.timer-fill{height:100%;border-radius:3px;transition:width .5s;background:linear-gradient(90deg,#a78bfa,#7c3aed)}
+.timer-fill.done{background:linear-gradient(90deg,#34d399,#16a34a)}
+.timer-time{font-size:20px;font-weight:800;color:#5b21b6;font-variant-numeric:tabular-nums;min-width:60px}
+.timer-time.running{color:#ea580c;animation:blink 1.5s infinite}
+.timer-time.done{color:#16a34a}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-btns{display:flex;gap:6px}
+.tbtn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+.tbtn-start{background:#7c3aed;color:#fff}
+.tbtn-stop{background:#ea580c;color:#fff}
+.tbtn-checkin{background:#16a34a;color:#fff}
+.tbtn-checkin:disabled{background:#d1d5db;color:#9ca3af;cursor:not-allowed}
+.tbtn-view{background:#8b5cf6;color:#fff}
+.evidence-row{margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.evidence-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;border:2px solid #e5e7eb;cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:16px;background:#e5e7eb}
+.evidence-label{font-size:11px;color:#16a34a;font-weight:600}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -2px 10px rgba(0,0,0,.08);padding:10px 20px;z-index:100}
+.bottom-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.stat{font-size:12px;color:#666;display:flex;gap:10px;flex-wrap:wrap}
+.stat b{color:#7c3aed}
+.stat .g b{color:#16a34a}
+.stat .r b{color:#ef4444}
+.rbtn{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #ddd;background:#fff;color:#666}
+.legend{display:flex;gap:14px;justify-content:center;padding:10px 0;font-size:12px;color:#888}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* Modals */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;max-width:340px;width:90%;text-align:center;animation:popIn .25s}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:17px;margin-bottom:8px}
+.modal p{font-size:13px;color:#888;margin-bottom:18px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.mbtn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none}
+.mbtn-cancel{background:#f0f0f0;color:#666}
+.mbtn-ok{background:#16a34a;color:#fff}
+.upload-area{display:flex;gap:16px;justify-content:center;margin:20px 0 8px}
+.upload-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 24px;border-radius:14px;border:2px solid #e5e7eb;background:#fafafa;cursor:pointer;min-width:90px}
+.upload-opt:active{transform:scale(.96)}
+.upload-opt .ico{font-size:30px}
+.upload-opt .txt{font-size:13px;font-weight:600;color:#555}
+.upload-hint{font-size:11px;color:#aaa;margin-bottom:12px}
+.view-modal{max-width:90vw;width:auto;max-height:90vh}
+.view-modal img,.view-modal video{max-width:100%;max-height:65vh;border-radius:8px;display:block;margin:0 auto 12px}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <p>加载中...</p>
+</div>
+
+<!-- Users Screen -->
+<div class="screen" id="screenUsers">
+  <div class="users-header">
+    <h1>💈 3个月成长计划</h1>
+    <p>选择你的名字开始练习</p>
+  </div>
+  <div class="users-list" id="usersList"></div>
+</div>
+
+<!-- Student Screen -->
+<div class="screen" id="screenStudent">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>💈 3个月成长计划</h1>
+      <div class="sub" id="topbarSub">进度 0/27</div>
+      <div class="pbar"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="backToUsers()">切换</button>
+    </div>
+  </div>
+  <div class="name-bar">
+    <div class="left"><span class="uname" id="currentUserLabel"></span><span class="urole">学员</span></div>
+    <span class="switch-btn" onclick="backToUsers()">切换 ▸</span>
+  </div>
+  <div class="wrap" id="mainWrap"></div>
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <div class="stat">
+        <span class="g">通过 <b id="passN">0</b>/27</span>
+        <span class="r">未通过 <b id="failN">0</b></span>
+        <span class="g">打卡 <b id="checkinN">0</b>/65</span>
+      </div>
+      <button class="rbtn" onclick="confirmReset()">重置</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="mTitle"></h3>
+    <div id="mMsg" style="font-size:13px;color:#888;margin-bottom:18px;line-height:1.6"></div>
+    <div class="modal-btns" id="mBtns"></div>
+  </div>
+</div>
+
+<!-- Checkin upload -->
+<div class="modal-overlay" id="checkinModal">
+  <div class="modal">
+    <h3>📸 打卡凭证</h3>
+    <p>练满2小时后，请上传练习照片或视频完成打卡</p>
+    <div class="upload-area">
+      <div class="upload-opt" onclick="triggerCamera('photo')"><span class="ico">📷</span><span class="txt">拍照</span></div>
+      <div class="upload-opt" onclick="triggerCamera('video')"><span class="ico">🎥</span><span class="txt">录像</span></div>
+      <div class="upload-opt" onclick="triggerCamera('album')"><span class="ico">🖼️</span><span class="txt">相册</span></div>
+    </div>
+    <div class="upload-hint">支持拍照、录像或从相册选择</div>
+    <div class="modal-btns"><button class="mbtn mbtn-cancel" onclick="closeCheckinModal()">取消</button></div>
+  </div>
+</div>
+
+<!-- Preview -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal view-modal">
+    <h3>📋 凭证预览</h3>
+    <div id="previewContent" style="margin:12px 0"></div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-cancel" onclick="closePreview()">取消</button>
+      <button class="mbtn mbtn-ok" onclick="confirmCheckin()">确认打卡</button>
+    </div>
+  </div>
+</div>
+
+<!-- View evidence -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal view-modal">
+    <h3>📎 打卡凭证</h3>
+    <div id="viewContent" style="margin:12px 0"></div>
+    <div class="modal-btns"><button class="mbtn mbtn-cancel" onclick="closeViewModal()">关闭</button></div>
+  </div>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="videoInput" accept="video/*" capture="environment" style="display:none">
+<input type="file" id="albumInput" accept="image/*,video/*" style="display:none">
+
+<noscript><div style="text-align:center;padding:60px 20px;color:#999"><h2>⚠️ 需要启用JavaScript</h2><p style="margin-top:10px">请在浏览器设置中开启JavaScript后刷新页面</p></div></noscript>
+
+<script>
+// ===== Data =====
+var CAT_COLORS = {
+  '吹风造型':'#3b82f6','直板造型':'#8b5cf6','电棒造型':'#ec4899',
+  '八大手法':'#f59e0b','徒手造型':'#10b981','烘干卷发':'#06b6d4',
+  '冷烫卷发':'#6366f1','特殊烫发':'#ef4444','染发':'#a855f7'
+};
+
+var PLAN = [
+  {week:1,mon:'2026-06-08',items:[{name:'电吹风吹风造型·直发',cat:'吹风造型'},{name:'电吹风吹风造型·C型',cat:'吹风造型'}]},
+  {week:2,mon:'2026-06-15',items:[{name:'电吹风吹风造型·S型',cat:'吹风造型'},{name:'直板造型·直发',cat:'直板造型'}]},
+  {week:3,mon:'2026-06-22',items:[{name:'直板造型·C型',cat:'直板造型'},{name:'直板造型·S型',cat:'直板造型'}]},
+  {week:4,mon:'2026-06-29',items:[{name:'电棒造型·C型',cat:'电棒造型'},{name:'电棒造型·S型',cat:'电棒造型'}]},
+  {week:5,mon:'2026-07-06',items:[{name:'八大手法·饱满',cat:'八大手法'},{name:'八大手法·收紧',cat:'八大手法'}]},
+  {week:6,mon:'2026-07-13',items:[{name:'八大手法·组合形状',cat:'八大手法'},{name:'徒手造型·发根站立',cat:'徒手造型'}]},
+  {week:7,mon:'2026-07-20',items:[{name:'徒手造型·发中流向',cat:'徒手造型'},{name:'徒手造型·手吹波纹',cat:'徒手造型'}]},
+  {week:8,mon:'2026-07-27',items:[{name:'烘干卷发练习',cat:'烘干卷发'},{name:'冷烫卷发·平卷',cat:'冷烫卷发'}]},
+  {week:9,mon:'2026-08-03',items:[{name:'冷烫卷发·竖卷',cat:'冷烫卷发'},{name:'冷烫卷发·平缠绕',cat:'冷烫卷发'}]},
+  {week:10,mon:'2026-08-10',items:[{name:'冷烫卷发·半扭转',cat:'冷烫卷发'},{name:'摩根烫',cat:'特殊烫发'}]},
+  {week:11,mon:'2026-08-17',items:[{name:'钢夹烫',cat:'特殊烫发'},{name:'锡纸烫',cat:'特殊烫发'}]},
+  {week:12,mon:'2026-08-24',items:[{name:'蝴蝶烫',cat:'特殊烫发'},{name:'染发·平刷',cat:'染发'}]},
+  {week:13,mon:'2026-08-31',items:[{name:'染发·分段刷',cat:'染发'},{name:'染发·挑染',cat:'染发'},{name:'染发·漂发操作',cat:'染发'}]}
+];
+
+var DAY_LABELS = [
+  {label:'周一·学习',tag:'learn'},
+  {label:'周二·练习',tag:'practice'},
+  {label:'周三·练习',tag:'practice'},
+  {label:'周四·练习',tag:'practice'},
+  {label:'周五·考核',tag:'exam'}
+];
+
+var MONTH_NAMES = {6:'六月',7:'七月',8:'八月',9:'九月'};
+
+var appData = {users:[],records:{}};
+var currentUser = null;
+var runningDay = null;
+var clockInterval = null;
+var clockSec = 0;
+var db = null;
+var API_BASE = '';
+
+// ===== GitHub API Sync =====
+var GH_REPO = '463601545-create/train-app';
+var GH_TOKEN_STORAGE = 'gh_token_v1';
+var _ghSha = null;
+
+function getGhToken() {
+  return localStorage.getItem(GH_TOKEN_STORAGE) || '';
+}
+
+function ghHeaders() {
+  var h = {'Content-Type': 'application/json'};
+  var t = getGhToken();
+  if (t) h['Authorization'] = 'token ' + t;
+  return h;
+}
+
+function ghGetData(cb) {
+  fetch('https://api.github.com/repos/' + GH_REPO + '/contents/data.json?ref=main&t=' + Date.now(), {
+    headers: ghHeaders()
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d && d.content) {
+      try {
+        var json = JSON.parse(atob(d.content.replace(/\n/g,'')));
+        _ghSha = d.sha;
+        if (cb) cb(json);
+        return;
+      } catch(e) {}
+    }
+    if (cb) cb({users:[],records:{},_evidence:{}});
+  }).catch(function() { if (cb) cb({users:[],records:{},_evidence:{}}); });
+}
+
+function ghSetData(data, cb) {
+  var body = {
+    message: 'sync ' + new Date().toISOString().slice(0,19),
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
+    branch: 'main'
+  };
+  if (_ghSha) body.sha = _ghSha;
+  fetch('https://api.github.com/repos/' + GH_REPO + '/contents/data.json', {
+    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(result) {
+    if (result.content && result.content.sha) _ghSha = result.content.sha;
+    if (cb) cb(result);
+  }).catch(function(e) { if (cb) cb(null); });
+}
+
+// Token setup prompt
+function promptGhToken() {
+  var existing = getGhToken();
+  if (existing) return true;
+  var t = prompt('请输入同步密钥（首次使用需要输入，以后自动保存）：');
+  if (t && t.trim()) {
+    localStorage.setItem(GH_TOKEN_STORAGE, t.trim());
+    return true;
+  }
+  return false;
+}
+
+var lastSyncTime = 0;
+var syncInProgress = false;
+
+function syncPush() {
+  if (!currentUser || syncInProgress) return;
+  var now = Date.now();
+  if (now - lastSyncTime < 5000) return;
+  lastSyncTime = now;
+  syncInProgress = true;
+  if (!getGhToken()) { syncInProgress = false; return; }
+  ghGetData(function(serverData) {
+    var localRecord = getUserState(currentUser);
+    if (!serverData.users) serverData.users = [];
+    if (!serverData.records) serverData.records = {};
+    if (!serverData.users.includes(currentUser)) serverData.users.push(currentUser);
+    // Merge: keep admin decisions
+    if (serverData.records[currentUser]) {
+      var existing = serverData.records[currentUser];
+      for (var key in localRecord) {
+        if (existing[key] && (existing[key] === 'pass' || existing[key] === 'fail') && localRecord[key] === 'pending') {
+          localRecord[key] = existing[key];
+        }
+      }
+    }
+    serverData.records[currentUser] = localRecord;
+    ghSetData(serverData, function() { syncInProgress = false; });
+  });
+}
+
+function syncPull(callback) {
+  if (!getGhToken()) { if(callback) callback(); return; }
+  ghGetData(function(serverData) {
+    if (serverData && serverData.users) {
+      for (var i = 0; i < serverData.users.length; i++) {
+        if (appData.users.indexOf(serverData.users[i]) < 0) appData.users.push(serverData.users[i]);
+      }
+      for (var name in serverData.records) {
+        if (serverData.records.hasOwnProperty(name)) {
+          if (name !== currentUser) {
+            appData.records[name] = serverData.records[name];
+          } else {
+            var localRecord = appData.records[name] || {};
+            var serverRecord = serverData.records[name] || {};
+            for (var key in serverRecord) {
+              if ((serverRecord[key] === 'pass' || serverRecord[key] === 'fail') && localRecord[key] !== serverRecord[key]) {
+                localRecord[key] = serverRecord[key];
+              }
+            }
+            appData.records[name] = localRecord;
+          }
+        }
+      }
+      try { localStorage.setItem('train3m_v2', JSON.stringify(appData)); } catch(e) {}
+    }
+    if (callback) callback();
+  });
+}
+
+function uploadEvidence(evidenceId, file, fileType, callback) {
+  var reader = new FileReader();
+  reader.onload = function() {
+    var b64 = reader.result.split(',')[1];
+    if (!getGhToken()) { callback(null); return; }
+    ghGetData(function(data) {
+      if (!data._evidence) data._evidence = {};
+      data._evidence['__evdata_' + evidenceId] = b64;
+      data._evidence['__evtype_' + evidenceId] = fileType || 'image';
+      ghSetData(data, function() {
+        callback('/api/evidence-view/' + evidenceId);
+      });
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== Persistence =====
+function load() {
+  try {
+    var s = localStorage.getItem('train3m_v2');
+    if (s) appData = JSON.parse(s);
+  } catch(e) {
+    console.warn('load error:', e);
+  }
+}
+function save() {
+  try {
+    localStorage.setItem('train3m_v2', JSON.stringify(appData));
+  } catch(e) {
+    console.warn('save error:', e);
+  }
+}
+function getUserState(name) { return appData.records[name] || {}; }
+function setUserState(name, st) { appData.records[name] = st; save(); if (name === currentUser) syncPush(); }
+
+// ===== IndexedDB =====
+function openDB() {
+  return new Promise(function(resolve, reject) {
+    if (db) { resolve(db); return; }
+    try {
+      var req = indexedDB.open('TrainEvidenceDB2', 1);
+      req.onupgradeneeded = function(e) {
+        var d = e.target.result;
+        if (!d.objectStoreNames.contains('evidence')) {
+          d.createObjectStore('evidence', {keyPath:'id'});
+        }
+      };
+      req.onsuccess = function(e) { db = e.target.result; resolve(db); };
+      req.onerror = function(e) { console.warn('IndexedDB error'); reject(e); };
+    } catch(e) {
+      console.warn('IndexedDB not available');
+      reject(e);
+    }
+  });
+}
+function saveEvidence(key, blob, type) {
+  return openDB().then(function(d) {
+    return new Promise(function(resolve, reject) {
+      var tx = d.transaction('evidence', 'readwrite');
+      tx.objectStore('evidence').put({id:key, blob:blob, type:type});
+      tx.oncomplete = resolve;
+      tx.onerror = reject;
+    });
+  });
+}
+function getEvidence(key) {
+  return openDB().then(function(d) {
+    return new Promise(function(resolve, reject) {
+      var tx = d.transaction('evidence', 'readonly');
+      var req = tx.objectStore('evidence').get(key);
+      req.onsuccess = function() { resolve(req.result || null); };
+      req.onerror = reject;
+    });
+  });
+}
+
+// ===== Helpers =====
+function fmtDate(dateStr, offset) {
+  var d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + offset);
+  return (d.getMonth()+1) + '/' + d.getDate();
+}
+function fmtTime(sec) {
+  var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+  if (h > 0) return h + ':' + pad2(m) + ':' + pad2(s);
+  return pad2(m) + ':' + pad2(s);
+}
+function pad2(n) { return n < 10 ? '0'+n : ''+n; }
+function dayKey(wi, di) { return 'w'+wi+'d'+di; }
+function evKey(user, dk) { return user+'_'+dk; }
+function firstChar(name) { return name ? name.charAt(0) : '?'; }
+function esc(s) { return s.replace(/'/g, "\\'"); }
+function getMonthKey(dateStr) {
+  var d = new Date(dateStr+'T00:00:00');
+  return d.getFullYear()+'-'+(d.getMonth()+1);
+}
+function isCurrentWeek(wi) {
+  var mon = new Date(PLAN[wi].mon+'T00:00:00');
+  var today = new Date(); today.setHours(0,0,0,0);
+  var fri = new Date(mon); fri.setDate(fri.getDate()+4);
+  return today >= mon && today <= fri;
+}
+
+// ===== Screen Switch =====
+function showScreen(id) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== Users Screen =====
+function renderUsers() {
+  var list = document.getElementById('usersList');
+  var h = '';
+  for (var i = 0; i < appData.users.length; i++) {
+    var name = appData.users[i];
+    var st = getUserState(name);
+    var pass = 0, checkin = 0;
+    for (var wi = 0; wi < PLAN.length; wi++) {
+      for (var j = 0; j < PLAN[wi].items.length; j++) {
+        if (st[PLAN[wi].items[j].name] === 'pass') pass++;
+      }
+      for (var di = 0; di < 5; di++) {
+        if (st['__checkin_'+dayKey(wi,di)]) checkin++;
+      }
+    }
+    h += '<div class="user-card" onclick="selectUser(\''+esc(name)+'\')">' +
+      '<div class="user-avatar">'+firstChar(name)+'</div>' +
+      '<div class="user-info"><div class="name">'+name+'</div>' +
+      '<div class="progress">通过 <b>'+pass+'</b>/27 · 打卡 <b>'+checkin+'</b>/65</div></div></div>';
+  }
+  h += '<div class="add-user-btn" onclick="addUserPrompt()">➕ 添加学员</div>';
+  list.innerHTML = h;
+}
+
+function addUserPrompt() {
+  document.getElementById('mTitle').textContent = '添加学员';
+  document.getElementById('mMsg').innerHTML = '<input id="newUserName" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;font-size:15px;margin-top:8px;text-align:center;outline:none" placeholder="输入姓名" maxlength="10">';
+  document.getElementById('mBtns').innerHTML = '<button class="mbtn mbtn-cancel" onclick="closeModal()">取消</button><button class="mbtn mbtn-ok" onclick="doAddUser()">添加</button>';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(function(){ var el = document.getElementById('newUserName'); if(el) el.focus(); }, 200);
+}
+
+function doAddUser() {
+  var el = document.getElementById('newUserName');
+  var name = el ? el.value.trim() : '';
+  if (!name) { alert('请输入姓名'); return; }
+  if (appData.users.indexOf(name) >= 0) { alert('该姓名已存在'); return; }
+  appData.users.push(name);
+  appData.records[name] = {};
+  save();
+  closeModal();
+  renderUsers();
+}
+
+function selectUser(name) {
+  currentUser = name;
+  showScreen('screenStudent');
+  renderStudent();
+}
+
+function backToUsers() {
+  if (runningDay) stopClock(runningDay);
+  currentUser = null;
+  showScreen('screenUsers');
+  renderUsers();
+}
+
+// ===== Student Screen =====
+function renderStudent() {
+  if (!currentUser) return;
+  var st = getUserState(currentUser);
+  document.getElementById('currentUserLabel').textContent = '👤 ' + currentUser;
+  var w = document.getElementById('mainWrap');
+  var h = '', currentMonth = '';
+  var totalPass = 0, totalFail = 0, totalCheckin = 0;
+
+  for (var wi = 0; wi < PLAN.length; wi++) {
+    var wk = PLAN[wi];
+    var mk = getMonthKey(wk.mon);
+    if (mk !== currentMonth) {
+      currentMonth = mk;
+      var mNum = parseInt(mk.split('-')[1]);
+      h += '<div class="month-title">📅 '+(MONTH_NAMES[mNum]||mk)+'</div>';
+    }
+
+    var wkPass = 0, wkFail = 0, wkPending = 0;
+    for (var j = 0; j < wk.items.length; j++) {
+      var s = st[wk.items[j].name];
+      if (s === 'pass') wkPass++;
+      else if (s === 'fail') wkFail++;
+      else if (s === 'pending') wkPending++;
+    }
+    totalPass += wkPass;
+    totalFail += wkFail;
+    for (var di = 0; di < 5; di++) {
+      if (st['__checkin_'+dayKey(wi,di)]) totalCheckin++;
+    }
+
+    var wkStatus = 'pending', wkStatusTxt = '未开始';
+    if (wkPass === wk.items.length && wk.items.length > 0) { wkStatus = 'done'; wkStatusTxt = '✅ 已完成'; }
+    else if (wkPass > 0 || wkFail > 0 || wkPending > 0) { wkStatus = 'doing'; wkStatusTxt = '进行中'; }
+
+    h += '<div class="week"><div class="week-head" onclick="toggleWeek('+wi+')"><div class="week-label">' +
+      '<span class="week-num">第'+wk.week+'周</span><span class="week-date">'+fmtDate(wk.mon,0)+' - '+fmtDate(wk.mon,4)+'</span></div>' +
+      '<span class="week-status '+wkStatus+'">'+wkStatusTxt+'</span></div>';
+    h += '<div class="week-body" id="wb'+wi+'">';
+
+    for (var di = 0; di < 5; di++) {
+      var dk = dayKey(wi, di);
+      var dl = DAY_LABELS[di];
+      var dateStr = fmtDate(wk.mon, di);
+      var daySec = st['__time_'+dk] || 0;
+      var checkedIn = st['__checkin_'+dk] || false;
+      var evType = st['__evtype_'+dk] || '';
+      var isRunning = (runningDay === dk);
+      var reached = daySec >= 7200;
+      var pct = Math.min(100, daySec / 7200 * 100);
+      var timeStr = fmtTime(daySec);
+
+      h += '<div class="day-card"><div class="day-head"><div class="day-left">' +
+        '<span class="day-tag '+dl.tag+'">'+dl.label+'</span><span class="day-date">'+dateStr+'</span></div><div class="day-right">';
+      if (dl.tag !== 'learn') {
+        h += '<span class="checkin-badge '+(checkedIn?'yes':'no')+'">'+(checkedIn?'✅ 已打卡':'未打卡')+'</span>';
+      }
+      h += '</div></div>';
+
+      // Project list
+      if (dl.tag === 'learn' || dl.tag === 'practice') {
+        h += '<div class="proj-list">';
+        for (var j = 0; j < wk.items.length; j++) {
+          var it = wk.items[j];
+          var color = CAT_COLORS[it.cat] || '#999';
+          h += '<div class="proj"><span class="cat-dot" style="background:'+color+'"></span>' +
+            '<span class="proj-name">'+it.name+'<span class="proj-cat"> · '+it.cat+'</span></span></div>';
+        }
+        h += '</div>';
+      }
+
+      if (dl.tag === 'exam') {
+        h += '<div class="proj-list">';
+        for (var j = 0; j < wk.items.length; j++) {
+          var it = wk.items[j];
+          var k = it.name;
+          var color = CAT_COLORS[it.cat] || '#999';
+          var s = st[k];
+          var btn = '';
+          if (s === 'pass') btn = '<span class="exam-status pass">✅ 通过</span>';
+          else if (s === 'pending') btn = '<span class="exam-status pending">⏳ 待审批</span>';
+          else if (s === 'fail') btn = '<button class="exam-btn" onclick="clickExam(\''+esc(k)+'\')">重新提交</button>';
+          else btn = '<button class="exam-btn" onclick="clickExam(\''+esc(k)+'\')">提交考核</button>';
+          h += '<div class="proj"><span class="cat-dot" style="background:'+color+'"></span>' +
+            '<span class="proj-name">'+it.name+'</span>'+btn+'</div>';
+        }
+        h += '</div>';
+      }
+
+      // Timer
+      h += '<div class="timer-row"><div class="timer-progress"><div class="timer-fill '+(reached?'done':'')+'" style="width:'+pct+'%"></div></div>' +
+        '<span class="timer-time '+(isRunning?'running':'')+' '+(reached?'done':'')+'" id="t_'+dk+'">'+timeStr+'</span>' +
+        '<span style="font-size:11px;color:#aaa">/ 2:00:00</span><div class="timer-btns">';
+      if (isRunning) {
+        h += '<button class="tbtn tbtn-stop" onclick="stopClock(\''+dk+'\')">暂停</button>';
+      } else {
+        h += '<button class="tbtn tbtn-start" onclick="startClock(\''+dk+'\')">计时</button>';
+      }
+      if (dl.tag !== 'learn') {
+        if (checkedIn) {
+          h += '<button class="tbtn tbtn-view" onclick="viewEvidence(\''+dk+'\')">查看凭证</button>';
+        } else {
+          h += '<button class="tbtn tbtn-checkin" '+(reached?'':'disabled')+' onclick="openCheckinModal(\''+dk+'\')">打卡</button>';
+        }
+      }
+      h += '</div></div>';
+
+      // Evidence indicator
+      if (checkedIn && evType) {
+        h += '<div class="evidence-row">';
+        if (evType === 'image') {
+          h += '<div class="evidence-thumb" id="ethumb_'+dk+'" onclick="viewEvidence(\''+dk+'\')">📷</div>';
+        } else {
+          h += '<div class="evidence-thumb" onclick="viewEvidence(\''+dk+'\')" style="background:#1f2937">🎥</div>';
+        }
+        h += '<span class="evidence-label">'+(evType==='image'?'照片凭证':'视频凭证')+'</span></div>';
+        if (evType === 'image') setTimeout(function(){ loadThumb(dk); }, 0);
+      }
+
+      h += '</div>'; // day-card
+    }
+    h += '</div></div>'; // week-body, week
+  }
+
+  h += '<div class="legend"><span><span class="dot" style="background:#16a34a"></span>通过</span>' +
+    '<span><span class="dot" style="background:#f59e0b"></span>待审批</span>' +
+    '<span><span class="dot" style="background:#ef4444"></span>未通过</span></div>';
+  w.innerHTML = h;
+
+  // Auto-open current week
+  for (var wi = 0; wi < PLAN.length; wi++) {
+    if (isCurrentWeek(wi)) {
+      var el = document.getElementById('wb'+wi);
+      if (el) el.classList.add('open');
+    }
+  }
+
+  document.getElementById('topbarSub').textContent = '进度 ' + totalPass + '/27';
+  document.getElementById('pbarFill').style.width = (totalPass/27*100)+'%';
+  document.getElementById('passN').textContent = totalPass;
+  document.getElementById('failN').textContent = totalFail;
+  document.getElementById('checkinN').textContent = totalCheckin;
+}
+
+function loadThumb(dk) {
+  var st = getUserState(currentUser);
+  var evUrl = st['__evurl_'+dk];
+  if (evUrl) {
+    var el = document.getElementById('ethumb_'+dk);
+    if (el) {
+      var img = document.createElement('img');
+      img.onload = function() {
+        el.innerHTML = '';
+        el.style.background = 'none';
+        el.appendChild(img);
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+      };
+      // Check GitHub-stored evidence
+      var ek = evKey(currentUser, dk);
+      var evDataKey = '__evdata_' + ek;
+      if (appData._evidence && appData._evidence[evDataKey]) {
+        img.src = 'data:image/jpeg;base64,' + appData._evidence[evDataKey];
+      } else if (evUrl.startsWith('http')) {
+        img.src = evUrl;
+      } else {
+        img.src = API_BASE + evUrl;
+      }
+    }
+    return;
+  }
+  var ek = evKey(currentUser, dk);
+  getEvidence(ek).then(function(ev) {
+    if (!ev || ev.type !== 'image') return;
+    var url = URL.createObjectURL(ev.blob);
+    var el = document.getElementById('ethumb_'+dk);
+    if (el) {
+      var img = document.createElement('img');
+      img.onload = function() {
+        el.innerHTML = '';
+        el.style.background = 'none';
+        el.appendChild(img);
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+      };
+      img.src = url;
+    }
+  }).catch(function(){});
+}
+
+function toggleWeek(wi) {
+  var el = document.getElementById('wb'+wi);
+  if (el) el.classList.toggle('open');
+}
+
+// ===== Timer =====
+function startClock(dk) {
+  if (runningDay) stopClock(runningDay);
+  runningDay = dk;
+  var st = getUserState(currentUser);
+  clockSec = st['__time_'+dk] || 0;
+  clockInterval = setInterval(function() {
+    clockSec++;
+    var st2 = getUserState(currentUser);
+    st2['__time_'+runningDay] = clockSec;
+    if (clockSec % 10 === 0) setUserState(currentUser, st2);
+    var el = document.getElementById('t_'+runningDay);
+    if (el) {
+      el.textContent = fmtTime(clockSec);
+      var pct = Math.min(100, clockSec/7200*100);
+      var card = el.closest('.day-card');
+      if (card) {
+        var fill = card.querySelector('.timer-fill');
+        if (fill) { fill.style.width = pct+'%'; if (clockSec>=7200) fill.classList.add('done'); }
+      }
+      if (clockSec >= 7200) { el.classList.add('done'); el.classList.remove('running'); }
+    }
+  }, 1000);
+  renderStudent();
+}
+
+function stopClock(dk) {
+  if (clockInterval) { clearInterval(clockInterval); clockInterval = null; }
+  var st = getUserState(currentUser);
+  st['__time_'+dk] = clockSec;
+  setUserState(currentUser, st);
+  runningDay = null;
+  renderStudent();
+}
+
+// ===== Checkin =====
+var pendingCheckinDk = null, pendingFile = null, pendingFileType = null;
+
+function openCheckinModal(dk) {
+  var st = getUserState(currentUser);
+  if ((st['__time_'+dk] || 0) < 7200) return;
+  pendingCheckinDk = dk;
+  pendingFile = null;
+  pendingFileType = null;
+  document.getElementById('checkinModal').classList.add('show');
+}
+function closeCheckinModal() {
+  document.getElementById('checkinModal').classList.remove('show');
+  pendingCheckinDk = null;
+}
+
+function triggerCamera(mode) {
+  var pi = document.getElementById('photoInput');
+  var vi = document.getElementById('videoInput');
+  var ai = document.getElementById('albumInput');
+  pi.value = ''; vi.value = ''; ai.value = '';
+  if (mode === 'photo') pi.click();
+  else if (mode === 'video') vi.click();
+  else ai.click();
+}
+
+document.getElementById('photoInput').addEventListener('change', handleFileSelect);
+document.getElementById('videoInput').addEventListener('change', handleFileSelect);
+document.getElementById('albumInput').addEventListener('change', handleFileSelect);
+
+function handleFileSelect(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  pendingFile = file;
+  pendingFileType = file.type.startsWith('video') ? 'video' : 'image';
+  closeCheckinModal();
+  showPreview(file, pendingFileType);
+}
+
+function showPreview(file, type) {
+  var content = document.getElementById('previewContent');
+  var url = URL.createObjectURL(file);
+  if (type === 'image') {
+    content.innerHTML = '<img src="'+url+'" style="max-width:100%;max-height:50vh;border-radius:8px">';
+  } else {
+    content.innerHTML = '<video src="'+url+'" controls style="max-width:100%;max-height:50vh;border-radius:8px"></video>';
+  }
+  document.getElementById('previewModal').classList.add('show');
+}
+
+function closePreview() {
+  document.getElementById('previewModal').classList.remove('show');
+  pendingFile = null;
+  pendingFileType = null;
+}
+
+function confirmCheckin() {
+  if (!pendingCheckinDk || !pendingFile) { closePreview(); return; }
+  var dk = pendingCheckinDk;
+  var ek = evKey(currentUser, dk);
+  var doFinish = function(evUrl) {
+    var st = getUserState(currentUser);
+    st['__checkin_'+dk] = true;
+    st['__evtype_'+dk] = pendingFileType;
+    st['__checkin_time_'+dk] = new Date().toLocaleString('zh-CN');
+    if (evUrl) st['__evurl_'+dk] = evUrl;
+    setUserState(currentUser, st);
+    closePreview();
+    renderStudent();
+  };
+  if (API_BASE) {
+    uploadEvidence(ek, pendingFile, pendingFileType, function(url) {
+      if (url) {
+        doFinish(url);
+      } else {
+        saveEvidence(ek, pendingFile, pendingFileType).then(function() { doFinish(null); }).catch(function() { alert('保存凭证失败'); });
+      }
+    });
+  } else {
+    saveEvidence(ek, pendingFile, pendingFileType).then(function() { doFinish(null); }).catch(function(err) { alert('保存凭证失败'); });
+  }
+}
+
+// ===== View Evidence =====
+function viewEvidence(dk) {
+  var st = getUserState(currentUser);
+  var evUrl = st['__evurl_'+dk];
+  if (evUrl) {
+    var type = st['__evtype_'+dk] || 'image';
+    var content = document.getElementById('viewContent');
+    // Check if evidence data is in synced data
+    var ek = evKey(currentUser, dk);
+    var evDataKey = '__evdata_' + ek;
+    if (appData._evidence && appData._evidence[evDataKey]) {
+      var b64 = appData._evidence[evDataKey];
+      var dataUrl = (type === 'image' ? 'data:image/jpeg;base64,' : 'data:video/mp4;base64,') + b64;
+      if (type === 'image') {
+        content.innerHTML = '<img src="'+dataUrl+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+      } else {
+        content.innerHTML = '<video src="'+dataUrl+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+      }
+    } else if (evUrl.startsWith('http')) {
+      if (type === 'image') {
+        content.innerHTML = '<img src="'+evUrl+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+      } else {
+        content.innerHTML = '<video src="'+evUrl+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+      }
+    } else {
+      content.innerHTML = '<p style="color:#999;padding:20px">凭证加载中，请先同步数据</p>';
+    }
+    document.getElementById('viewModal').classList.add('show');
+    return;
+  }
+  var ek = evKey(currentUser, dk);
+  getEvidence(ek).then(function(ev) {
+    if (!ev) { alert('凭证未找到'); return; }
+    var url = URL.createObjectURL(ev.blob);
+    var content = document.getElementById('viewContent');
+    if (ev.type === 'image') {
+      content.innerHTML = '<img src="'+url+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+    } else {
+      content.innerHTML = '<video src="'+url+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+    }
+    document.getElementById('viewModal').classList.add('show');
+  }).catch(function(){ alert('读取凭证失败'); });
+}
+function closeViewModal() { document.getElementById('viewModal').classList.remove('show'); }
+
+// ===== Exam =====
+function clickExam(key) {
+  document.getElementById('mTitle').textContent = '提交考核';
+  document.getElementById('mMsg').textContent = '确认提交该项目的考核吗？提交后由店长审批。';
+  document.getElementById('mBtns').innerHTML = '<button class="mbtn mbtn-cancel" onclick="closeModal()">取消</button>' +
+    '<button class="mbtn mbtn-ok" onclick="setExamResult(\''+esc(key)+'\',\'pending\')">提交审批</button>';
+  document.getElementById('modal').classList.add('show');
+}
+function setExamResult(key, val) {
+  var st = getUserState(currentUser);
+  st[key] = val;
+  if (val === 'pending') st['__submit_time_'+key] = new Date().toLocaleString('zh-CN');
+  setUserState(currentUser, st);
+  renderStudent();
+  closeModal();
+}
+
+// ===== Reset =====
+function confirmReset() {
+  document.getElementById('mTitle').textContent = '重置进度';
+  document.getElementById('mMsg').textContent = '确认重置 '+currentUser+' 的所有进度？不可撤销。';
+  document.getElementById('mBtns').innerHTML = '<button class="mbtn mbtn-cancel" onclick="closeModal()">取消</button>' +
+    '<button class="mbtn" style="background:#dc2626;color:#fff" onclick="doReset()">确认重置</button>';
+  document.getElementById('modal').classList.add('show');
+}
+function doReset() {
+  appData.records[currentUser] = {};
+  save();
+  renderStudent();
+  closeModal();
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+// ===== Init =====
+function init() {
+  try {
+    load();
+    var afterDB = function() {
+      showScreen('screenUsers');
+      renderUsers();
+      if (promptGhToken()) { syncPull(function() { renderUsers(); }); } else { renderUsers(); }
+    };
+    openDB().then(afterDB).catch(afterDB);
+  } catch(e) {
+    console.error('Init error:', e);
+    document.getElementById('loadingScreen').innerHTML = '<div style="text-align:center;padding:40px 20px">' +
+      '<h2 style="color:#dc2626">⚠️ 加载失败</h2><p style="margin-top:10px;color:#888">'+e.message+'</p>' +
+      '<p style="margin-top:10px;color:#aaa">请尝试刷新页面</p></div>';
+  }
+}
+
+// Start
+init();
+</script>
+</body>
+</html>

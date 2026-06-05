@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>3个月成长计划-管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f0f2f5;color:#333;min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+
+.loading-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:#f0f2f5;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.loading-screen .spinner{width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-screen p{margin-top:16px;color:#888;font-size:14px}
+
+.screen{display:none}
+.screen.active{display:block}
+
+/* Login */
+.login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#fff;border-radius:16px;padding:32px 24px;max-width:320px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center}
+.login-box h1{font-size:22px;font-weight:800;color:#5b21b6;margin-bottom:6px}
+.login-box p{font-size:13px;color:#888;margin-bottom:20px}
+.login-box input{width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;text-align:center;outline:none;margin-bottom:14px}
+.login-box input:focus{border-color:#7c3aed}
+.login-btn{width:100%;padding:12px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer}
+.login-btn:active{background:#6d28d9}
+.login-err{color:#ef4444;font-size:12px;margin-top:8px;display:none}
+
+/* Main */
+.topbar{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(91,33,182,.3);display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:700}
+.topbar .sub{font-size:12px;opacity:.85;margin-top:2px}
+.logout-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
+
+/* Tabs */
+.tabs{display:flex;background:#fff;border-bottom:1px solid #eee;position:sticky;top:60px;z-index:99}
+.tab{flex:1;padding:12px 8px;text-align:center;font-size:13px;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;position:relative}
+.tab.active{color:#7c3aed;border-bottom-color:#7c3aed}
+.tab .badge{position:absolute;top:6px;right:12px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;display:none}
+.tab .badge.show{display:inline-block}
+
+/* Content */
+.content{max-width:640px;margin:0 auto;padding:12px 12px 30px}
+
+/* Overview Cards */
+.overview{margin-bottom:16px}
+.overview-title{font-size:14px;font-weight:700;color:#555;margin-bottom:8px;padding-left:4px}
+.stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);text-align:center}
+.stat-card .num{font-size:28px;font-weight:800;color:#7c3aed}
+.stat-card .num.g{color:#16a34a}
+.stat-card .num.r{color:#ef4444}
+.stat-card .num.o{color:#f59e0b}
+.stat-card .label{font-size:12px;color:#888;margin-top:4px}
+
+/* User detail cards */
+.user-section{background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.user-section-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.user-section-head:active{background:#fafafa}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;margin-right:10px}
+.user-section-left{display:flex;align-items:center}
+.user-section-name{font-size:15px;font-weight:700}
+.user-section-stat{font-size:12px;color:#888;margin-top:2px}
+.user-section-stat b{color:#7c3aed}
+.user-section-body{padding:0 16px 14px;display:none}
+.user-section-body.open{display:block}
+.day-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;margin-bottom:4px;background:#f9fafb;font-size:13px}
+.day-row .left{display:flex;align-items:center;gap:6px}
+.day-row .tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;color:#fff}
+.day-row .tag.learn{background:#3b82f6}
+.day-row .tag.exam{background:#ef4444}
+.day-row .tag.practice{background:#f59e0b}
+.day-row .time{font-size:12px;color:#888}
+.day-row .right{display:flex;align-items:center;gap:6px}
+.badge-sm{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px}
+.badge-sm.yes{background:#dcfce7;color:#16a34a}
+.badge-sm.no{background:#fee2e2;color:#dc2626}
+.view-ev-btn{font-size:11px;color:#7c3aed;cursor:pointer;font-weight:600}
+
+/* Exam items */
+.exam-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#f9fafb;border-radius:8px;margin-bottom:6px}
+.exam-item .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.exam-item .name{flex:1;font-size:13px;font-weight:500}
+.exam-item .user{font-size:11px;color:#888}
+.exam-item .status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.exam-item .status.pass{background:#dcfce7;color:#16a34a}
+.exam-item .status.pending{background:#fef3c7;color:#92400e}
+.exam-item .status.fail{background:#fee2e2;color:#dc2626}
+.exam-item .action-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none}
+.exam-item .pass-btn{background:#16a34a;color:#fff}
+.exam-item .fail-btn{background:#ef4444;color:#fff}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;max-width:340px;width:90%;text-align:center;animation:popIn .25s}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:17px;margin-bottom:8px}
+.modal p{font-size:13px;color:#888;margin-bottom:18px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.mbtn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none}
+.mbtn-cancel{background:#f0f0f0;color:#666}
+.mbtn-ok{background:#16a34a;color:#fff}
+.view-modal{max-width:90vw;width:auto;max-height:90vh}
+.view-modal img,.view-modal video{max-width:100%;max-height:65vh;border-radius:8px;display:block;margin:0 auto 12px}
+
+.empty-tip{text-align:center;padding:40px 20px;color:#bbb;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <p>加载中...</p>
+</div>
+
+<!-- Login -->
+<div class="screen" id="screenLogin">
+  <div class="login-screen">
+    <div class="login-box">
+      <h1>🔧 管理端</h1>
+      <p>3个月成长计划 · 店长管理</p>
+      <input type="password" id="pwdInput" placeholder="输入密码" maxlength="10">
+      <button class="login-btn" onclick="tryLogin()">进入管理</button>
+      <div class="login-err" id="loginErr">密码错误</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="screen" id="screenMain">
+  <div class="topbar">
+    <div><h1>🔧 成长计划管理</h1><div class="sub" id="topbarSub">全店数据总览</div></div>
+    <button class="logout-btn" onclick="fetchFromServer(function(){renderTab()})" style="margin-right:6px">🔄同步</button><button class="logout-btn" onclick="doLogout()">退出</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('checkin')">📊 打卡记录</div>
+    <div class="tab" onclick="switchTab('exam')">✅ 考核审批<span class="badge" id="examBadge"></span></div>
+    <div class="tab" onclick="switchTab('score')">📋 考核成绩</div>
+  </div>
+  <div class="content" id="tabContent"></div>
+</div>
+
+<!-- View Evidence -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal view-modal">
+    <h3>📎 打卡凭证</h3>
+    <div id="viewContent" style="margin:12px 0"></div>
+    <div class="modal-btns"><button class="mbtn mbtn-cancel" onclick="closeViewModal()">关闭</button></div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="cfmTitle"></h3>
+    <p id="cfmMsg"></p>
+    <div class="modal-btns" id="cfmBtns"></div>
+  </div>
+</div>
+
+<noscript><div style="text-align:center;padding:60px 20px;color:#999"><h2>⚠️ 需要启用JavaScript</h2><p style="margin-top:10px">请在浏览器设置中开启JavaScript后刷新页面</p></div></noscript>
+
+<script>
+var CAT_COLORS = {
+  '吹风造型':'#3b82f6','直板造型':'#8b5cf6','电棒造型':'#ec4899',
+  '八大手法':'#f59e0b','徒手造型':'#10b981','烘干卷发':'#06b6d4',
+  '冷烫卷发':'#6366f1','特殊烫发':'#ef4444','染发':'#a855f7'
+};
+var PLAN = [
+  {week:1,mon:'2026-06-08',items:[{name:'电吹风吹风造型·直发',cat:'吹风造型'},{name:'电吹风吹风造型·C型',cat:'吹风造型'}]},
+  {week:2,mon:'2026-06-15',items:[{name:'电吹风吹风造型·S型',cat:'吹风造型'},{name:'直板造型·直发',cat:'直板造型'}]},
+  {week:3,mon:'2026-06-22',items:[{name:'直板造型·C型',cat:'直板造型'},{name:'直板造型·S型',cat:'直板造型'}]},
+  {week:4,mon:'2026-06-29',items:[{name:'电棒造型·C型',cat:'电棒造型'},{name:'电棒造型·S型',cat:'电棒造型'}]},
+  {week:5,mon:'2026-07-06',items:[{name:'八大手法·饱满',cat:'八大手法'},{name:'八大手法·收紧',cat:'八大手法'}]},
+  {week:6,mon:'2026-07-13',items:[{name:'八大手法·组合形状',cat:'八大手法'},{name:'徒手造型·发根站立',cat:'徒手造型'}]},
+  {week:7,mon:'2026-07-20',items:[{name:'徒手造型·发中流向',cat:'徒手造型'},{name:'徒手造型·手吹波纹',cat:'徒手造型'}]},
+  {week:8,mon:'2026-07-27',items:[{name:'烘干卷发练习',cat:'烘干卷发'},{name:'冷烫卷发·平卷',cat:'冷烫卷发'}]},
+  {week:9,mon:'2026-08-03',items:[{name:'冷烫卷发·竖卷',cat:'冷烫卷发'},{name:'冷烫卷发·平缠绕',cat:'冷烫卷发'}]},
+  {week:10,mon:'2026-08-10',items:[{name:'冷烫卷发·半扭转',cat:'冷烫卷发'},{name:'摩根烫',cat:'特殊烫发'}]},
+  {week:11,mon:'2026-08-17',items:[{name:'钢夹烫',cat:'特殊烫发'},{name:'锡纸烫',cat:'特殊烫发'}]},
+  {week:12,mon:'2026-08-24',items:[{name:'蝴蝶烫',cat:'特殊烫发'},{name:'染发·平刷',cat:'染发'}]},
+  {week:13,mon:'2026-08-31',items:[{name:'染发·分段刷',cat:'染发'},{name:'染发·挑染',cat:'染发'},{name:'染发·漂发操作',cat:'染发'}]}
+];
+var DAY_LABELS = [{label:'周一·学习',tag:'learn'},{label:'周二·练习',tag:'practice'},{label:'周三·练习',tag:'practice'},{label:'周四·练习',tag:'practice'},{label:'周五·考核',tag:'exam'}];
+
+var appData = {users:[],records:{}};
+var db = null;
+var currentTab = 'checkin';
+var loggedIn = false;
+var API_BASE = '';
+
+// ===== GitHub API Sync =====
+var GH_REPO = '463601545-create/train-app';
+var GH_TOKEN_STORAGE = 'gh_token_v1';
+var _ghSha = null;
+
+function getGhToken() {
+  return localStorage.getItem(GH_TOKEN_STORAGE) || '';
+}
+
+function ghHeaders() {
+  var h = {'Content-Type': 'application/json'};
+  var t = getGhToken();
+  if (t) h['Authorization'] = 'token ' + t;
+  return h;
+}
+
+function ghGetData(cb) {
+  fetch('https://api.github.com/repos/' + GH_REPO + '/contents/data.json?ref=main&t=' + Date.now(), {
+    headers: ghHeaders()
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d && d.content) {
+      try {
+        var json = JSON.parse(atob(d.content.replace(/\n/g,'')));
+        _ghSha = d.sha;
+        if (cb) cb(json);
+        return;
+      } catch(e) {}
+    }
+    if (cb) cb({users:[],records:{},_evidence:{}});
+  }).catch(function() { if (cb) cb({users:[],records:{},_evidence:{}}); });
+}
+
+function ghSetData(data, cb) {
+  var body = {
+    message: 'admin-sync ' + new Date().toISOString().slice(0,19),
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
+    branch: 'main'
+  };
+  if (_ghSha) body.sha = _ghSha;
+  fetch('https://api.github.com/repos/' + GH_REPO + '/contents/data.json', {
+    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(result) {
+    if (result.content && result.content.sha) _ghSha = result.content.sha;
+    if (cb) cb(result);
+  }).catch(function(e) { if (cb) cb(null); });
+}
+
+var serverAvailable = false;
+
+function load() { try { var s = localStorage.getItem('train3m_v2'); if (s) appData = JSON.parse(s); } catch(e) {} }
+function save() { try { localStorage.setItem('train3m_v2', JSON.stringify(appData)); } catch(e) {} }
+function getUserState(name) { return appData.records[name] || {}; }
+function setUserState(name, st) { appData.records[name] = st; save(); pushToServer(name, st); }
+function dayKey(wi, di) { return 'w'+wi+'d'+di; }
+function evKey(user, dk) { return user+'_'+dk; }
+function fmtDate(dateStr, offset) { var d = new Date(dateStr+'T00:00:00'); d.setDate(d.getDate()+offset); return (d.getMonth()+1)+'/'+d.getDate(); }
+function fmtTime(sec) { var h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; return h>0?h+':'+pad2(m)+':'+pad2(s):pad2(m)+':'+pad2(s); }
+function pad2(n) { return n<10?'0'+n:''+n; }
+function firstChar(name) { return name?name.charAt(0):'?'; }
+function esc(s) { return s.replace(/'/g,"\\'"); }
+
+function fetchFromServer(callback) {
+  if (!getGhToken()) { if(callback) callback(); return; }
+  ghGetData(function(serverData) {
+    if (serverData && serverData.users) {
+      appData = serverData;
+      serverAvailable = true;
+      try { localStorage.setItem('train3m_v2', JSON.stringify(appData)); } catch(e) {}
+    }
+    if (callback) callback();
+  });
+}
+
+function pushToServer(name, record) {
+  if (!getGhToken()) return;
+  ghGetData(function(data) {
+    if (!data.users) data.users = [];
+    if (!data.records) data.records = {};
+    if (!data.users.includes(name)) data.users.push(name);
+    data.records[name] = record;
+    ghSetData(data);
+  });
+}
+
+function openDB() {
+  return new Promise(function(resolve, reject) {
+    if (db) { resolve(db); return; }
+    try {
+      var req = indexedDB.open('TrainEvidenceDB2', 1);
+      req.onupgradeneeded = function(e) { var d=e.target.result; if(!d.objectStoreNames.contains('evidence')) d.createObjectStore('evidence',{keyPath:'id'}); };
+      req.onsuccess = function(e) { db=e.target.result; resolve(db); };
+      req.onerror = function(e) { reject(e); };
+    } catch(e) { reject(e); }
+  });
+}
+function getEvidence(key) {
+  return openDB().then(function(d) {
+    return new Promise(function(resolve, reject) {
+      var tx=d.transaction('evidence','readonly'); var req=tx.objectStore('evidence').get(key);
+      req.onsuccess=function(){resolve(req.result||null);}; req.onerror=reject;
+    });
+  });
+}
+
+function showScreen(id) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  var screens = document.querySelectorAll('.screen');
+  for (var i=0;i<screens.length;i++) screens[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Login
+function tryLogin() {
+  var pwd = document.getElementById('pwdInput').value;
+  if (pwd === '8888') {
+    loggedIn = true;
+    showScreen('screenMain');
+    var t = localStorage.getItem("gh_token_v1"); if (!t) { t = prompt("请输入同步密钥："); if (t) localStorage.setItem("gh_token_v1", t); } if (t) { fetchFromServer(function() { renderTab(); }); } else { renderTab(); }
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    setTimeout(function(){ document.getElementById('loginErr').style.display = 'none'; }, 2000);
+  }
+}
+function doLogout() { loggedIn = false; showScreen('screenLogin'); document.getElementById('pwdInput').value = ''; }
+
+// Tabs
+function switchTab(tab) {
+  currentTab = tab;
+  var tabs = document.querySelectorAll('.tab');
+  for (var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  if (tab==='checkin') tabs[0].classList.add('active');
+  else if (tab==='exam') tabs[1].classList.add('active');
+  else tabs[2].classList.add('active');
+  renderTab();
+}
+
+function renderTab() {
+  if (API_BASE) {
+    fetchFromServer(function() { doRenderTab(); });
+  } else {
+    load();
+    doRenderTab();
+  }
+}
+function doRenderTab() {
+  if (currentTab === 'checkin') renderCheckin();
+  else if (currentTab === 'exam') renderExam();
+  else renderScore();
+  updateBadge();
+}
+
+function updateBadge() {
+  var count = 0;
+  for (var i=0;i<appData.users.length;i++) {
+    var st = getUserState(appData.users[i]);
+    for (var wi=0;wi<PLAN.length;wi++) {
+      for (var j=0;j<PLAN[wi].items.length;j++) {
+        if (st[PLAN[wi].items[j].name]==='pending') count++;
+      }
+    }
+  }
+  var badge = document.getElementById('examBadge');
+  if (count > 0) { badge.textContent = count; badge.classList.add('show'); }
+  else { badge.classList.remove('show'); }
+  document.getElementById('topbarSub').textContent = appData.users.length + ' 位学员';
+}
+
+// ===== Checkin Tab =====
+function renderCheckin() {
+  var c = document.getElementById('tabContent');
+  // Overview
+  var totalCheckin=0, totalTime=0, totalDays=0;
+  for (var i=0;i<appData.users.length;i++) {
+    var st = getUserState(appData.users[i]);
+    for (var wi=0;wi<PLAN.length;wi++) {
+      for (var di=0;di<5;di++) {
+        totalDays++;
+        var dk = dayKey(wi,di);
+        if (st['__checkin_'+dk]) totalCheckin++;
+        totalTime += (st['__time_'+dk]||0);
+      }
+    }
+  }
+  var h = '<div class="overview"><div class="overview-title">📊 全店总览</div><div class="stat-cards">' +
+    '<div class="stat-card"><div class="num">'+appData.users.length+'</div><div class="label">学员人数</div></div>' +
+    '<div class="stat-card"><div class="num g">'+totalCheckin+'</div><div class="label">总打卡次数</div></div>' +
+    '<div class="stat-card"><div class="num o">'+fmtTime(totalTime)+'</div><div class="label">总练习时长</div></div>' +
+    '<div class="stat-card"><div class="num">'+totalDays+'</div><div class="label">总天数</div></div></div></div>';
+
+  // Per user
+  for (var i=0;i<appData.users.length;i++) {
+    var name = appData.users[i];
+    var st = getUserState(name);
+    var uCheckin=0, uTime=0;
+    for (var wi=0;wi<PLAN.length;wi++) {
+      for (var di=0;di<5;di++) {
+        var dk = dayKey(wi,di);
+        if (st['__checkin_'+dk]) uCheckin++;
+        uTime += (st['__time_'+dk]||0);
+      }
+    }
+    h += '<div class="user-section"><div class="user-section-head" onclick="toggleUserSection(this)">' +
+      '<div class="user-section-left"><div class="user-avatar">'+firstChar(name)+'</div><div>' +
+      '<div class="user-section-name">'+name+'</div><div class="user-section-stat">打卡 <b>'+uCheckin+'</b>/65 · 时长 '+fmtTime(uTime)+'</div></div></div>' +
+      '<span style="color:#ccc">▸</span></div><div class="user-section-body">';
+
+    for (var wi=0;wi<PLAN.length;wi++) {
+      for (var di=0;di<5;di++) {
+        var dk = dayKey(wi,di);
+        var dl = DAY_LABELS[di];
+        var daySec = st['__time_'+dk]||0;
+        var checkedIn = st['__checkin_'+dk]||false;
+        var evType = st['__evtype_'+dk]||'';
+        h += '<div class="day-row"><div class="left"><span class="tag '+dl.tag+'">'+dl.label+'</span>' +
+          '<span class="time">'+fmtDate(PLAN[wi].mon,di)+' · '+fmtTime(daySec)+'</span></div><div class="right">';
+        if (dl.tag !== 'learn') {
+          h += '<span class="badge-sm '+(checkedIn?'yes':'no')+'">'+(checkedIn?'已打卡':'未打卡')+'</span>';
+          if (checkedIn && evType) {
+            h += '<span class="view-ev-btn" onclick="viewEvidence(\''+esc(name)+'\',\''+dk+'\')">查看凭证</span>';
+          }
+        }
+        h += '</div></div>';
+      }
+    }
+    h += '</div></div>';
+  }
+
+  if (appData.users.length === 0) {
+    h += '<div class="empty-tip">暂无学员数据<br>学员在学员端添加名字后即可在此查看</div>';
+  }
+  c.innerHTML = h;
+}
+
+function toggleUserSection(el) {
+  var body = el.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+
+// ===== Exam Tab =====
+function renderExam() {
+  var c = document.getElementById('tabContent');
+  var h = '';
+  var hasPending = false;
+
+  // Pending first
+  for (var i=0;i<appData.users.length;i++) {
+    var name = appData.users[i];
+    var st = getUserState(name);
+    for (var wi=0;wi<PLAN.length;wi++) {
+      for (var j=0;j<PLAN[wi].items.length;j++) {
+        var it = PLAN[wi].items[j];
+        if (st[it.name]==='pending') {
+          hasPending = true;
+          var color = CAT_COLORS[it.cat]||'#999';
+          var submitTime = st['__submit_time_'+it.name]||'';
+          h += '<div class="exam-item"><span class="cat-dot" style="background:'+color+'"></span>' +
+            '<span class="name">'+it.name+'</span><span class="user">'+name+'</span>' +
+            '<span class="status pending">⏳ 待审批</span>' +
+            '<button class="action-btn pass-btn" onclick="approveExam(\''+esc(name)+'\',\''+esc(it.name)+'\')">通过</button>' +
+            '<button class="action-btn fail-btn" onclick="rejectExam(\''+esc(name)+'\',\''+esc(it.name)+'\')">驳回</button></div>';
+        }
+      }
+    }
+  }
+
+  if (!hasPending) {
+    h += '<div class="empty-tip">🎉 暂无待审批考核</div>';
+  }
+
+  c.innerHTML = h;
+}
+
+function approveExam(name, key) {
+  var st = getUserState(name);
+  st[key] = 'pass';
+  setUserState(name, st);
+  renderTab();
+}
+function rejectExam(name, key) {
+  document.getElementById('cfmTitle').textContent = '驳回考核';
+  document.getElementById('cfmMsg').textContent = '确认驳回 '+name+' 的「'+key+'」考核？';
+  document.getElementById('cfmBtns').innerHTML = '<button class="mbtn mbtn-cancel" onclick="closeCfm()">取消</button>' +
+    '<button class="mbtn" style="background:#ef4444;color:#fff" onclick="doReject(\''+esc(name)+'\',\''+esc(key)+'\')">确认驳回</button>';
+  document.getElementById('confirmModal').classList.add('show');
+}
+function doReject(name, key) {
+  var st = getUserState(name);
+  st[key] = 'fail';
+  setUserState(name, st);
+  closeCfm();
+  renderTab();
+}
+function closeCfm() { document.getElementById('confirmModal').classList.remove('show'); }
+
+// ===== Score Tab =====
+function renderScore() {
+  var c = document.getElementById('tabContent');
+  var h = '<div class="overview"><div class="overview-title">📋 27项技术考核成绩</div></div>';
+
+  // Collect all items
+  var allItems = [];
+  for (var wi=0;wi<PLAN.length;wi++) {
+    for (var j=0;j<PLAN[wi].items.length;j++) {
+      allItems.push(PLAN[wi].items[j]);
+    }
+  }
+
+  // Header row
+  h += '<div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)">';
+  h += '<div style="display:flex;padding:12px 16px;border-bottom:1px solid #eee;font-size:12px;font-weight:700;color:#888">' +
+    '<span style="flex:1">项目</span>';
+  for (var i=0;i<appData.users.length;i++) {
+    h += '<span style="width:50px;text-align:center">'+firstChar(appData.users[i])+'</span>';
+  }
+  h += '</div>';
+
+  for (var k=0;k<allItems.length;k++) {
+    var it = allItems[k];
+    var color = CAT_COLORS[it.cat]||'#999';
+    h += '<div style="display:flex;padding:10px 16px;border-bottom:1px solid #f5f5f5;align-items:center;font-size:12px">' +
+      '<span style="flex:1;display:flex;align-items:center;gap:6px"><span class="cat-dot" style="background:'+color+';width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0"></span>'+it.name+'</span>';
+    for (var i=0;i<appData.users.length;i++) {
+      var st = getUserState(appData.users[i]);
+      var s = st[it.name];
+      var icon = '—', cls = '';
+      if (s==='pass') { icon='✅'; cls='color:#16a34a'; }
+      else if (s==='pending') { icon='⏳'; cls='color:#f59e0b'; }
+      else if (s==='fail') { icon='❌'; cls='color:#ef4444'; }
+      h += '<span style="width:50px;text-align:center;'+cls+'">'+icon+'</span>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+
+  if (appData.users.length === 0) {
+    h += '<div class="empty-tip">暂无学员数据</div>';
+  }
+  c.innerHTML = h;
+}
+
+// ===== View Evidence =====
+function viewEvidence(name, dk) {
+  var st = getUserState(name);
+  var evUrl = st['__evurl_'+dk];
+  if (evUrl) {
+    var type = st['__evtype_'+dk] || 'image';
+    var content = document.getElementById('viewContent');
+    var ek = evKey(name, dk);
+    var evDataKey = '__evdata_' + ek;
+    if (appData._evidence && appData._evidence[evDataKey]) {
+      var b64 = appData._evidence[evDataKey];
+      var dataUrl = (type === 'image' ? 'data:image/jpeg;base64,' : 'data:video/mp4;base64,') + b64;
+      if (type === 'image') {
+        content.innerHTML = '<img src="'+dataUrl+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+      } else {
+        content.innerHTML = '<video src="'+dataUrl+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+      }
+    } else if (evUrl.startsWith('http')) {
+      if (type === 'image') {
+        content.innerHTML = '<img src="'+evUrl+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+      } else {
+        content.innerHTML = '<video src="'+evUrl+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+      }
+    } else {
+      content.innerHTML = '<p style="color:#999;padding:20px">凭证加载中，请先同步数据</p>';
+    }
+    document.getElementById('viewModal').classList.add('show');
+    return;
+  }
+  var ek = evKey(name, dk);
+  getEvidence(ek).then(function(ev) {
+    if (!ev) { alert('凭证未找到'); return; }
+    var url = URL.createObjectURL(ev.blob);
+    var content = document.getElementById('viewContent');
+    if (ev.type==='image') content.innerHTML = '<img src="'+url+'" style="max-width:100%;max-height:65vh;border-radius:8px">';
+    else content.innerHTML = '<video src="'+url+'" controls style="max-width:100%;max-height:65vh;border-radius:8px"></video>';
+    document.getElementById('viewModal').classList.add('show');
+  }).catch(function(){ alert('读取凭证失败'); });
+}
+function closeViewModal() { document.getElementById('viewModal').classList.remove('show'); }
+
+// ===== Init =====
+function init() {
+  try {
+    load();
+    openDB().then(function() {
+      showScreen('screenLogin');
+    }).catch(function() {
+      showScreen('screenLogin');
+    });
+  } catch(e) {
+    document.getElementById('loadingScreen').innerHTML = '<div style="text-align:center;padding:40px 20px">' +
+      '<h2 style="color:#dc2626">⚠️ 加载失败</h2><p style="margin-top:10px;color:#888">'+e.message+'</p></div>';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
