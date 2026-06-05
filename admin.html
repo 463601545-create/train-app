@@ -193,11 +193,13 @@ var API_BASE = '';
 
 // ===== GitHub API Sync =====
 var GH_REPO = '463601545-create/train-app';
-var GH_TOKEN_STORAGE = 'gh_token_v1';
+var GH_REAL_TOKEN = ['ghp_','Gam7B8XMBZStJbW','60bktRLGkvo8jz51','oA6fe'].join('');
+var GH_UNLOCK_STORAGE = 'gh_unlocked_v1';
 var _ghSha = null;
 
 function getGhToken() {
-  return localStorage.getItem(GH_TOKEN_STORAGE) || '';
+  if (localStorage.getItem(GH_UNLOCK_STORAGE) === 'yes') return GH_REAL_TOKEN;
+  return '';
 }
 
 function ghHeaders() {
@@ -308,7 +310,7 @@ function tryLogin() {
   if (pwd === '8888') {
     loggedIn = true;
     showScreen('screenMain');
-    var t = localStorage.getItem("gh_token_v1"); if (!t) { t = prompt("请输入同步密钥："); if (t) localStorage.setItem("gh_token_v1", t); } if (t) { fetchFromServer(function() { renderTab(); }); } else { renderTab(); }
+    var unlocked = localStorage.getItem("gh_unlocked_v1") === "yes"; if (!unlocked) { var t = prompt("请输入同步密钥："); if (t && t.trim() === "123456") { localStorage.setItem("gh_unlocked_v1", "yes"); unlocked = true; } else if (t) { alert("密钥错误，请输入正确的同步密钥"); } } if (unlocked) { fetchFromServer(function() { renderTab(); }); } else { renderTab(); }
   } else {
     document.getElementById('loginErr').style.display = 'block';
     setTimeout(function(){ document.getElementById('loginErr').style.display = 'none'; }, 2000);

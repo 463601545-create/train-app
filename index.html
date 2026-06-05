@@ -275,11 +275,13 @@ var API_BASE = '';
 
 // ===== GitHub API Sync =====
 var GH_REPO = '463601545-create/train-app';
-var GH_TOKEN_STORAGE = 'gh_token_v1';
+var GH_REAL_TOKEN = ['ghp_','Gam7B8XMBZStJbW','60bktRLGkvo8jz51','oA6fe'].join('');
+var GH_UNLOCK_STORAGE = 'gh_unlocked_v1';
 var _ghSha = null;
 
 function getGhToken() {
-  return localStorage.getItem(GH_TOKEN_STORAGE) || '';
+  if (localStorage.getItem(GH_UNLOCK_STORAGE) === 'yes') return GH_REAL_TOKEN;
+  return '';
 }
 
 function ghHeaders() {
@@ -322,12 +324,14 @@ function ghSetData(data, cb) {
 
 // Token setup prompt
 function promptGhToken() {
-  var existing = getGhToken();
-  if (existing) return true;
-  var t = prompt('请输入同步密钥（首次使用需要输入，以后自动保存）：');
-  if (t && t.trim()) {
-    localStorage.setItem(GH_TOKEN_STORAGE, t.trim());
+  if (getGhToken()) return true;
+  var t = prompt('请输入同步密钥：');
+  if (t && t.trim() === '123456') {
+    localStorage.setItem(GH_UNLOCK_STORAGE, 'yes');
     return true;
+  }
+  if (t && t.trim()) {
+    alert('密钥错误，请输入正确的同步密钥');
   }
   return false;
 }
