@@ -272,6 +272,8 @@ var appData = {users:[],records:{}};
 var currentUser = null;
 var runningDay = null;
 var clockInterval = null;
+var clockStartTs = 0;   // 开始计时的时间戳
+var clockBaseSec = 0;   // 开始时已有的秒数
 var clockSec = 0;
 var db = null;
 var API_BASE = '';
@@ -765,9 +767,12 @@ function startClock(dk) {
   if (runningDay) stopClock(runningDay);
   runningDay = dk;
   var st = getUserState(currentUser);
-  clockSec = st['__time_'+dk] || 0;
+  clockBaseSec = st['__time_'+dk] || 0;
+  clockStartTs = Date.now();
+  clockSec = clockBaseSec;
   clockInterval = setInterval(function() {
-    clockSec++;
+    // 用时间戳差值计算，息屏也不影响
+    clockSec = clockBaseSec + Math.floor((Date.now() - clockStartTs) / 1000);
     var st2 = getUserState(currentUser);
     st2['__time_'+runningDay] = clockSec;
     if (clockSec % 10 === 0) setUserState(currentUser, st2);
@@ -788,6 +793,10 @@ function startClock(dk) {
 
 function stopClock(dk) {
   if (clockInterval) { clearInterval(clockInterval); clockInterval = null; }
+  // 用时间戳算最终秒数
+  if (runningDay === dk) {
+    clockSec = clockBaseSec + Math.floor((Date.now() - clockStartTs) / 1000);
+  }
   var st = getUserState(currentUser);
   st['__time_'+dk] = clockSec;
   setUserState(currentUser, st);
