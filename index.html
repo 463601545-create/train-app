@@ -121,6 +121,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:16px;padding:24px;max-width:340px;width:90%;text-align:center;animation:popIn .25s}
 @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes toastIn{from{transform:translateX(-50%) translateY(-20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
 .modal h3{font-size:17px;margin-bottom:8px}
 .modal p{font-size:13px;color:#888;margin-bottom:18px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -393,7 +394,7 @@ function syncPull(callback) {
           }
         }
       }
-      try { localStorage.setItem('train3m_v2', JSON.stringify(appData)); } catch(e) {}
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(appData)); } catch(e) {}
     }
     if (callback) callback();
   });
@@ -417,9 +418,15 @@ function uploadEvidence(evidenceId, file, fileType, callback) {
 }
 
 // ===== Persistence =====
+var STORE_KEY = 'train3m_v2';
+var STORE_VER = 'v2_20260608';
 function load() {
   try {
-    var s = localStorage.getItem('train3m_v2');
+    if (localStorage.getItem(STORE_KEY + '_ver') !== STORE_VER) {
+      localStorage.removeItem(STORE_KEY);
+      localStorage.setItem(STORE_KEY + '_ver', STORE_VER);
+    }
+    var s = localStorage.getItem(STORE_KEY);
     if (s) appData = JSON.parse(s);
   } catch(e) {
     console.warn('load error:', e);
@@ -427,7 +434,7 @@ function load() {
 }
 function save() {
   try {
-    localStorage.setItem('train3m_v2', JSON.stringify(appData));
+    localStorage.setItem(STORE_KEY, JSON.stringify(appData));
   } catch(e) {
     console.warn('save error:', e);
   }
@@ -877,12 +884,21 @@ function compressImage(file, maxW, quality) {
   });
 }
 
+function showToast(msg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease';
+  document.body.appendChild(t);
+  setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(function() { t.remove(); }, 300); }, 2000);
+}
+
 function confirmCheckin() {
   if (!pendingCheckinDk || !pendingFile) { closePreview(); return; }
   var dk = pendingCheckinDk;
   var ek = evKey(currentUser, dk);
   var fileType = pendingFileType;
-  // 先标记打卡成功（不阻塞在照片上传上）
+  var savedFile = pendingFile;  // 先存文件引用，closePreview会清空pendingFile
+  // 先标记打卡成功
   var st = getUserState(currentUser);
   st['__checkin_'+dk] = true;
   st['__evtype_'+dk] = fileType;
@@ -890,9 +906,9 @@ function confirmCheckin() {
   setUserState(currentUser, st);
   closePreview();
   renderStudent();
-  // 后台压缩并上传凭证
-  var rawFile = pendingFile;
-  compressImage(rawFile, 1200, 0.6).then(function(compFile) {
+  showToast('✅ 打卡成功！');
+  // 后台压缩并上传凭证到GitHub
+  compressImage(savedFile, 1200, 0.6).then(function(compFile) {
     if (getGhToken()) {
       var reader = new FileReader();
       reader.onload = function() {
