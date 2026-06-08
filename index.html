@@ -860,31 +860,57 @@ function closePreview() {
   pendingFileType = null;
 }
 
+function compressImage(file, maxW, quality) {
+  return new Promise(function(resolve) {
+    if (!file.type.startsWith('image/')) { resolve(file); return; }
+    var img = new Image();
+    img.onload = function() {
+      if (img.width <= maxW && file.size <= 300000) { resolve(file); return; }
+      var scale = maxW / img.width;
+      var c = document.createElement('canvas');
+      c.width = maxW; c.height = Math.round(img.height * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(function(blob) { resolve(blob || file); }, 'image/jpeg', quality);
+    };
+    img.onerror = function() { resolve(file); };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 function confirmCheckin() {
   if (!pendingCheckinDk || !pendingFile) { closePreview(); return; }
   var dk = pendingCheckinDk;
   var ek = evKey(currentUser, dk);
-  var doFinish = function(evUrl) {
-    var st = getUserState(currentUser);
-    st['__checkin_'+dk] = true;
-    st['__evtype_'+dk] = pendingFileType;
-    st['__checkin_time_'+dk] = new Date().toLocaleString('zh-CN');
-    if (evUrl) st['__evurl_'+dk] = evUrl;
-    setUserState(currentUser, st);
-    closePreview();
-    renderStudent();
-  };
-  if (API_BASE) {
-    uploadEvidence(ek, pendingFile, pendingFileType, function(url) {
-      if (url) {
-        doFinish(url);
-      } else {
-        saveEvidence(ek, pendingFile, pendingFileType).then(function() { doFinish(null); }).catch(function() { alert('保存凭证失败'); });
-      }
-    });
-  } else {
-    saveEvidence(ek, pendingFile, pendingFileType).then(function() { doFinish(null); }).catch(function(err) { alert('保存凭证失败'); });
-  }
+  var fileType = pendingFileType;
+  // 先标记打卡成功（不阻塞在照片上传上）
+  var st = getUserState(currentUser);
+  st['__checkin_'+dk] = true;
+  st['__evtype_'+dk] = fileType;
+  st['__checkin_time_'+dk] = new Date().toLocaleString('zh-CN');
+  setUserState(currentUser, st);
+  closePreview();
+  renderStudent();
+  // 后台压缩并上传凭证
+  var rawFile = pendingFile;
+  compressImage(rawFile, 1200, 0.6).then(function(compFile) {
+    if (getGhToken()) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var b64 = reader.result.split(',')[1];
+        ghGetData(function(data) {
+          if (!data._evidence) data._evidence = {};
+          data._evidence['__evdata_' + ek] = b64;
+          data._evidence['__evtype_' + ek] = fileType || 'image';
+          ghSetData(data, function() {
+            var st2 = getUserState(currentUser);
+            st2['__evurl_'+dk] = '/api/evidence-view/' + ek;
+            setUserState(currentUser, st2);
+          });
+        });
+      };
+      reader.readAsDataURL(compFile);
+    }
+  });
 }
 
 // ===== View Evidence =====
