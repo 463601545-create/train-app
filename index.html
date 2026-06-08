@@ -630,9 +630,7 @@ function renderStudent() {
 
       h += '<div class="day-card"><div class="day-head"><div class="day-left">' +
         '<span class="day-tag '+dl.tag+'">'+dl.label+'</span><span class="day-date">'+dateStr+'</span></div><div class="day-right">';
-      if (dl.tag !== 'learn') {
         h += '<span class="checkin-badge '+(checkedIn?'yes':'no')+'">'+(checkedIn?'✅ 已打卡':'未打卡')+'</span>';
-      }
       h += '</div></div>';
 
       // Project list
@@ -674,12 +672,10 @@ function renderStudent() {
       } else {
         h += '<button class="tbtn tbtn-start" onclick="startClock(\''+dk+'\')">计时</button>';
       }
-      if (dl.tag !== 'learn') {
-        if (checkedIn) {
-          h += '<button class="tbtn tbtn-view" onclick="viewEvidence(\''+dk+'\')">查看凭证</button>';
-        } else {
-          h += '<button class="tbtn tbtn-checkin" '+(reached?'':'disabled')+' onclick="openCheckinModal(\''+dk+'\')">打卡</button>';
-        }
+      if (checkedIn) {
+        h += '<button class="tbtn tbtn-view" onclick="viewEvidence(\''+dk+'\')">查看凭证</button>';
+      } else {
+        h += '<button class="tbtn tbtn-checkin" '+(reached?'':'disabled')+' onclick="openCheckinModal(\''+dk+'\')">打卡</button>';
       }
       h += '</div></div>';
 
