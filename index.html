@@ -824,7 +824,6 @@ function openCheckinModal(dk) {
 }
 function closeCheckinModal() {
   document.getElementById('checkinModal').classList.remove('show');
-  pendingCheckinDk = null;
 }
 
 function triggerCamera(mode) {
@@ -865,6 +864,7 @@ function closePreview() {
   document.getElementById('previewModal').classList.remove('show');
   pendingFile = null;
   pendingFileType = null;
+  pendingCheckinDk = null;
 }
 
 function compressImage(file, maxW, quality) {
