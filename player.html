@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>热烫十步流程 · 讲课音频</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#fff;font-family:-apple-system,sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:0}
+.header{background:linear-gradient(135deg,#7c3aed,#4c1d95);padding:40px 24px 30px;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#a78bfa;border-radius:2px}
+.icon{font-size:56px;margin-bottom:12px}
+h1{font-size:21px;font-weight:700;margin-bottom:4px}
+.sub{font-size:13px;color:rgba(255,255,255,.7)}
+.body{flex:1;padding:36px 20px 140px;max-width:440px;margin:0 auto;width:100%}
+.section{margin-bottom:20px;animation:fadeIn .4s ease}
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.name{font-size:15px;font-weight:600}
+.section-text{font-size:13px;color:#bbb;line-height:1.8;padding-left:38px}
+.section.active .num{background:#16a34a;animation:pulse 1s infinite}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,12,41,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);padding:16px 20px 28px}
+.progress-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:12px;cursor:pointer}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:2px;transition:width .3s}
+.controls{display:flex;align-items:center;justify-content:center;gap:24px}
+.btn{width:48px;height:48px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:all .2s}
+.btn-play{width:56px;height:56px;background:linear-gradient(135deg,#7c3aed,#5b21b6);font-size:24px}
+.btn-play:active{transform:scale(.92)}
+.btn-sm{width:40px;height:40px;background:rgba(255,255,255,.1);font-size:16px}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.info{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-top:8px}
+.speed-badge{font-size:10px;background:#7c3aed;padding:2px 8px;border-radius:10px;margin-left:8px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,106,.4)}50%{box-shadow:0 0 0 8px rgba(22,163,106,0)}}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="icon">🎙️</div>
+<h1>热烫十步流程</h1>
+<div class="sub">资深导师实操教学</div>
+</div>
+<div class="body" id="sections"></div>
+<div class="bottom-bar">
+<div class="progress-bar" onclick="seekTo(event)"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="controls">
+<button class="btn btn-sm" onclick="prevSection()" id="prevBtn">⏮</button>
+<button class="btn btn-play" onclick="togglePlay()" id="playBtn">▶</button>
+<button class="btn btn-sm" onclick="nextSection()" id="nextBtn">⏭</button>
+<button class="btn btn-sm" onclick="changeSpeed()" id="speedBtn" style="font-size:12px;font-weight:700">1x</button>
+</div>
+<div class="info"><span id="curLabel">准备播放</span><span id="timeLabel">0:00</span></div>
+</div>
+
+<script>
+var SECTIONS = [
+  {n:'开场',t:'大家好，今天这节课，咱们把热烫的完整流程从头到尾捋一遍。不是照本宣科念理论，是你在店里真正上手时要走的十步。每一步都有关键点，走错一步后面全翻车。'},
+  {n:'① 发质诊断',t:'做烫发之前，第一件事不是拿杠子，是看头发。发质判断错了，后面配比、软化、加热全跟着错。怎么看？三个维度。第一，看粗细。粗硬发抗拒性强，软化慢；细软发容易软化，但也容易过。第二，看受损程度。健康发、轻度受损、中度受损、重度受损，每一级对应的药水配比都不一样。怎么判断？拉一根头发，有弹性能回弹是健康的；拉长回不去是受损；一拉就断是重度受损。第三，看发质类型。特别注意沙性发质，这种头发表面粗糙、水分流失快，不能直接上浓药水，必须先破冰锁水，否则蛋白直接流失，烫完毛躁炸毛。记住：诊断是所有操作的起点，诊断错，全盘错。'},
+  {n:'② 药水配比',t:'配比的核心逻辑就一句话：根据发质把1号剂稀释到安全浓度。粗硬健康发，原液或者10比1到10比3的稀释比。轻度受损，10比3到10比5。中度受损，10比5到10比10。重度受损，10比10到10比1000，对，你没听错，最极端的情况就是几乎全水。沙性发质必须先破冰锁水，用10比10的稀释液先上一遍，让头发重新吸饱水，然后再正式软化。还有一条铁律：稀释必须用纯水，严禁加护理、加蛋白。为什么？因为护理会在头发上形成一层膜，这层膜会阻隔药水渗透，导致假性软化，表面看软了，实际里面没软透，烫完一周就反弹。'},
+  {n:'③ 湿发软化',t:'软化是整个烫发流程里最关键的一步，没有之一。软化不到位，卷不持久；软化过度，头发焦了。操作要点。第一，必须湿发操作。头发在湿润状态下，毛鳞片打开，药水渗透更均匀。干发上药水，渗透不均匀，外面过里面没到。第二，分区涂抹。从后往前，从发根1厘米处开始往发尾涂，发根留1厘米是防止药水接触头皮。第三，均匀是关键。不要一堆一堆地抹，要一绺一绺地刷，确保每根头发都沾到药水。'},
+  {n:'④ 软化监测',t:'怎么判断软化到了？三种方法配合用。拉丝法：取一根头发，轻轻拉，能拉长到原长的1.5到2倍，松手能慢慢回弹，就是到位了。拉不动说明没到，拉断说明过了，回不去也说明过了。按压法：用手指按压头发，感觉软了、失去弹性了，就是软化到了。视觉法：头发颜色变浅、变透明感，说明皮质层的二硫键正在被打开。注意：软化宁可差一点也不要过。差一点可以补时间，过了就没救了。'},
+  {n:'⑤ 标准冲洗',t:'软化到位后，必须彻底冲洗干净。温水冲洗，不要用洗发水，清水冲3到5分钟，确保1号剂完全洗净。残余药水会继续反应，导致过度软化。冲洗完后用毛巾轻轻按压吸水，不要搓，搓会损伤已经软化的头发。这一步看着简单，但很多人冲不干净，后面加热的时候药水残留继续反应，就出问题了。'},
+  {n:'⑥ 卷杠手法',t:'卷杠是决定花型的一步。我们五种手法对应不同效果。平卷：最基础，适合发尾质感，注意不要做小杠，圈数不超3.5圈，否则发尾炸。半重叠：2.5圈以上，适合发中蓬松。全重叠：紧贴杠子卷，弹性最强。半拧转：出片状水波纹，光泽感好。全绕卷：复古羊毛卷效果。卷杠铁律：张力均匀，发片顺滑不拧，角度决定根部蓬松度，低角度根塌高角度根蓬。'},
+  {n:'⑦ 控水加热',t:'很多人忽略了这一步的细节，但加热参数直接决定烫后效果。核心原则。第一，20分钟起步，不管什么发质，加热时间不能少于20分钟。第二，连续恒温，不能间断，加热机开了就别关，温度波动会导致链键重组不均匀。第三，受损发阶梯升温，先用80度锁水，再升到90到100度定型，不要直接上高温，受损发直接高温会脱水焦掉。第四，温度红线110度，不管什么情况不超过110度，超过就是伤发。第五，加热完必须冷却8到10分钟才能拆杠，热着拆，链键还没稳定，卷会散。'},
+  {n:'⑧ 定型',t:'定型时间看发质。粗硬发12到15分钟。轻度受损10到12分钟。中重度受损8到10分钟。定型剂要涂透，每根杠子都要涂到，不能漏。定型时间不够，二硫键氧化不完全，卷不持久。'},
+  {n:'⑨ 烫后养护',t:'拆杠后不要马上洗发。等定型剂作用完再冲，温水冲洗，上弹力素和精油。弹力素和精油的比例，2比1。弹力素塑形，精油修护，两个混在一起用，效果最好。烫后48小时内：不扎、不压、不沾水、不高温。这48小时是链键最终稳定的时期，动了就白烫。'},
+  {n:'⑩ 造型落地',t:'最后一步，也是很多发型师忽略的一步，教客人回家怎么打理。冷风定根、温风塑形。吹风的时候，风嘴对着发根吹冷风让根部立起来，然后用温风顺着卷度带出花型。造型产品用弹力素加精油的混合物，手上搓开，从下往上抓，不要从上往下梳，梳了花就散了。'},
+  {n:'总结',t:'好，热烫十步走完了。再强调三件事。第一，湿发软化加纯水稀释，严禁加护理。第二，20分钟起步加热，连续恒温，阶梯升温。第三，沙性发质必须先破冰锁水。这三条是铁律，记住这三条，你烫发至少不会翻大车。烫发没有捷径，每一步都走扎实了，效果自然就出来了。好，今天的课就到这里，有问题随时来问。'}
+];
+
+var curIdx = 0, isPlaying = false, synth = window.speechSynthesis, utter = null;
+var speeds = [1, 1.25, 1.5, 0.75], speedIdx = 0;
+var startTime = 0, elapsed = 0;
+
+function renderSections() {
+  var h = '';
+  for (var i = 0; i < SECTIONS.length; i++) {
+    h += '<div class="section'+(i===curIdx?' active':'')+'" id="sec_'+i+'">' +
+      '<div class="section-title"><div class="num">'+(i===0?'💡':i===SECTIONS.length-1?'📝':i)+'</div>' +
+      '<div class="name">'+SECTIONS[i].n+'</div></div>' +
+      '<div class="section-text">'+SECTIONS[i].t+'</div></div>';
+  }
+  document.getElementById('sections').innerHTML = h;
+}
+
+function speak(idx) {
+  synth.cancel();
+  curIdx = idx;
+  renderSections();
+  var sec = document.getElementById('sec_'+idx);
+  if (sec) sec.scrollIntoView({behavior:'smooth',block:'center'});
+  utter = new SpeechSynthesisUtterance(SECTIONS[idx].t);
+  utter.lang = 'zh-CN';
+  utter.rate = speeds[speedIdx];
+  utter.pitch = 1;
+  // Try to pick a Chinese voice
+  var voices = synth.getVoices();
+  var zhVoice = voices.find(function(v){return v.lang.startsWith('zh') && v.localService;})
+    || voices.find(function(v){return v.lang.startsWith('zh');});
+  if (zhVoice) utter.voice = zhVoice;
+  utter.onend = function() {
+    if (curIdx < SECTIONS.length - 1) {
+      curIdx++;
+      startTime = Date.now();
+      speak(curIdx);
+    } else {
+      isPlaying = false;
+      updateUI();
+    }
+  };
+  utter.onerror = function() {
+    isPlaying = false;
+    updateUI();
+  };
+  startTime = Date.now();
+  synth.speak(utter);
+  isPlaying = true;
+  updateUI();
+}
+
+function togglePlay() {
+  if (isPlaying) {
+    synth.pause();
+    isPlaying = false;
+    elapsed += Date.now() - startTime;
+  } else {
+    if (synth.paused) {
+      synth.resume();
+    } else {
+      speak(curIdx);
+      return;
+    }
+    startTime = Date.now();
+    isPlaying = true;
+  }
+  updateUI();
+}
+
+function prevSection() { if (curIdx > 0) speak(curIdx - 1); }
+function nextSection() { if (curIdx < SECTIONS.length - 1) speak(curIdx + 1); }
+
+function changeSpeed() {
+  speedIdx = (speedIdx + 1) % speeds.length;
+  document.getElementById('speedBtn').textContent = speeds[speedIdx] + 'x';
+  if (isPlaying && utter) {
+    var wasPaused = synth.paused;
+    synth.cancel();
+    utter = new SpeechSynthesisUtterance(SECTIONS[curIdx].t);
+    utter.lang = 'zh-CN';
+    utter.rate = speeds[speedIdx];
+    utter.pitch = 1;
+    var voices = synth.getVoices();
+    var zhVoice = voices.find(function(v){return v.lang.startsWith('zh') && v.localService;})
+      || voices.find(function(v){return v.lang.startsWith('zh');});
+    if (zhVoice) utter.voice = zhVoice;
+    utter.onend = function() {
+      if (curIdx < SECTIONS.length - 1) { curIdx++; speak(curIdx); }
+      else { isPlaying = false; updateUI(); }
+    };
+    synth.speak(utter);
+  }
+}
+
+function updateUI() {
+  document.getElementById('playBtn').textContent = isPlaying ? '⏸' : '▶';
+  document.getElementById('curLabel').textContent = isPlaying ? '正在播放：' + SECTIONS[curIdx].n : '已暂停';
+  document.getElementById('progressFill').style.width = ((curIdx + 1) / SECTIONS.length * 100) + '%';
+  document.getElementById('prevBtn').disabled = curIdx <= 0;
+  document.getElementById('nextBtn').disabled = curIdx >= SECTIONS.length - 1;
+}
+
+function seekTo(e) {
+  var rect = e.currentTarget.getBoundingClientRect();
+  var pct = (e.clientX - rect.left) / rect.width;
+  var idx = Math.floor(pct * SECTIONS.length);
+  idx = Math.max(0, Math.min(SECTIONS.length - 1, idx));
+  speak(idx);
+}
+
+// Timer
+setInterval(function() {
+  if (isPlaying) {
+    var total = elapsed + (Date.now() - startTime);
+    var m = Math.floor(total / 60000);
+    var s = Math.floor((total % 60000) / 1000);
+    document.getElementById('timeLabel').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  }
+}, 1000);
+
+// Load voices
+synth.onvoiceschanged = function() { synth.getVoices(); };
+
+renderSections();
+updateUI();
+</script>
+</body>
+</html>
