@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>烫发知识重点·讲课音频</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.container{max-width:400px;width:100%;text-align:center}
+.icon{font-size:64px;margin-bottom:20px}
+h1{font-size:22px;font-weight:800;margin-bottom:6px}
+.sub{font-size:13px;color:#aaa;margin-bottom:30px}
+.player{background:rgba(255,255,255,.08);border-radius:20px;padding:30px 24px;backdrop-filter:blur(10px)}
+.progress-wrap{width:100%;height:6px;background:rgba(255,255,255,.15);border-radius:3px;margin:20px 0 10px;cursor:pointer}
+.progress-bar{height:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:3px;width:0%;transition:width .3s}
+.time-row{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:20px}
+.btn-row{display:flex;align-items:center;justify-content:center;gap:20px}
+.play-btn{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,.4)}
+.play-btn:active{transform:scale(.95)}
+.side-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;cursor:pointer}
+.side-btn:active{background:rgba(255,255,255,.2)}
+.speed-btn{margin-top:16px;padding:6px 16px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;cursor:pointer}
+.speed-btn:active{background:rgba(255,255,255,.2)}
+.status{margin-top:20px;font-size:13px;color:#aaa;min-height:20px}
+.chapters{margin-top:24px;text-align:left}
+.chapters h3{font-size:14px;color:#aaa;margin-bottom:10px;font-weight:600}
+.ch-item{padding:10px 14px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:6px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.ch-item:active{background:rgba(255,255,255,.1)}
+.ch-time{font-size:11px;color:#888}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon">💈</div>
+  <h1>烫发培训·知识重点</h1>
+  <div class="sub">热烫流程 / 冷烫卷法 / 特殊烫法</div>
+  <div class="player">
+    <div class="progress-wrap" id="progressWrap" onclick="seekTo(event)">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="time-row">
+      <span id="curTime">0:00</span>
+      <span id="totalTime">7:58</span>
+    </div>
+    <div class="btn-row">
+      <button class="side-btn" onclick="skip(-10)">⏪</button>
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="side-btn" onclick="skip(10)">⏩</button>
+    </div>
+    <button class="speed-btn" id="speedBtn" onclick="toggleSpeed()">1x 速度</button>
+    <div class="status" id="status">点击播放开始听课</div>
+  </div>
+  <div class="chapters">
+    <h3>📖 章节目录</h3>
+    <div class="ch-item" onclick="jumpTo(0)"><span>开场介绍</span><span class="ch-time">0:00</span></div>
+    <div class="ch-item" onclick="jumpTo(27)"><span>热烫十步流程</span><span class="ch-time">0:27</span></div>
+    <div class="ch-item" onclick="jumpTo(226)"><span>烘干卷发要点</span><span class="ch-time">3:46</span></div>
+    <div class="ch-item" onclick="jumpTo(260)"><span>冷烫四种卷法</span><span class="ch-time">4:20</span></div>
+    <div class="ch-item" onclick="jumpTo(337)"><span>摩根烫/钢夹烫/锡纸烫</span><span class="ch-time">5:37</span></div>
+    <div class="ch-item" onclick="jumpTo(418)"><span>三条铁律总结</span><span class="ch-time">6:58</span></div>
+  </div>
+</div>
+<script>
+var script = `课程开篇，今天这节课，把3个月成长计划里所有烫发相关的知识重点一次讲透。涵盖热烫完整流程、烘干卷发、冷烫四种卷法、以及摩根烫、钢夹烫、锡纸烫三种特殊烫法。每个项目只讲最容易翻车的关键点，记住这些，实操不踩坑。
+
+第一部分，热烫完整流程。热烫是烫发体系里技术含量最高的，十步走，一步都不能错。
+
+第一步，发质诊断。看粗细、看受损、看发质类型。粗硬发抗拒软化慢，细软发容易过。拉一根头发，有弹性能回弹是健康的，拉长回不去是受损，一拉就断是重度受损。沙性发质必须先破冰锁水，不能直接上浓药水。
+
+第二步，药水配比。根据发质稀释1号剂。粗硬健康发原液或微稀释，轻度受损10比3到10比5，中度受损10比5到10比10，重度受损最高可以稀释到10比1000。铁律：稀释只能用纯水，严禁加护理加蛋白，护理会在头发上成膜导致假性软化。
+
+第三步，湿发软化。必须湿发操作，毛鳞片打开药水渗透才均匀。从后往前、从发根1厘米处开始往发尾涂，发根留1厘米防接触头皮。一绺一绺刷，确保每根头发都沾到药水。
+
+第四步，软化监测。拉丝法、按压法、视觉法三法配合。拉到原长1.5到2倍能慢慢回弹就是到位。宁可差一点也别过了，差了能补时间，过了没救。
+
+第五步，标准冲洗。温水冲3到5分钟，不用洗发水，确保1号剂完全洗净。残余药水会继续反应导致过度软化。毛巾按压吸水不要搓。
+
+第六步，卷杠手法。平卷适合发尾质感，圈数不超3.5圈；半重叠2.5圈以上适合发中蓬松；全重叠弹性最强；半拧转出片状水波纹；全绕卷复古羊毛卷。铁律：张力均匀、发片顺滑不拧、低角度根塌高角度根蓬。
+
+第七步，控水加热。20分钟起步不能少，连续恒温不能断，受损发阶梯升温先80度锁水再升到90到100度，温度红线110度。加热完必须冷却8到10分钟再拆杠。
+
+第八步，定型。粗硬发12到15分钟，轻度受损10到12分钟，中重度受损8到10分钟。定型剂要涂透每根杠子。时间不够二硫键氧化不完全卷不持久。
+
+第九步，烫后养护。弹力素和精油2比1混合使用。烫后48小时不扎不压不沾水不高温，这48小时是链键最终稳定期。
+
+第十步，造型落地。教客人回家打理。冷风定根温风塑形，弹力素加精油混合物从下往上抓不要从上往下梳。
+
+热烫三条铁律再强调：第一，湿发软化加纯水稀释，严禁加护理；第二，20分钟起步加热，连续恒温，阶梯升温；第三，沙性发质必须先破冰锁水。
+
+第二部分，烘干卷发。烘干卷发看着简单，但三个重点踩不准卷度全散。第一，必须用烘发机，不能用吹风机直吹，直吹会打散卷度。第二，温度80到90度，时间15到20分钟，不要图快加高温，高温会让卷度变死不自然。第三，烘干前先上弹力素再烘，给卷度一个支撑力，烘完卷度更持久。烘完后冷却5分钟再拆杠，热着拆链键还没稳定卷会散。
+
+第三部分，冷烫卷发。冷烫和热烫最大的区别，不需要加热，靠药水反应完成二硫键的断裂和重组。但操作精度要求更高，因为没有加热补。
+
+平卷，最基础的冷烫卷法。发片平铺均匀卷绕，张力适中。重点：每圈之间要紧密贴合，有缝隙就是空心卷，烫出来花型散。
+
+竖卷，发片竖着分区，垂直头皮方向卷杠。出来纵向波浪感。重点：分区要干净，竖卷分区分不清卷出来方向乱。
+
+平缠绕，发片平铺在杠子上像缠绷带一样缠绕，花型紧凑弹性强。重点：发片宽度不能超过杠子长度，超了会堆叠，堆叠处花型不规则。
+
+半扭转，每绕半圈扭转一下，出来带纹理的螺旋感，比纯平卷多一层质感。重点：扭转幅度要一致，不一致花型粗细不均。
+
+冷烫铁律：药水不能接触头皮，发根留1厘米；软化检测比热烫更频繁，因为冷烫没有加热加速反应，软化速度不均匀必须时刻关注。
+
+第四部分，三种特殊烫法。
+
+摩根烫，只烫发根，让发根蓬松立起来。用专用摩根杠贴着头皮卷发根1到2厘米。关键两条：第一，杠子必须贴紧头皮，留缝效果打折；第二，药水只涂发根区域，千万别涂到发中。
+
+钢夹烫，用钢夹固定发片再上药水，出来硬朗的线条纹理感。关键两条：第一，钢夹夹住后发片不能移动，移动了纹理方向就偏；第二，药水要浸透夹住的区域，没浸透的地方出不来纹理。
+
+锡纸烫，发片拧成绳状后用锡纸包裹，上药水加热，出来蓬松的毛躁纹理感，适合男士短发。关键三条：第一，拧绳力度要均匀，松了没纹理紧了伤发；第二，锡纸包裹要密封，药水漏出来会烧伤头皮；第三，加热温度不要超过100度，锡纸导热快温度高了容易过。
+
+最后总结。全部烫发知识重点讲完了。再强调三条贯穿所有烫发操作的铁律。
+
+第一，发质判断是起点。诊断错，配比错，软化错，后面全翻车。
+
+第二，温度和时间有红线。热烫加热不低于20分钟、不超过110度，冷烫软化比热烫更频繁检测，烘干不超过90度，锡纸烫不超过100度。越线就是伤发。
+
+第三，操作顺序不能乱。药水从后往前涂、加热完冷却再拆杠、定型剂涂透每根杠。这些顺序是反应原理决定的，乱来就不均匀。
+
+记住这三条，加上每个项目的重点，烫发实操你不会翻大车。加油！`;
+
+var totalDuration = 478; // seconds (7:58)
+var utterance = null;
+var isPlaying = false;
+var startTime = 0;
+var pausedAt = 0;
+var currentSpeed = 1;
+var speeds = [0.75, 1, 1.25, 1.5, 2];
+var speedIdx = 1;
+var timerInterval = null;
+
+function togglePlay() {
+  if (!('speechSynthesis' in window)) {
+    document.getElementById('status').textContent = '您的浏览器不支持语音功能';
+    return;
+  }
+  if (isPlaying) {
+    pause();
+  } else {
+    play();
+  }
+}
+
+function play() {
+  if (pausedAt > 0) {
+    speechSynthesis.resume();
+    isPlaying = true;
+    document.getElementById('playBtn').textContent = '⏸';
+    document.getElementById('status').textContent = '正在播放...';
+    startTimer();
+    return;
+  }
+  speechSynthesis.cancel();
+  utterance = new SpeechSynthesisUtterance(script);
+  utterance.lang = 'zh-CN';
+  utterance.rate = currentSpeed;
+  utterance.pitch = 1;
+
+  var voices = speechSynthesis.getVoices();
+  var zhVoice = voices.find(function(v) { return v.lang.startsWith('zh') && v.localService; }) 
+    || voices.find(function(v) { return v.lang.startsWith('zh'); });
+  if (zhVoice) utterance.voice = zhVoice;
+
+  utterance.onend = function() {
+    isPlaying = false;
+    pausedAt = 0;
+    document.getElementById('playBtn').textContent = '▶';
+    document.getElementById('status').textContent = '播放完毕';
+    document.getElementById('progressBar').style.width = '100%';
+    clearInterval(timerInterval);
+  };
+  utterance.onerror = function() {
+    isPlaying = false;
+    document.getElementById('status').textContent = '播放出错，请重试';
+    clearInterval(timerInterval);
+  };
+
+  speechSynthesis.speak(utterance);
+  isPlaying = true;
+  startTime = Date.now();
+  pausedAt = 0;
+  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('status').textContent = '正在播放...';
+  startTimer();
+}
+
+function pause() {
+  speechSynthesis.pause();
+  isPlaying = false;
+  pausedAt = 1;
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('status').textContent = '已暂停';
+  clearInterval(timerInterval);
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(function() {
+    var elapsed = (Date.now() - startTime) / 1000 * currentSpeed;
+    var pct = Math.min(elapsed / totalDuration * 100, 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('curTime').textContent = fmtT(elapsed);
+  }, 500);
+}
+
+function fmtT(s) {
+  var m = Math.floor(s/60), sec = Math.floor(s%60);
+  return m + ':' + (sec<10?'0':'') + sec;
+}
+
+function skip(sec) {
+  // Web Speech API doesn't support seeking, just adjust display
+  document.getElementById('status').textContent = '语音不支持快进快退，可点击章节跳转';
+}
+
+function jumpTo(sec) {
+  speechSynthesis.cancel();
+  isPlaying = false;
+  pausedAt = 0;
+  clearInterval(timerInterval);
+  // Restart from beginning - Web Speech API limitation
+  document.getElementById('status').textContent = '正在从该章节播放...';
+  document.getElementById('progressBar').style.width = (sec/totalDuration*100) + '%';
+  document.getElementById('curTime').textContent = fmtT(sec);
+  
+  // Split script roughly at the chapter point
+  var charPerSec = script.length / totalDuration;
+  var startChar = Math.floor(sec * charPerSec);
+  var subScript = script.substring(startChar);
+  
+  utterance = new SpeechSynthesisUtterance(subScript);
+  utterance.lang = 'zh-CN';
+  utterance.rate = currentSpeed;
+  utterance.pitch = 1;
+  var voices = speechSynthesis.getVoices();
+  var zhVoice = voices.find(function(v) { return v.lang.startsWith('zh') && v.localService; }) 
+    || voices.find(function(v) { return v.lang.startsWith('zh'); });
+  if (zhVoice) utterance.voice = zhVoice;
+  
+  utterance.onend = function() {
+    isPlaying = false;
+    pausedAt = 0;
+    document.getElementById('playBtn').textContent = '▶';
+    document.getElementById('status').textContent = '播放完毕';
+    clearInterval(timerInterval);
+  };
+  
+  speechSynthesis.speak(utterance);
+  isPlaying = true;
+  startTime = Date.now() - (sec * 1000 / currentSpeed);
+  document.getElementById('playBtn').textContent = '⏸';
+  startTimer();
+}
+
+function toggleSpeed() {
+  speedIdx = (speedIdx + 1) % speeds.length;
+  currentSpeed = speeds[speedIdx];
+  document.getElementById('speedBtn').textContent = currentSpeed + 'x 速度';
+  if (utterance && isPlaying) {
+    var wasPlaying = isPlaying;
+    speechSynthesis.cancel();
+    pausedAt = 0;
+    if (wasPlaying) {
+      utterance.rate = currentSpeed;
+      speechSynthesis.speak(utterance);
+    }
+  }
+}
+
+function seekTo(e) {
+  var rect = e.target.getBoundingClientRect();
+  var pct = (e.clientX - rect.left) / rect.width;
+  var targetSec = pct * totalDuration;
+  jumpTo(targetSec);
+}
+
+// Load voices
+speechSynthesis.onvoiceschanged = function() { speechSynthesis.getVoices(); };
+speechSynthesis.getVoices();
+
+// Prevent page from scrolling on mobile
+document.addEventListener('touchmove', function(e) { e.preventDefault(); }, {passive:false});
+</script>
+</body>
+</html>
