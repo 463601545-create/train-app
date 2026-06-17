@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>护理项目内训考核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f5f5f5;color:#333;min-height:100vh;overflow-x:hidden}
+.top{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;padding:14px 16px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top h1{font-size:17px;font-weight:700;text-align:center}
+.top .info{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;opacity:.9}
+.top .bar{height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:8px}
+.top .bar div{height:100%;background:#4ade80;border-radius:2px;transition:width .3s}
+.page{padding:60px 12px 90px;display:none}
+.page.on{display:block}
+.s1{text-align:center;padding:60px 16px 40px}
+.s1 .ico{font-size:56px;margin-bottom:12px}
+.s1 h2{font-size:22px;font-weight:800;color:#0f766e}
+.s1 .desc{font-size:13px;color:#888;margin:8px 0 28px;line-height:1.6}
+.s1 .box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:28px;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.s1 .box p{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #f3f3f3}
+.s1 .box p:last-child{border:none}
+.s1 .box span:last-child{font-weight:700;color:#0f766e}
+.gobtn{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;border:none;padding:15px 56px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(13,148,136,.3)}
+.gobtn:active{transform:scale(.97)}
+.qc{background:#fff;border-radius:12px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qc .num{font-size:12px;color:#999;margin-bottom:6px}
+.qc .num b{color:#0f766e;font-size:15px}
+.qc .qt{font-size:15.5px;line-height:1.7;font-weight:600;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.ob{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;background:#fff;font-size:14.5px;line-height:1.55;cursor:pointer;transition:all .15s;text-align:left}
+.ob:active{transform:scale(.98)}
+.ob .lt{min-width:26px;height:26px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;transition:all .15s}
+.ob.ok{border-color:#16a34a;background:#f0fdf4}
+.ob.ok .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.no{border-color:#dc2626;background:#fef2f2}
+.ob.no .lt{border-color:#dc2626;background:#dc2626;color:#fff}
+.ob.hi{border-color:#16a34a;background:#f0fdf4}
+.ob.hi .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.off{pointer-events:none}
+.exp{margin-top:12px;padding:10px 12px;background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;font-size:13px;line-height:1.6;color:#555;display:none}
+.exp.on{display:block}
+.btm{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px 20px;box-shadow:0 -2px 8px rgba(0,0,0,.08);display:none;z-index:200}
+.btm .row{display:flex;gap:10px}
+.btm button{flex:1;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.btm button:active{transform:scale(.97)}
+.bprev{background:#f3f4f6;color:#666}
+.bnext{background:#0d9488;color:#fff}
+.bsub{background:#16a34a;color:#fff}
+.bsub:disabled{background:#9ca3af}
+.rp{text-align:center;padding:30px 16px 100px}
+.rp .circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #e5e7eb}
+.rp .circle.pass{border-color:#16a34a}
+.rp .circle.fail{border-color:#dc2626}
+.rp .circle .sn{font-size:42px;font-weight:800}
+.rp .circle .sl{font-size:12px;color:#999;margin-top:2px}
+.rp .rt{font-size:20px;font-weight:800;margin-bottom:6px}
+.rp .rs{font-size:13px;color:#888;margin-bottom:20px}
+.rp .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px}
+.rp .sc{background:#fff;border-radius:10px;padding:14px 8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.rp .sc .sv{font-size:22px;font-weight:800}
+.rp .sc .sv.g{color:#16a34a}
+.rp .sc .sv.r{color:#dc2626}
+.rp .sc .sv.b{color:#0d9488}
+.rp .sc .svl{font-size:11px;color:#999;margin-top:2px}
+.rbtn{display:inline-block;padding:13px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin:4px}
+.rreview{background:#f3f4f6;color:#333}
+.rretry{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff}
+.rvtag{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px}
+.rvtag button{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#666}
+.rvtag button.on{background:#0f766e;color:#fff;border-color:#0f766e}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+<h1>💆 护理项目内训考核</h1>
+<div class="info"><span id="tl">50题销售话术考核</span><span id="tr">00:00</span></div>
+<div class="bar"><div id="pb" style="width:0%"></div></div>
+</div>
+
+<div class="page on" id="p1">
+<div class="s1">
+<div class="ico">💆</div>
+<h2>六大护理项目销售话术考核</h2>
+<p class="desc">护理剪 / 酸性护理 / 常规护理 / 毛躁护理 / 沙性护理 / 自然卷养护<br>50道选择题 · 90分及格</p>
+<div class="box">
+<p><span>题目数量</span><span>50题</span></p>
+<p><span>题目类型</span><span>四选一</span></p>
+<p><span>每题分值</span><span>2分</span></p>
+<p><span>及格分数</span><span>90分</span></p>
+<p><span>答题方式</span><span>逐题作答·即时反馈</span></p>
+</div>
+<button class="gobtn" onclick="go()">开始考试</button>
+</div>
+</div>
+
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+
+<div class="btm" id="btm">
+<div class="row">
+<button class="bprev" id="bPrev" onclick="nav(-1)">上一题</button>
+<button class="bnext" id="bNext" onclick="nav(1)">下一题</button>
+</div>
+</div>
+
+<script>
+const Q=[
+// === 护理剪话术（1-8）===
+{q:"头发被剪断后会形成什么？",o:["自然封闭口","新鲜切口","角质保护层","氧化保护膜"],a:1,e:"头发被剪断后会形成新鲜切口，需要及时护理封闭。"},
+{q:"剪发后切口若不及时护理封闭，最直接的后果是？",o:["头皮屑增多","发丝里的水分和蛋白质快速流失","头皮发痒","发色变浅"],a:1,e:"切口不封闭，发丝里的水分和蛋白质会快速流失，导致发梢分叉、干枯毛躁。"},
+{q:"日常单独做一次护理的市场单价范围是？",o:["28-48元","38-58元","58-88元","88-128元"],a:2,e:"日常单独做一次护理，价格基本在58-88元。"},
+{q:"门店剪发后当场做的滋养发膜养护服务收费是？",o:["18元","20元","38元","58元"],a:1,e:"剪发后当场用滋养发膜封闭发尾切口，仅收取20元。"},
+{q:"剪后专属养护20元服务的核心作用是？",o:["上色染发","拉直造型","封闭发尾切口同步滋润发丝","按摩头皮放松"],a:2,e:"剪后养护当场用滋养发膜封闭发尾切口，同步滋润发丝。"},
+{q:"\"绿植枝干被剪断后，不做防护包扎，养分很快就会流失\"这个比喻对应哪个项目？",o:["酸性护理","常规护理","剪后护理","沙性发质护理"],a:2,e:"绿植枝干比喻剪发后切口不封闭、养分流失，对应剪后专属养护项目。"},
+{q:"剪后专属养护20元的极速促单话术是？",o:["这个月办都行","下次办理也优惠","这个优惠只针对本次剪发同步办理，今天不做就恢复原价","满500元才能享受"],a:2,e:"促单话术强调今天不做就恢复原价，制造稀缺感促单。"},
+{q:"整头头发受损最严重、水分和蛋白质极易流失的部位是？",o:["发根","发中","发梢","头皮"],a:2,e:"发梢部位的水分和蛋白质极易流失，是整头头发受损最严重的地方。"},
+
+// === 酸性护理（9-17）===
+{q:"酸性护理项目的两大核心作用是？",o:["染发上色+漂白","加固发丝+收紧闭合毛鳞片","拉直+卷曲","按摩+造型"],a:1,e:"酸性护理能加固发丝让头发变得结实粗壮，同时收紧闭合毛鳞片。"},
+{q:"想要养好头发，第一步要做的是？",o:["染色补充色素","烫卷塑形","把张开的毛鳞片收拢闭合","频繁剪短"],a:2,e:"养好头发的第一步就得把张开的毛鳞片收拢闭合，避免营养流失。"},
+{q:"酸性护理套餐价是？",o:["38元","58元","88元","108元"],a:1,e:"酸性护理套餐价只需58元。"},
+{q:"普通护发素、精油这类日常护理与酸性护理相比，最大的差别是？",o:["价格更贵","只能简单滋润，无法从根源锁住营养","效果更持久","可以漂白头发"],a:1,e:"普通护发素精油只能简单滋润，没办法从根源锁住营养，酸性护理能锁住。"},
+{q:"\"没关闸门的水库，不管怎么往里蓄水，水都会不断流走\"这个比喻说明什么？",o:["头发要多洗才好","不做酸性护理直接补营养，营养留不住","染发会褪色","发型保持时间不久"],a:1,e:"水库闸门比喻不做酸性护理，毛鳞片张开像没关闸门，营养留不住。"},
+{q:"门店推荐的正确护理顺序是？",o:["先常规护理→再酸性护理","先酸性护理→再常规营养护理","只做酸性护理即可","只做常规护理即可"],a:1,e:"先做酸性护理把头发表层封闭住，之后再做常规营养护理补充蛋白质和氨基酸。"},
+{q:"以下哪一项不是话术中提到的导致头发水分蛋白质营养流失的原因？",o:["长期日晒","频繁洗头","吹风、拉扯造型","经常梳理头发"],a:3,e:"话术中提到流失原因是日晒、频繁洗头、吹风、拉扯造型，未提梳理。"},
+{q:"做完酸性护理后的头发质感是？",o:["蓬松毛躁","顺滑笔直、质感更硬朗","自然卷曲","蓬松弹力"],a:1,e:"酸性护理做完头发顺滑笔直、质感会更硬朗。"},
+{q:"酸性护理套餐58元配套的承诺话术是？",o:["终身免费补做","三年免费保修","效果不好不收钱","不满意送一次"],a:2,e:"酸性护理套餐58元，承诺效果不好不收钱。"},
+
+// === 常规护理（18-25）===
+{q:"常规护理建议的频率是？",o:["每年一次","每月一次","一周一次/一个月四次","每天一次"],a:2,e:"常规护理建议一周做一次，一个月坚持四次。"},
+{q:"\"日常做面部护肤清洁\"的比喻对应哪个项目？",o:["剪后护理","常规护理","酸性护理","沙性发质护理"],a:1,e:"常规护理就好比日常面部护肤清洁，属于基础保养，需要定期坚持。"},
+{q:"常规护理套餐只收取什么费用？",o:["仅产品费","全套商品费","38元基础手工费（产品门店提供）","88元打包价"],a:2,e:"常规护理只收38元手工费，产品由门店提供。"},
+{q:"店里常规护理的养分分子有什么特征？",o:["分子偏小直接渗透","分子偏大，需手法揉搓+加热辅助渗透","与家用产品分子相同","完全无法被吸收"],a:1,e:"店里常规护理养分分子偏大，需配合专业手法揉搓+加热才能深层渗透。"},
+{q:"家里日常用的护发产品的成分特点是？",o:["大分子营养","小分子，多只能填补发丝表层空隙","与门店分子相同","只能涂头皮"],a:1,e:"家用护发产品多是小分子成分，大多只能填补发丝表层空隙。"},
+{q:"不管哪种护理，都要依靠什么才能让营养真正吃透吸收？",o:["停放时间","自然风干","专业手法+加热工序","客户自己揉搓"],a:2,e:"所有护理都得依靠专业手法和加热工序，才能让营养真正吃透吸收。"},
+{q:"家用护发产品看似顺滑，但效果一般多久就消退？",o:["几个小时","一两天","一周","一个月"],a:1,e:"家用产品刚洗完看着顺滑，一两天后效果就消退了。"},
+{q:"常规护理套餐38元的价格定位话术是？",o:["38元含全部产品和工费","只收38元基础手工费，产品由门店提供","38元含套餐+剪发","38元含烫染服务"],a:1,e:"常规护理只收38元基础手工费，产品由门店提供，体现高性价比。"},
+
+// === 毛躁发质护理（26-32）===
+{q:"毛躁发质客户最典型的两个外在表现是？",o:["颜色暗淡+发量稀少","干枯毛躁+特别容易打结","头皮油腻+头屑多","发量过多+杂乱"],a:1,e:"毛躁发质表现：干枯毛躁，特别容易打结。"},
+{q:"毛躁发质护理使用的产品是？",o:["油性蛋白霜","酸性肽蛋白护理","染色剂","漂白粉"],a:1,e:"使用酸性肽蛋白护理，做一次就能明显改善毛躁问题。"},
+{q:"毛躁发质护理的会员价是？",o:["58元","88元","98元","128元"],a:2,e:"毛躁发质护理会员价98元。"},
+{q:"毛躁发质护理整个流程的标准时长是？",o:["15分钟","30分钟","60分钟","90分钟"],a:1,e:"毛躁发质护理三十分钟就能做完，效率高。"},
+{q:"毛躁发质护理98元配套的承诺话术是？",o:["不满意全额退款","三个月免费补做","做完没改善毛躁问题这次不收费用","终身免费补一次"],a:2,e:"对效果有把握：要是做完没能改善毛躁问题，这次就不收费用。"},
+{q:"毛躁发质护理做完后的效果表现不包括？",o:["抚平毛躁发丝","减少头发静电","顺滑笔直、质感好","头发体积明显增加"],a:3,e:"毛躁护理效果是抚平毛躁、减少静电、顺滑笔直、质感好，不会让头发变多。"},
+{q:"毛躁发质护理的核心卖点定位是？",o:["长期慢慢改善","做一次就能明显改善","必须连续做半年","只能搭配烫染做"],a:1,e:"毛躁护理核心卖点是做一次就能明显改善毛躁、易打结的问题。"},
+
+// === 沙性发质护理（33-40）===
+{q:"沙性发质天生的两大特征是？",o:["顺直服帖+有光泽","蓬松毛躁+不服帖","柔软细滑+下垂","硬挺粗壮+有弹力"],a:1,e:"沙性发质天生蓬松毛躁、不服帖，很难剪出精致造型。"},
+{q:"沙性发质对发型颜值的影响是？",o:["提升发型整体颜值","拉低发型整体颜值","完全没有影响","让层次更分明"],a:1,e:"沙性发质打理费劲，且特别拉低发型整体颜值。"},
+{q:"沙性发质护理的核心作用机制是？",o:["染色覆盖发丝","填补发丝内部空洞，把松散发质填充紧实","漂白褪色","物理高温拉直"],a:1,e:"酸性肽蛋白能填补发丝内部空洞，把松散发质填充紧实，做完顺滑服帖。"},
+{q:"沙性发质护理单次套餐价是？",o:["58元","98元","108元","128元"],a:2,e:"沙性发质护理套餐108元/单次。"},
+{q:"沙性发质护理5次套餐总价是？",o:["480元","540元","580元","640元"],a:1,e:"5次套餐总共540元，平均每次108元。"},
+{q:"沙性发质建议坚持做几次能调理出不错状态？",o:["1-2次","4-5次","8-10次","12次以上"],a:1,e:"像沙性发质坚持做4到5次就能调理出不错的状态。"},
+{q:"沙性发质做几次后基本能趋近正常顺滑状态？",o:["1次","2次","3次","5次"],a:2,e:"一般做完3次，发质基本就能趋近于正常顺滑的状态。"},
+{q:"沙性发质调理好之后的维护频率是？",o:["每周一次","每月一次","每隔两三个月定期一次","每年一次"],a:2,e:"调理好之后每隔两三个月定期做一次养护即可。"},
+
+// === 自然卷顺直养护（41-45）===
+{q:"自然卷顾客如果不想做拉直处理，可以选择？",o:["染发","用养护慢慢改善发质状态","彻底剪短","烫得更卷"],a:1,e:"不想做拉直处理，也可以靠养护慢慢改善发质状态。"},
+{q:"自然卷顺直养护使用的产品是？",o:["拉直药水","酸性肽蛋白护理","漂白粉","凝胶水"],a:1,e:"自然卷顺直养护用的也是酸性肽蛋白护理。"},
+{q:"自然卷顺直养护套餐价是？",o:["88元","108元","128元","158元"],a:2,e:"自然卷顺直养护套餐价128元。"},
+{q:"自然卷顺直养护带来的核心效果是？",o:["完全永久拉直","原本杂乱卷曲发丝慢慢变规整服帖、自然卷蓬松感弱化","加深卷度","染色变亮"],a:1,e:"原本杂乱卷曲发丝纹理慢慢变得规整服帖，自然卷蓬松卷曲感慢慢弱化。"},
+{q:"自然卷顺直养护是通过什么方式调整发质？",o:["改变二硫键永久拉直","深层滋养发丝、补充营养、逐步调整头发内部结构","物理高温拉直","加假发覆盖"],a:1,e:"通过深层滋养发丝、补充营养，逐步调整头发内部结构，让自然卷慢慢变服帖。"},
+
+// === 综合判断/横向对比（46-50）===
+{q:"以下六个项目中价格最便宜的是？",o:["剪后护理20元","常规护理38元","酸性护理58元","毛躁发质护理98元"],a:0,e:"剪后护理20元价格最低（仅限本次剪发同步办理）。"},
+{q:"客户头发干枯毛躁、特别容易打结，最匹配的项目是？",o:["常规护理38元","毛躁发质护理98元","自然卷顺直养护128元","剪后护理20元"],a:1,e:"针对干枯毛躁、容易打结的发质，对症的是毛躁发质护理98元。"},
+{q:"客户是天生自然沙性发质、蓬松不服帖，最适合？",o:["常规护理38元单次","沙性发质护理108元/单次或5次套餐540元","剪后护理20元","只做日常护发素"],a:1,e:"自然沙性发质对应沙性发质护理108元/单次，5次套餐540元。"},
+{q:"以下六个护理项目中价格最高的是？",o:["酸性护理58元","毛躁护理98元","沙性发质护理108元","自然卷顺直养护128元"],a:3,e:"自然卷顺直养护128元，价格最高。"},
+{q:"关于\"先酸性护理、再常规营养护理\"的护理顺序，下列说法正确的是？",o:["顺序不重要可任意调换","酸性闭合毛鳞片在前→常规深层补营养在后，效果最佳","常规为主，酸性可省略","只做其中一项就够了"],a:1,e:"必须先酸性护理封闭表层毛鳞片，再做常规护理深层补营养，营养才能锁得住。"}
+];
+
+let cur=0,ans={},timer,sec=0,done=false,review=false,filter='all';
+const TOTAL=Q.length, PASS=90;
+
+function go(){
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  timer=setInterval(()=>{sec++;document.getElementById('tr').textContent=fmt(sec)},1000);
+  render();
+}
+
+function fmt(s){
+  let m=Math.floor(s/60),ss=s%60;
+  return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+}
+
+function render(){
+  let q=Q[cur], el=document.getElementById('p2');
+  let my=ans[cur], answered=my!==undefined;
+  let h='<div class="qc"><div class="num">第 <b>'+(cur+1)+'</b> / '+TOTAL+' 题</div>';
+  h+='<div class="qt">'+q.q+'</div><div class="opts">';
+  let letters=['A','B','C','D'];
+  for(let i=0;i<4;i++){
+    let cls='ob';
+    if(answered){
+      cls+=' off';
+      if(i===q.a) cls+=' ok';
+      if(i===my&&my!==q.a) cls+=' no';
+      if(!done&&i===q.a&&my!==q.a) cls+=' hi';
+    }
+    h+='<div class="'+cls+'" onclick="pick('+i+')"><div class="lt">'+letters[i]+'</div><div>'+q.o[i]+'</div></div>';
+  }
+  h+='</div>';
+  if(answered){
+    h+='<div class="exp on">💡 '+(my===q.a?'回答正确！':'❌ 正确答案：'+letters[q.a]+'。')+q.e+'</div>';
+  }else{
+    h+='<div class="exp"></div>';
+  }
+  h+='</div>';
+  
+  if(review&&done){
+    let tags='<div class="rvtag"><button class="'+(filter==='all'?'on':'')+'" onclick="flt(\'all\')">全部</button>';
+    tags+='<button class="'+(filter==='wrong'?'on':'')+'" onclick="flt(\'wrong\')">❌ 错题</button>';
+    tags+='<button class="'+(filter==='right'?'on':'')+'" onclick="flt(\'right\')">✅ 对题</button></div>';
+    h=tags+h;
+  }
+  
+  el.innerHTML=h;
+  
+  document.getElementById('pb').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tl').textContent=(cur+1)+'/'+TOTAL;
+  
+  let nb=document.getElementById('bNext');
+  let pb=document.getElementById('bPrev');
+  pb.style.display=cur>0?'block':'none';
+  
+  if(cur===TOTAL-1&&!done){
+    nb.textContent='交卷';nb.className='bsub';nb.onclick=submit;
+  }else if(done){
+    nb.textContent=review?'返回成绩':'查看成绩';nb.className='bsub';nb.onclick=showResult;
+  }else{
+    nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)};
+  }
+  if(done&&cur<TOTAL-1){nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)}}
+}
+
+function pick(i){
+  if(ans[cur]!==undefined)return;
+  ans[cur]=i;
+  done||setTimeout(()=>{if(cur<TOTAL-1)nav(1);else render()},600);
+  render();
+}
+
+function nav(d){
+  let nc=cur+d;
+  if(nc<0||nc>TOTAL-1)return;
+  if(review&&filter!=='all'){
+    let dir=d>0?1:-1;
+    for(let j=nc;j>=0&&j<TOTAL;j+=dir){
+      let isWrong=ans[j]!==Q[j].a;
+      if(filter==='wrong'&&isWrong){nc=j;break}
+      if(filter==='right'&&!isWrong){nc=j;break}
+      if(j===0||j===TOTAL-1){return}
+    }
+  }
+  cur=nc;render();
+  window.scrollTo(0,0);
+}
+
+function submit(){
+  done=true;review=false;
+  clearInterval(timer);
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('p2').classList.remove('on');
+  document.getElementById('btm').style.display='none';
+  document.getElementById('p3').classList.add('on');
+  
+  let right=0;
+  for(let i=0;i<TOTAL;i++) if(ans[i]===Q[i].a) right++;
+  let wrong=TOTAL-right;
+  let score=right*2;
+  let pass=score>=PASS;
+  
+  let el=document.getElementById('p3');
+  let h='<div class="rp">';
+  h+='<div class="circle '+(pass?'pass':'fail')+'"><div class="sn">'+score+'</div><div class="sl">分</div></div>';
+  h+='<div class="rt">'+(pass?'🎉 恭喜通过':'💪 需要重考')+'</div>';
+  h+='<div class="rs">'+(pass?'90分及格线，你已达标':'距及格还差'+(PASS-score)+'分，请重新考试')+'</div>';
+  h+='<div class="sg"><div class="sc"><div class="sv g">'+right+'</div><div class="svl">答对</div></div>';
+  h+='<div class="sc"><div class="sv r">'+wrong+'</div><div class="svl">答错</div></div>';
+  h+='<div class="sc"><div class="sv b">'+fmt(sec)+'</div><div class="svl">用时</div></div></div>';
+  h+='<div style="margin-bottom:16px">';
+  h+='<button class="rbtn rreview" onclick="reviewExam()">📖 查看解析</button>';
+  h+='<button class="rbtn rretry" onclick="retry()">🔄 重新考试</button>';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+function reviewExam(){
+  review=true;filter='all';cur=0;
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  render();
+}
+
+function retry(){
+  cur=0;ans={};sec=0;done=false;review=false;filter='all';
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p1').classList.add('on');
+  document.getElementById('pb').style.width='0%';
+  document.getElementById('tl').textContent='50题销售话术考核';
+  document.getElementById('tr').textContent='00:00';
+  clearInterval(timer);
+}
+
+function flt(f){
+  filter=f;render();
+}
+</script>
+</body>
+</html>
