@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>沟通设计内训考核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#fff7ed;color:#333;min-height:100vh;overflow-x:hidden}
+.top{background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;padding:14px 16px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top h1{font-size:17px;font-weight:700;text-align:center}
+.top .info{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;opacity:.9}
+.top .bar{height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:8px}
+.top .bar div{height:100%;background:#fde68a;border-radius:2px;transition:width .3s}
+.page{padding:60px 12px 90px;display:none}
+.page.on{display:block}
+.s1{text-align:center;padding:60px 16px 40px}
+.s1 .ico{font-size:56px;margin-bottom:12px}
+.s1 h2{font-size:22px;font-weight:800;color:#c2410c}
+.s1 .desc{font-size:13px;color:#888;margin:8px 0 28px;line-height:1.6}
+.s1 .box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:28px;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.s1 .box p{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #f3f3f3}
+.s1 .box p:last-child{border:none}
+.s1 .box span:last-child{font-weight:700;color:#c2410c}
+.gobtn{background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;border:none;padding:15px 56px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(234,88,12,.3)}
+.gobtn:active{transform:scale(.97)}
+.qc{background:#fff;border-radius:12px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qc .num{font-size:12px;color:#999;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.qc .num b{color:#c2410c;font-size:15px}
+.qc .num .tag{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
+.qc .num .tag.s{background:#ffedd5;color:#c2410c}
+.qc .num .tag.j{background:#fef3c7;color:#92400e}
+.qc .num .mod{font-size:11px;color:#a16207;background:#fef9c3;padding:2px 8px;border-radius:10px;margin-left:6px}
+.qc .qt{font-size:15.5px;line-height:1.7;font-weight:600;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.ob{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;background:#fff;font-size:14.5px;line-height:1.55;cursor:pointer;transition:all .15s;text-align:left}
+.ob:active{transform:scale(.98)}
+.ob .lt{min-width:26px;height:26px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;transition:all .15s}
+.ob.ok{border-color:#16a34a;background:#f0fdf4}
+.ob.ok .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.no{border-color:#dc2626;background:#fef2f2}
+.ob.no .lt{border-color:#dc2626;background:#dc2626;color:#fff}
+.ob.hi{border-color:#16a34a;background:#f0fdf4}
+.ob.hi .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.off{pointer-events:none}
+.exp{margin-top:12px;padding:10px 12px;background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;font-size:13px;line-height:1.6;color:#555;display:none}
+.exp.on{display:block}
+.btm{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px 20px;box-shadow:0 -2px 8px rgba(0,0,0,.08);display:none;z-index:200}
+.btm .row{display:flex;gap:10px}
+.btm button{flex:1;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.btm button:active{transform:scale(.97)}
+.bprev{background:#f3f4f6;color:#666}
+.bnext{background:#ea580c;color:#fff}
+.bsub{background:#16a34a;color:#fff}
+.bsub:disabled{background:#9ca3af}
+.rp{text-align:center;padding:30px 16px 100px}
+.rp .circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #e5e7eb}
+.rp .circle.pass{border-color:#16a34a}
+.rp .circle.fail{border-color:#dc2626}
+.rp .circle .sn{font-size:42px;font-weight:800}
+.rp .circle .sl{font-size:12px;color:#999;margin-top:2px}
+.rp .rt{font-size:20px;font-weight:800;margin-bottom:6px}
+.rp .rs{font-size:13px;color:#888;margin-bottom:20px}
+.rp .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.rp .sc{background:#fff;border-radius:10px;padding:14px 8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.rp .sc .sv{font-size:22px;font-weight:800}
+.rp .sc .sv.g{color:#16a34a}
+.rp .sc .sv.r{color:#dc2626}
+.rp .sc .sv.b{color:#c2410c}
+.rp .sc .svl{font-size:11px;color:#999;margin-top:2px}
+.rp .modcard{background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:18px;text-align:left}
+.rp .modcard h3{font-size:14px;color:#c2410c;margin-bottom:10px;font-weight:700}
+.rp .modcard .mrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed #f3f3f3;font-size:13px}
+.rp .modcard .mrow:last-child{border:none}
+.rp .modcard .mrow .mn{color:#555;flex:1}
+.rp .modcard .mrow .mb{flex:1.6;height:8px;background:#f3f4f6;border-radius:4px;margin:0 10px;overflow:hidden}
+.rp .modcard .mrow .mb div{height:100%;background:linear-gradient(90deg,#ea580c,#c2410c);border-radius:4px}
+.rp .modcard .mrow .mv{color:#c2410c;font-weight:700;min-width:55px;text-align:right;font-size:13px}
+.rbtn{display:inline-block;padding:13px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin:4px}
+.rreview{background:#f3f4f6;color:#333}
+.rretry{background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff}
+.rvtag{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px}
+.rvtag button{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#666}
+.rvtag button.on{background:#c2410c;color:#fff;border-color:#c2410c}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+<h1>💬 沟通设计内训考核</h1>
+<div class="info"><span id="tl">50题沟通设计话术考核</span><span id="tr">00:00</span></div>
+<div class="bar"><div id="pb" style="width:0%"></div></div>
+</div>
+
+<div class="page on" id="p1">
+<div class="s1">
+<div class="ico">💬</div>
+<h2>沟通设计话术考核</h2>
+<p class="desc">沟通的意义 / 1.0版6问 / 2.0版70%听30%说<br>4步法 / 至善美业提问卡 / 综合应用<br>50题（30单选+20判断）· 90分及格</p>
+<div class="box">
+<p><span>题目数量</span><span>50题</span></p>
+<p><span>题目类型</span><span>30单选 + 20判断</span></p>
+<p><span>每题分值</span><span>2分</span></p>
+<p><span>及格分数</span><span>90分</span></p>
+<p><span>答题方式</span><span>逐题作答·即时反馈</span></p>
+</div>
+<button class="gobtn" onclick="go()">开始考试</button>
+</div>
+</div>
+
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+
+<div class="btm" id="btm">
+<div class="row">
+<button class="bprev" id="bPrev" onclick="nav(-1)">上一题</button>
+<button class="bnext" id="bNext" onclick="nav(1)">下一题</button>
+</div>
+</div>
+
+<script>
+// type: single=单选4选1, judge=判断2选1（0=正确✓，1=错误✗）
+// m: 模块标识 m1=沟通意义, m2=1.0版6问, m3=2.0版70/30, m4=4步法, m5=提问卡, m6=综合应用
+const Q=[
+// ======== 单选题 30 道（按模块顺序）========
+
+// --- 模块1·沟通的意义（3题）---
+{type:"single",m:"m1",q:"顾客进门时虽然嘴里只说\"剪短一点\"，但她心里真正想的是？",o:["精确剪掉2cm","变得更好看/换个新发型/不翻车","顺便染色","头皮护理"],a:1,e:"原文核心：顾客进门想的是变美/换发型/不翻车，但说出口往往只是\"剪短一点\"，她真正想的是\"变得更好看\"。"},
+{type:"single",m:"m1",q:"很多发型师技术不错但顾客依然不满意，他们真正缺的是？",o:["更高的剪发技术","更先进的工具","沟通能力","营销活动"],a:2,e:"原文：很多发型师技术好但顾客不满意，缺的是沟通。沟通能让你快速准确了解顾客真正想要什么。"},
+{type:"single",m:"m1",q:"关于\"发型师做的\"和\"顾客要的\"，下列说法符合原文的是？",o:["两者完全一致，所以不需要沟通","发型师做的是他认为好看的，顾客要的是她认为好看的","顾客只看价格不看效果","只要技术过硬，顾客一定满意"],a:1,e:"原文：发型师做的是他认为好看的，顾客要的是她认为好看的。这就是为什么必须沟通。"},
+
+// --- 模块2·沟通1.0版6个核心问题（7题）---
+{type:"single",m:"m2",q:"1.0版6个核心问题中的第1个问题（喜欢自然低调还是有质感有层次的？），主要用来判断什么？",o:["顾客的预算","顾客的风格偏好","顾客的住址","顾客的工作性质"],a:1,e:"第1问\"喜欢自然低调，还是稍微有质感、有层次感的？\"用于判断顾客的风格偏好。"},
+{type:"single",m:"m2",q:"1.0版6问中，\"有没有存想参考的图片？喜欢偏温柔、干练还是慵懒风？\"这一问的核心用途是？",o:["让顾客删除手机相册","了解审美方向，做到\"有图有真相\"","推销付费图片","鉴定图片真假"],a:1,e:"第2问的目的是了解顾客的审美方向，原文强调\"有图有真相\"。"},
+{type:"single",m:"m2",q:"1.0版6问中，\"接受不接受轻微颜色点缀？还是只想保持自然黑发？\"这一问的关键作用是？",o:["现场让顾客染发","避免后续推荐染发翻脸","测试顾客经济能力","卖染发卡"],a:1,e:"第3问问颜色接受度，目的是避免后续推荐染发时翻脸冲突。"},
+{type:"single",m:"m2",q:"在1.0版6个问题里，被定义为\"翻车重灾区\"的是哪一项？",o:["长度","颜色","刘海","层次"],a:2,e:"原文：刘海是翻车重灾区，所以专门用一个问题来锁定顾客对刘海的接受度。"},
+{type:"single",m:"m2",q:"1.0版6问中，被定义为\"最后保险\"的问题是？",o:["喜欢什么风格","接受不接受颜色","刘海要不要","最短你能接受多短？"],a:3,e:"第6问\"最短你能接受多短？\"是兜底保险，防止剪过头翻车。"},
+{type:"single",m:"m2",q:"1.0版6问问完之后，关键的下一步动作是？",o:["立即拿起剪刀开剪","进行方案确认，复述一遍让顾客确认","直接推销护理项目","让顾客交押金"],a:1,e:"原文：6问之后必须做方案确认——把顾客的想法复述一遍让她确认，再开始操作。"},
+{type:"single",m:"m2",q:"方案确认结束后，最后说\"好的，接下来就按照我们设计的方向进行操作\"，这句话被原文称为？",o:["客套话","免责金牌","成交话术","收银暗号"],a:1,e:"原文：这一句确认是\"免责金牌\"，万一后续顾客有异议可以追溯到这次共识。"},
+
+// --- 模块3·沟通2.0版70%听30%说（7题）---
+{type:"single",m:"m3",q:"沟通2.0版的核心比例原则是？",o:["50%听50%说","70%听30%说","30%听70%说","100%说"],a:1,e:"原文：沟通2.0版的核心是70%听、30%说。"},
+{type:"single",m:"m3",q:"70%和30%在原文中具体指的是？",o:["发型师和顾客说话字数的比例","时间比例（70%时间听+挖信息，30%时间给诊断给方案）","客户满意度比例","提成分配比例"],a:1,e:"原文明确：70%和30%不是字数比例，是时间比例。70%时间用来听、点头、接话、挖信息，30%时间给诊断和方案。"},
+{type:"single",m:"m3",q:"沟通2.0版的8字口诀是？",o:["快听快说快判断","多问、少讲、慢判断、后出手","看人下菜碟","多讲多说多卖多推"],a:1,e:"原文8字口诀：多问、少讲、慢判断、后出手。"},
+{type:"single",m:"m3",q:"8字口诀中\"多问\"具体指？",o:["反复追问同一个问题","多用开放式问题让顾客开口","询问顾客隐私","多问同事意见"],a:1,e:"\"多问\"指多用开放式问题让顾客开口表达。"},
+{type:"single",m:"m3",q:"8字口诀中\"后出手\"的含义是？",o:["先动剪刀再聊天","等顾客说透了再给专业意见","让客户自己出手","等顾客付完款再说"],a:1,e:"\"后出手\"=等顾客说透了再给专业意见，体现\"慢判断\"的接续。"},
+{type:"single",m:"m3",q:"30%的专业意见原文要求只讲哪三件事？",o:["价格、时间、地点","发质脸型头型的特点 + 适合什么不适合什么 + 方案是什么及为什么","八卦、家庭、收入","品牌故事、产品成分、代言人"],a:1,e:"30%只讲3件事：① 顾客发质/脸型/头型特点 ② 适合什么不适合什么 ③ 方案及原因。"},
+{type:"single",m:"m3",q:"原文中90%发型师在沟通中常犯的错是？",o:["听得太多，说得太少","说得太多，听得太少","完全不开口","只听不说"],a:1,e:"原文：90%翻车不是技术不行，是说得太多听得太少；90%发型师做反了。"},
+
+// --- 模块4·落地4步法（5题）---
+{type:"single",m:"m4",q:"沟通4步法的标准顺序是？",o:["出方案 → 确认 → 挖掘 → 提问","提问 → 挖掘 → 确认 → 出方案","确认 → 提问 → 出方案 → 挖掘","出方案 → 提问 → 挖掘 → 确认"],a:1,e:"原文4步法顺序：提问 → 挖掘 → 确认 → 出方案。"},
+{type:"single",m:"m4",q:"4步法中第一步的标准动作是？",o:["直接给出专业建议","开场开放式提问，让她先开口","推销项目卡","闭口不言等顾客提问"],a:1,e:"第一步：开场开放式提问。例：\"姐，今天想做什么样的改变呢？\"给顾客说话的机会。"},
+{type:"single",m:"m4",q:"4步法中第二步\"挖掘\"的核心动作是？",o:["立即打断给方案","顺着她的话继续挖，不打断、不急于给结论、让她说透","快速判断快速出方案","推销项目"],a:1,e:"第二步顺着话题挖，例：顾客说\"想换有层次的\"，问\"您说的有层次是指……\"。关键是不打断、让她说透。"},
+{type:"single",m:"m4",q:"4步法中第三步\"重复+确认\"在原文里被称为？",o:["终极成交","共情确认","价格谈判","售后承诺"],a:1,e:"原文：第三步把顾客的话重复一遍加上自己的理解，这一步叫\"共情确认\"，让顾客觉得你懂她。"},
+{type:"single",m:"m4",q:"4步法第四步\"等她讲透再给30%专业意见\"，要讲的核心三件事是？",o:["价格、折扣、赠品","特点 + 适合什么不适合什么 + 方案及原因","顾客背景 + 工作 + 家庭","产品成分 + 品牌 + 代言人"],a:1,e:"第四步只讲3件事：① 发质脸型头型特点 ② 适合什么不适合什么 ③ 方案及原因。"},
+
+// --- 模块5·至善美业提问卡（5题）---
+{type:"single",m:"m5",q:"至善美业提问卡共有多少题，分几大部分？",o:["6题，分2部分","14题，分4部分","20题，分5部分","10题，分3部分"],a:1,e:"提问卡共14题，分4部分：破冰寒暄3 + 核心需求5 + 发质打理4 + 确认共识2。"},
+{type:"single",m:"m5",q:"至善美业提问卡4部分的具体题数分布是？",o:["5+5+2+2","破冰3 + 核心5 + 发质4 + 确认2","4+4+4+2","2+6+4+2"],a:1,e:"分布：破冰寒暄提问3题 + 核心需求提问5题 + 发质与打理提问4题 + 确认共识提问2题，共14题。"},
+{type:"single",m:"m5",q:"以下哪一题属于提问卡\"破冰寒暄提问\"部分？",o:["您平时喜欢自然低调还是有层次的？","姐，今天怎么想起来做头发了？有什么特别的场合吗？","您希望新发型日常好打理吗？","您看这样理解对吗？"],a:1,e:"破冰寒暄题代表：\"姐，今天怎么想起来做头发了？有什么特别的场合吗？\"目的让顾客放松。"},
+{type:"single",m:"m5",q:"以下哪一题属于提问卡\"发质与打理提问\"部分？",o:["接受不接受轻微颜色点缀？","您平时洗完头是自己吹造型，还是自然干比较多？","今天怎么想起来做头发了？","您看这样理解对吗？"],a:1,e:"发质与打理4题代表：\"您平时洗完头是自己吹造型，还是自然干比较多？\"用于了解发质与打理习惯。"},
+{type:"single",m:"m5",q:"以下哪一项不是原文列出的提问卡4条使用技巧？",o:["不要一口气全问完，根据顾客反应灵活穿插","每个问题之间要有自然过渡和承接","问完要确认，不要让顾客觉得是在走流程","问得越多越好，越细越显专业"],a:3,e:"原文4条使用技巧：① 灵活穿插不一口气问完 ② 自然过渡承接 ③ 问完要确认 ④ 配合图库册使用。\"问得越多越好\"不是要点。"},
+
+// --- 综合应用/场景判断（3题）---
+{type:"single",m:"m6",q:"【场景题】顾客说\"我想换个有层次的\"，按4步法和2.0版原则，发型师下一步最佳动作是？",o:["立即推荐方案：\"那我帮您剪一个层次烫\"","顺着话题继续挖：\"您说的有层次是指脸侧打层次还是发尾的碎层？\"","直接报价：\"层次烫288\"","沉默操作，开剪"],a:1,e:"4步法第二步\"挖掘\"：顺着她的话继续挖，让她说透。这是典型的\"挖掘\"动作。"},
+{type:"single",m:"m6",q:"【场景题】顾客刚开口说想法，发型师立刻打断说\"我建议您做一个内扣……\"。这种做法属于？",o:["标准的2.0版操作","严重违反\"少讲、慢判断、后出手\"原则","高效服务的体现","共情确认"],a:1,e:"原文反例：\"发型师打断顾客接话讲自己的，顾客说一半就不说了。\"违反了少讲、慢判断、后出手。"},
+{type:"single",m:"m6",q:"【场景题】发型师说：\"姐，我理解您说的——您想要长度到肩膀、有层次感的发型，平时喜欢偏温柔的风格，对颜色暂时不想有太大改变，是这样吗？\"这一句最匹配4步法中的哪一步？",o:["第1步 提问","第2步 挖掘","第3步 共情确认","第4步 出方案"],a:2,e:"这是把顾客的话重复+加上自己理解，让顾客觉得你懂她——典型的第3步\"共情确认\"。"},
+
+// ======== 判断题 20 道（按模块顺序，0=正确✓，1=错误✗）========
+
+// --- 模块1·沟通的意义（1题）---
+{type:"judge",m:"m1",q:"不同顾客嘴里说的\"剪短一点\"，意思都是统一指剪掉同样的长度，发型师可以照字面理解直接动剪刀。",a:1,e:"错。原文：\"剪短一点\"不同人理解不同——有人是2cm、有人是10cm、有人是打薄。必须沟通确认。"},
+
+// --- 模块2·沟通1.0版6个核心问题（3题）---
+{type:"judge",m:"m2",q:"1.0版的6个核心问题问完之后，发型师可以直接动剪刀，不需要再做方案确认。",a:1,e:"错。6问之后必须做\"方案确认\"——复述一遍让顾客确认，再说\"接下来按照我们设计的方向操作\"，这是免责金牌。"},
+{type:"judge",m:"m2",q:"在1.0版6个问题中，\"接受不接受轻微颜色点缀\"放在第3个问题，主要是为了向顾客推销染发卡。",a:1,e:"错。原文目的是\"避免后续推荐染发翻脸\"，不是为了推销。"},
+{type:"judge",m:"m2",q:"\"刘海平时敢不敢尝试？\"这个问题之所以存在，是因为刘海是发型设计中的\"翻车重灾区\"。",a:0,e:"对。原文明确指出\"刘海是翻车重灾区\"，所以专设一问锁定顾客接受度。"},
+
+// --- 模块3·沟通2.0版70%听30%说（5题）---
+{type:"judge",m:"m3",q:"沟通2.0版的70%和30%指的是发型师说话字数与顾客说话字数的比例。",a:1,e:"错。原文明确：70%和30%不是字数比例，是时间比例——70%时间用来听+挖信息，30%时间给诊断和方案。"},
+{type:"judge",m:"m3",q:"8字口诀中的\"后出手\"，意思是先动剪刀再和顾客聊天。",a:1,e:"错。\"后出手\"的意思是等顾客说透了再给专业意见，是\"慢判断\"的延续。"},
+{type:"judge",m:"m3",q:"原文认为，90%的接客翻车不是技术不行，而是说得太多听得太少。",a:0,e:"对。原文原话：\"90%翻车不是技术不行，是说得太多听得太少。\""},
+{type:"judge",m:"m3",q:"30%专业意见环节，发型师需要把所有产品成分、品牌故事、明星代言都讲一遍才显得专业。",a:1,e:"错。原文规定30%只讲3件事：① 顾客的发质/脸型/头型特点 ② 适合什么不适合什么 ③ 方案是什么及为什么。"},
+{type:"judge",m:"m3",q:"70%听30%说能让顾客有被尊重和被重视的感觉，从而建立\"愿意把头发交给你\"的安全感。",a:0,e:"对。原文对顾客的意义之一就是\"被尊重被重视、安全感极强、愿意把头发交给你\"。"},
+
+// --- 模块4·落地4步法（5题）---
+{type:"judge",m:"m4",q:"4步法中，第一步就要给顾客专业建议，越早出方案越显专业。",a:1,e:"错。第一步是开场开放式提问，让顾客先开口；专业建议放在第四步\"等她讲透再给\"。"},
+{type:"judge",m:"m4",q:"4步法第二步\"挖掘\"环节，关键是不打断、不急于给结论、让顾客说透。",a:0,e:"对。原文：顾客说什么就顺着话题挖，不打断、不急于给结论、让她说透。"},
+{type:"judge",m:"m4",q:"\"共情确认\"指的是把顾客的话重复一遍并加上自己的理解，让顾客觉得你懂她。",a:0,e:"对。这是4步法第三步的标准动作，原文称之为\"共情确认\"。"},
+{type:"judge",m:"m4",q:"4步法的4个步骤里，只有第一步需要遵守\"多问、少讲、慢判断、后出手\"的口诀，后面几步可以不管。",a:1,e:"错。原文：每一步都要贯穿\"多问、少讲、慢判断、后出手\"。"},
+{type:"judge",m:"m4",q:"4步法中，前三步都在收集信息，只有第四步才是给专业判断。",a:0,e:"对。原文：前三步在收集信息，第四步才是给30%的专业意见。"},
+
+// --- 模块5·至善美业提问卡（5题）---
+{type:"judge",m:"m5",q:"至善美业提问卡总共14题，分破冰3+核心5+发质4+确认2这4部分。",a:0,e:"对。原文明确：14题=破冰寒暄3+核心需求5+发质打理4+确认共识2。"},
+{type:"judge",m:"m5",q:"提问卡的\"核心需求提问\"5题，是对应1.0版的6个核心问题精简整合而来的。",a:0,e:"对。原文：核心需求提问5题对应1.0版的6个核心问题（合并了\"换多大改变\"和\"最短能接受多短\"两问）。"},
+{type:"judge",m:"m5",q:"提问卡里的\"确认共识提问\"放在第一部分，作为见到顾客的第一步使用。",a:1,e:"错。\"确认共识提问\"是第4部分，放在最后用来确认方案；第1部分是\"破冰寒暄提问\"。"},
+{type:"judge",m:"m5",q:"使用提问卡时，最好的方式是一口气把14题全部问完，效率最高。",a:1,e:"错。原文使用技巧①：不要一口气全问完，要根据顾客反应灵活穿插，否则顾客会觉得是在走流程。"},
+{type:"judge",m:"m5",q:"提问卡配合发型师的图库册一起使用，效果会翻倍。",a:0,e:"对。原文使用技巧④：配合图库册使用，效果翻倍。"},
+
+// --- 综合应用/场景判断（1题）---
+{type:"judge",m:"m6",q:"【场景题】顾客只说了一句\"剪短一点\"，发型师没有继续挖掘也没有方案确认就直接开剪——这种做法符合沟通2.0版的要求。",a:1,e:"错。\"剪短一点\"在不同人那里含义完全不同（2cm/10cm/打薄），必须按4步法继续挖掘+共情确认+方案确认，否则极易翻车。"}
+];
+
+// 模块名称映射
+const MOD_NAME={
+  m1:"沟通的意义",
+  m2:"1.0版·6问",
+  m3:"2.0版·70/30",
+  m4:"4步法",
+  m5:"提问卡",
+  m6:"综合应用"
+};
+
+let cur=0,ans={},timer,sec=0,done=false,review=false,filter='all';
+const TOTAL=Q.length, PASS=90;
+
+function go(){
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  timer=setInterval(()=>{sec++;document.getElementById('tr').textContent=fmt(sec)},1000);
+  render();
+}
+
+function fmt(s){
+  let m=Math.floor(s/60),ss=s%60;
+  return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+}
+
+function render(){
+  let q=Q[cur], el=document.getElementById('p2');
+  let my=ans[cur], answered=my!==undefined;
+  let isJudge=q.type==='judge';
+  let opts=isJudge?['正确 ✓','错误 ✗']:q.o;
+  let letters=isJudge?['✓','✗']:['A','B','C','D'];
+  let typeLabel=isJudge?'<span class="tag j">判断题</span>':'<span class="tag s">单选题</span>';
+  let modLabel='<span class="mod">'+MOD_NAME[q.m]+'</span>';
+  
+  let h='<div class="qc"><div class="num"><span>第 <b>'+(cur+1)+'</b> / '+TOTAL+' 题</span><span>'+typeLabel+modLabel+'</span></div>';
+  h+='<div class="qt">'+q.q+'</div><div class="opts">';
+  for(let i=0;i<opts.length;i++){
+    let cls='ob';
+    if(answered){
+      cls+=' off';
+      if(i===q.a) cls+=' ok';
+      if(i===my&&my!==q.a) cls+=' no';
+      if(!done&&i===q.a&&my!==q.a) cls+=' hi';
+    }
+    h+='<div class="'+cls+'" onclick="pick('+i+')"><div class="lt">'+letters[i]+'</div><div>'+opts[i]+'</div></div>';
+  }
+  h+='</div>';
+  if(answered){
+    h+='<div class="exp on">💡 '+(my===q.a?'回答正确！':'❌ 正确答案：'+letters[q.a]+'。')+q.e+'</div>';
+  }else{
+    h+='<div class="exp"></div>';
+  }
+  h+='</div>';
+  
+  if(review&&done){
+    let tags='<div class="rvtag"><button class="'+(filter==='all'?'on':'')+'" onclick="flt(\'all\')">全部</button>';
+    tags+='<button class="'+(filter==='wrong'?'on':'')+'" onclick="flt(\'wrong\')">❌ 错题</button>';
+    tags+='<button class="'+(filter==='right'?'on':'')+'" onclick="flt(\'right\')">✅ 对题</button></div>';
+    h=tags+h;
+  }
+  
+  el.innerHTML=h;
+  
+  document.getElementById('pb').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tl').textContent=(cur+1)+'/'+TOTAL;
+  
+  let nb=document.getElementById('bNext');
+  let pb=document.getElementById('bPrev');
+  pb.style.display=cur>0?'block':'none';
+  
+  if(cur===TOTAL-1&&!done){
+    nb.textContent='交卷';nb.className='bsub';nb.onclick=submit;
+  }else if(done){
+    nb.textContent=review?'返回成绩':'查看成绩';nb.className='bsub';nb.onclick=showResult;
+  }else{
+    nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)};
+  }
+  if(done&&cur<TOTAL-1){nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)}}
+}
+
+function pick(i){
+  if(ans[cur]!==undefined)return;
+  ans[cur]=i;
+  done||setTimeout(()=>{if(cur<TOTAL-1)nav(1);else render()},600);
+  render();
+}
+
+function nav(d){
+  let nc=cur+d;
+  if(nc<0||nc>TOTAL-1)return;
+  if(review&&filter!=='all'){
+    let dir=d>0?1:-1;
+    let found=false;
+    for(let j=nc;j>=0&&j<TOTAL;j+=dir){
+      let isWrong=ans[j]!==Q[j].a;
+      if(filter==='wrong'&&isWrong){nc=j;found=true;break}
+      if(filter==='right'&&!isWrong){nc=j;found=true;break}
+    }
+    if(!found)return;
+  }
+  cur=nc;render();
+  window.scrollTo(0,0);
+}
+
+function submit(){
+  done=true;review=false;
+  clearInterval(timer);
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('p2').classList.remove('on');
+  document.getElementById('btm').style.display='none';
+  document.getElementById('p3').classList.add('on');
+  
+  let right=0;
+  // 模块统计
+  let modStat={};
+  for(let k in MOD_NAME){modStat[k]={total:0,right:0}}
+  for(let i=0;i<TOTAL;i++){
+    let q=Q[i];
+    modStat[q.m].total++;
+    if(ans[i]===q.a){right++;modStat[q.m].right++}
+  }
+  let wrong=TOTAL-right;
+  let score=right*2;
+  let pass=score>=PASS;
+  
+  let el=document.getElementById('p3');
+  let h='<div class="rp">';
+  h+='<div class="circle '+(pass?'pass':'fail')+'"><div class="sn">'+score+'</div><div class="sl">分</div></div>';
+  h+='<div class="rt">'+(pass?'🎉 恭喜通过':'💪 需要重考')+'</div>';
+  h+='<div class="rs">'+(pass?'90分及格线，你已达标':'距及格还差'+(PASS-score)+'分，请重新考试')+'</div>';
+  h+='<div class="sg"><div class="sc"><div class="sv g">'+right+'</div><div class="svl">答对</div></div>';
+  h+='<div class="sc"><div class="sv r">'+wrong+'</div><div class="svl">答错</div></div>';
+  h+='<div class="sc"><div class="sv b">'+fmt(sec)+'</div><div class="svl">用时</div></div></div>';
+  
+  // 模块得分卡
+  h+='<div class="modcard"><h3>📊 各模块得分情况</h3>';
+  for(let k in MOD_NAME){
+    let s=modStat[k];
+    let pct=s.total>0?Math.round(s.right/s.total*100):0;
+    h+='<div class="mrow"><div class="mn">'+MOD_NAME[k]+'</div><div class="mb"><div style="width:'+pct+'%"></div></div><div class="mv">'+s.right+'/'+s.total+' ('+pct+'%)</div></div>';
+  }
+  h+='</div>';
+  
+  h+='<div style="margin-bottom:16px">';
+  h+='<button class="rbtn rreview" onclick="reviewExam()">📖 查看解析</button>';
+  h+='<button class="rbtn rretry" onclick="retry()">🔄 重新考试</button>';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+function reviewExam(){
+  review=true;filter='all';cur=0;
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  render();
+}
+
+function retry(){
+  cur=0;ans={};sec=0;done=false;review=false;filter='all';
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p1').classList.add('on');
+  document.getElementById('pb').style.width='0%';
+  document.getElementById('tl').textContent='50题沟通设计话术考核';
+  document.getElementById('tr').textContent='00:00';
+  clearInterval(timer);
+}
+
+function flt(f){
+  filter=f;render();
+}
+</script>
+</body>
+</html>
