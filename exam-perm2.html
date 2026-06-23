@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>烫发进阶内训考核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f5f5f7;color:#333;min-height:100vh;overflow-x:hidden}
+.top{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;padding:14px 16px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top h1{font-size:17px;font-weight:700;text-align:center}
+.top .info{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;opacity:.9}
+.top .bar{height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:8px}
+.top .bar div{height:100%;background:#a78bfa;border-radius:2px;transition:width .3s}
+.page{padding:64px 12px 90px;display:none}
+.page.on{display:block}
+.s1{text-align:center;padding:60px 16px 40px}
+.s1 .ico{font-size:56px;margin-bottom:12px}
+.s1 h2{font-size:22px;font-weight:800;color:#6d28d9}
+.s1 .desc{font-size:13px;color:#888;margin:8px 0 28px;line-height:1.6}
+.s1 .box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:28px;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.s1 .box p{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #f3f3f3}
+.s1 .box p:last-child{border:none}
+.s1 .box span:last-child{font-weight:700;color:#6d28d9}
+.gobtn{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;padding:15px 56px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(124,58,237,.3)}
+.gobtn:active{transform:scale(.97)}
+.modtag{display:inline-block;font-size:11px;padding:3px 8px;background:#ede9fe;color:#6d28d9;border-radius:10px;font-weight:600;margin-bottom:8px}
+.qc{background:#fff;border-radius:12px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qc .num{font-size:12px;color:#999;margin-bottom:6px}
+.qc .num b{color:#6d28d9;font-size:15px}
+.qc .qt{font-size:15.5px;line-height:1.7;font-weight:600;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.ob{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;background:#fff;font-size:14.5px;line-height:1.55;cursor:pointer;transition:all .15s;text-align:left}
+.ob:active{transform:scale(.98)}
+.ob .lt{min-width:26px;height:26px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;transition:all .15s}
+.ob.ok{border-color:#16a34a;background:#f0fdf4}
+.ob.ok .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.no{border-color:#dc2626;background:#fef2f2}
+.ob.no .lt{border-color:#dc2626;background:#dc2626;color:#fff}
+.ob.hi{border-color:#16a34a;background:#f0fdf4}
+.ob.hi .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.off{pointer-events:none}
+.exp{margin-top:12px;padding:10px 12px;background:#faf5ff;border-left:3px solid #a78bfa;border-radius:0 8px 8px 0;font-size:13px;line-height:1.6;color:#555;display:none}
+.exp.on{display:block}
+.btm{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px 20px;box-shadow:0 -2px 8px rgba(0,0,0,.08);display:none;z-index:200}
+.btm .row{display:flex;gap:10px}
+.btm button{flex:1;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.btm button:active{transform:scale(.97)}
+.bprev{background:#f3f4f6;color:#666}
+.bnext{background:#7c3aed;color:#fff}
+.bsub{background:#16a34a;color:#fff}
+.bsub:disabled{background:#9ca3af}
+.rp{text-align:center;padding:30px 16px 100px}
+.rp .circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #e5e7eb}
+.rp .circle.pass{border-color:#16a34a}
+.rp .circle.fail{border-color:#dc2626}
+.rp .circle .sn{font-size:42px;font-weight:800}
+.rp .circle .sl{font-size:12px;color:#999;margin-top:2px}
+.rp .rt{font-size:20px;font-weight:800;margin-bottom:6px}
+.rp .rs{font-size:13px;color:#888;margin-bottom:20px}
+.rp .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px}
+.rp .sc{background:#fff;border-radius:10px;padding:14px 8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.rp .sc .sv{font-size:22px;font-weight:800}
+.rp .sc .sv.g{color:#16a34a}
+.rp .sc .sv.r{color:#dc2626}
+.rp .sc .sv.b{color:#7c3aed}
+.rp .sc .svl{font-size:11px;color:#999;margin-top:2px}
+.mod-title{font-size:13px;font-weight:700;color:#444;margin:10px 0 8px;text-align:left;padding-left:4px}
+.mod-card{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.mod-card .mh{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;margin-bottom:6px}
+.mod-card .mh .mn{color:#333}
+.mod-card .mh .ms{color:#6d28d9;font-weight:700}
+.mod-card .mbar{height:6px;background:#f3f4f6;border-radius:3px;overflow:hidden}
+.mod-card .mbar div{height:100%;background:linear-gradient(90deg,#a78bfa,#7c3aed);border-radius:3px;transition:width .6s}
+.mod-card.weak .mbar div{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.mod-card.weak .mh .ms{color:#dc2626}
+.rbtn{display:inline-block;padding:13px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin:4px}
+.rreview{background:#f3f4f6;color:#333}
+.rretry{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
+.rvtag{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px}
+.rvtag button{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#666}
+.rvtag button.on{background:#6d28d9;color:#fff;border-color:#6d28d9}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+<h1>💜 烫发进阶内训考核</h1>
+<div class="info"><span id="tl">100题 · 90分及格 · 满分100</span><span id="tr">00:00</span></div>
+<div class="bar"><div id="pb" style="width:0%"></div></div>
+</div>
+
+<div class="page on" id="p1">
+<div class="s1">
+<div class="ico">💜</div>
+<h2>烫发进阶内训考核</h2>
+<p class="desc">头发3层结构 / 四大链键 / 三步化学原理 / 四大烫型 / 五档稀释<br>沙性破冰 / 双维诊断 / 综合应用<br>100题 · 90分及格 · 满分100</p>
+<div class="box">
+<p><span>题目数量</span><span>100题</span></p>
+<p><span>题目类型</span><span>四选一</span></p>
+<p><span>每题分值</span><span>1分</span></p>
+<p><span>及格分数</span><span>90分</span></p>
+<p><span>答题方式</span><span>逐题作答·即时反馈</span></p>
+</div>
+<button class="gobtn" onclick="go()">开始考试</button>
+</div>
+</div>
+
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+
+<div class="btm" id="btm">
+<div class="row">
+<button class="bprev" id="bPrev" onclick="nav(-1)">上一题</button>
+<button class="bnext" id="bNext" onclick="nav(1)">下一题</button>
+</div>
+</div>
+
+<script>
+const Q=[
+// ===== 模块1 头发3层结构（1-12，共12题） =====
+{m:"M1",q:"头发的生物属性是？",o:["可再生的活细胞组织","没有生命的死细胞组织","半活体角质组织","可自我修复的有机体"],a:1,e:"原文：头发是没有生命的死细胞组织。没有代谢、修复、再生。"},
+{m:"M1",q:"以下关于头发自愈能力的说法，正确的是？",o:["头发能自我代谢和再生","结构破坏后只能表层修饰，无法自愈","用发膜可让头发再生","头皮血液会修复发干"],a:1,e:"原文：一旦结构破坏，无法自愈，只能表层修饰。"},
+{m:"M1",q:"头发由内到外共分几层结构？",o:["两层","三层","四层","五层"],a:1,e:"原文：三层结构：毛小皮、皮质层、髓质层。"},
+{m:"M1",q:"毛小皮的排列方式是？",o:["条状平铺","蜂窝状","鱼鳞状/瓦片式重叠排列","螺旋缠绕"],a:2,e:"原文：毛小皮鱼鳞状/瓦片式重叠排列，6-10层结构。"},
+{m:"M1",q:"毛小皮一般由多少层结构组成？",o:["1-2层","3-5层","6-10层","12-15层"],a:2,e:"原文：毛小皮6-10层结构。"},
+{m:"M1",q:"决定头发光泽、顺滑、锁水性、质感细腻度的是哪一层？",o:["毛小皮","皮质层","髓质层","头皮层"],a:0,e:"原文：毛小皮决定光泽、顺滑、锁水性、质感细腻度。"},
+{m:"M1",q:"所有护发素、精油、发膜只作用于？",o:["皮质层","毛小皮(表皮层)","髓质层","毛囊"],a:1,e:"原文：所有护发素、精油、发膜，只作用于表皮层。"},
+{m:"M1",q:"关于护发产品的核心定位，正确的是？",o:["护发素能修复内部受损结构","护发是修饰，烫染是改芯","护发可以改变卷度记忆","护发能重组二硫键"],a:1,e:"原文核心：护发是修饰，烫染是改芯。护发只能闭合鳞片、填补表层缝隙。"},
+{m:"M1",q:"皮质层占头发体积的比例是？",o:["30%-50%","50%-70%","75%-90%","95%以上"],a:2,e:"原文：皮质层占头发体积75%-90%。"},
+{m:"M1",q:"头发的弹性、韧性、颜色、卷度记忆和链键系统全部集中在？",o:["毛小皮","皮质层","髓质层","头皮"],a:1,e:"原文：所有弹性、韧性、颜色、卷度记忆、链键系统，全部集中在皮质层。"},
+{m:"M1",q:"所有烫发、拉直、塑形改变的是头发的？",o:["毛小皮外壳","皮质层内部结构","髓质层中空区","毛囊深处"],a:1,e:"原文：所有烫发、拉直、塑形，全部只改变皮质层内部结构。"},
+{m:"M1",q:"关于髓质层，下列说法正确的是？",o:["决定头发卷度","参与所有烫染化学反应","中心疏松中空、不参与任何烫染化学反应","决定头发颜色"],a:2,e:"原文：髓质层中心疏松中空结构，不参与任何烫染化学反应，对烫发无影响。"},
+
+// ===== 模块2 四大链键系统（13-34，共22题） =====
+{m:"M2",q:"烫发的本质是？",o:["改变头皮","控制四大链键的断裂与重组","清洁毛囊","补充营养"],a:1,e:"原文：烫发的本质，就是控制四大链键的断裂与重组。"},
+{m:"M2",q:"以下哪种链键属于头发内部最强、最稳定的结构性键位？",o:["氢键","盐键","二硫键","角质键"],a:2,e:"原文：二硫键是头发内部最强、最稳定的结构性键位。"},
+{m:"M2",q:"决定头发天生直、天生卷以及永久形态的是？",o:["氢键","二硫键","盐键","髓质层"],a:1,e:"原文：二硫键决定头发天生直、天生卷、永久形态。"},
+{m:"M2",q:"二硫键又被称为？",o:["临时塑形键","永久定型键","离子键","蛋白骨架键"],a:1,e:"原文：二硫键即永久定型键。"},
+{m:"M2",q:"烫发流程中「还原」环节做的事是？",o:["重组新二硫键","药水还原打断部分二硫键","只改变氢键","封闭毛鳞片"],a:1,e:"原文：药水还原 → 打断部分二硫键。"},
+{m:"M2",q:"烫发「重组新二硫键」对应哪一步？",o:["还原软化","物理塑形","氧化定型","洗发清洁"],a:2,e:"原文：氧化定型 → 重新组合新二硫键。"},
+{m:"M2",q:"二硫键成功重组后的卷度记忆特点是？",o:["遇水即恢复","水洗不掉、吹风不变","三天就反弹","只在干发时存在"],a:1,e:"原文：二硫键重组=永久卷度记忆，水洗不掉、吹风不变。"},
+{m:"M2",q:"顾客头发烫完很快变直，最根本的原因是？",o:["卷杠选错","客户洗头太勤","二硫键断裂不足、重组不彻底","头皮出油过多"],a:2,e:"原文：不是杠子问题，是二硫键断裂不足、重组不彻底。"},
+{m:"M2",q:"四大链键中数量最多、最弱、最活跃的是？",o:["二硫键","氢键","盐键","肽键"],a:1,e:"原文：氢键数量最多、最弱、最活跃。"},
+{m:"M2",q:"氢键的可逆性特点是？",o:["不可逆","遇水、遇热自动断裂重组，完全可逆","只能化学药水打断","必须高温重置"],a:1,e:"原文：氢键遇水、遇热自动断裂重组，完全可逆。"},
+{m:"M2",q:"日常吹风造型、电棒造型改变的是？",o:["二硫键","氢键","盐键","肽键"],a:1,e:"原文：吹风造型、电棒造型，全部只改变氢键。"},
+{m:"M2",q:"为什么电棒卷一洗头就直了？",o:["二硫键没断","氢键洗头即恢复，没有永久记忆","盐键流失","肽键断裂"],a:1,e:"原文：氢键洗头即恢复，没有永久记忆。"},
+{m:"M2",q:"氢烫的特点不包括以下哪一项？",o:["发质极致健康","卷度柔软","持久度偏弱","持久度极强且永久"],a:3,e:"原文：氢烫发质极致健康、卷度柔软、但是持久度偏弱。"},
+{m:"M2",q:"盐键又叫什么？",o:["共价键","离子键","金属键","氢离子键"],a:1,e:"原文：盐键（离子键）。"},
+{m:"M2",q:"盐键的强弱受什么控制？",o:["温度","PH酸碱度","湿度","光照"],a:1,e:"原文：盐键受PH酸碱度控制。"},
+{m:"M2",q:"盐键决定头发的什么属性？",o:["颜色","支撑力、弹性、紧实度","光泽","卷度记忆"],a:1,e:"原文：盐键决定头发支撑力、弹性、紧实度。"},
+{m:"M2",q:"顾客烫完软塌、无弹力、蓬松度差，最可能的链键问题是？",o:["氢键过多","二硫键过强","碱性过强流失盐键","肽键断裂"],a:2,e:"原文：碱性过强会流失盐键，头发烫完软塌、无弹力、蓬松度差。"},
+{m:"M2",q:"头发蛋白质的主干骨架是？",o:["氢键","二硫键","盐键","肽键"],a:3,e:"原文：肽键是头发蛋白质的主干骨架键，极强、极稳定。"},
+{m:"M2",q:"关于肽键，下列说法正确的是？",o:["正常烫发会破坏肽键","正常烫发不会破坏肽键","氢烫会断肽键","定型剂会断肽键"],a:1,e:"原文：正常烫发不会破坏肽键。"},
+{m:"M2",q:"肽键一旦断裂，头发会变成什么状态？",o:["软化好处理","碳化、棉化、粉碎性损伤，彻底不可逆","容易上色","卷度更持久"],a:1,e:"原文：肽键断裂=头发碳化、棉化、粉碎性损伤，彻底不可逆。"},
+{m:"M2",q:"烫断、烫废的头发的真正根因是？",o:["杠子太小","定型剂涂少","强碱、高温、过度软化破坏了肽键","顾客没用发膜"],a:2,e:"原文：所有烫断、烫废的头发，全部是强碱、高温、过度软化破坏了肽键。"},
+{m:"M2",q:"以下哪项是四大链键中「不可逆损伤」的最终警戒线？",o:["氢键断裂","盐键流失","二硫键断裂","肽键断裂"],a:3,e:"原文：肽键断裂彻底不可逆，是不可逆损伤的最终警戒。"},
+
+// ===== 模块3 烫发三步化学原理（35-52，共18题） =====
+{m:"M3",q:"烫发完整的化学流程共分几步？",o:["两步","三步","四步","五步"],a:1,e:"原文：烫发三步——还原软化、物理塑形、氧化定型。"},
+{m:"M3",q:"烫发的第一步是？",o:["物理塑形","还原软化","氧化定型","封闭毛鳞片"],a:1,e:"原文：第一步是还原软化。"},
+{m:"M3",q:"还原软化用什么药水？",o:["酸性产品","碱性药水","中性精油","纯氧化剂"],a:1,e:"原文：碱性药水打开毛鳞片、进入皮质层。"},
+{m:"M3",q:"软化的化学目的是？",o:["完全断裂所有键","断裂部分二硫键，让头发获得可塑性","重组二硫键","破坏肽键"],a:1,e:"原文：软化断裂部分二硫键，让头发获得可塑性。"},
+{m:"M3",q:"门店软化的核心红线之一是？",o:["软化必须干发操作","软化必须湿发操作","软化必须先吹热风","软化用蛋白稀释"],a:1,e:"原文红线：软化必须湿发操作。"},
+{m:"M3",q:"门店软化稀释药水浓度，只能用？",o:["护理水","清水/纯水","蛋白原液","酸性精华"],a:1,e:"原文红线：软化只能用清水稀释浓度。"},
+{m:"M3",q:"软化全程绝对禁止添加？",o:["纯净水","任何护理、蛋白、修复类产品","卷杠","定型剂"],a:1,e:"原文红线：软化全程禁止加入任何护理、蛋白、修复类产品。"},
+{m:"M3",q:"为什么软化禁止添加护理蛋白产品？",o:["产品太贵","成膜包裹结构会包裹毛鳞片阻隔药水渗透","会发臭","让头发变黑"],a:1,e:"原文：护理成分成膜包裹，会包裹毛鳞片、阻隔药水渗透。"},
+{m:"M3",q:"软化时混入护理蛋白会导致下列哪种结果？",o:["卷度更持久","假性软化、外软内硬","头发更顺","二硫键重组更好"],a:1,e:"原文：会导致假性软化、外软内硬。"},
+{m:"M3",q:"假性软化最终的烫后表现是？",o:["卷度蓬松","烫后反弹、卷度不持久","头发更黑亮","卷度比预期还紧"],a:1,e:"原文：假性软化最终烫后反弹、卷度不持久。"},
+{m:"M3",q:"烫发第二步「物理塑形」的核心操作是？",o:["涂抹定型剂","卷杠缠绕改变发丝空间曲线","加热毛鳞片","清洗发丝"],a:1,e:"原文：通过卷杠缠绕，改变发丝空间曲线。"},
+{m:"M3",q:"物理塑形的作用是？",o:["完成最终定型","为二硫键重组做精准定位","闭合毛鳞片","破坏盐键"],a:1,e:"原文：物理塑形固定新的形态位置，为二硫键重组做精准定位。"},
+{m:"M3",q:"烫发第三步是？",o:["还原软化","物理塑形","氧化定型","封口护色"],a:2,e:"原文：第三步是氧化定型。"},
+{m:"M3",q:"定型剂的化学作用包括？",o:["进一步软化头发","中和碱性、闭合毛鳞片、重新对接二硫键","只闭合毛鳞片","只重组氢键"],a:1,e:"原文：定型剂中和碱性、闭合毛鳞片，重新对接二硫键。"},
+{m:"M3",q:"卷度形态被永久锁定的关键环节是？",o:["软化","塑形","氧化定型","洗发"],a:2,e:"原文：氧化定型永久锁定卷度形态。"},
+{m:"M3",q:"软化阶段毛鳞片应处于什么状态？",o:["紧闭","被碱性药水打开","局部脱落","氧化变硬"],a:1,e:"原文：碱性药水打开毛鳞片，进入皮质层。"},
+{m:"M3",q:"「成膜包裹结构」会带来什么直接影响？",o:["增强药水渗透","阻隔药水渗透","软化更充分","定型更牢固"],a:1,e:"原文：护理成膜包裹会阻隔药水渗透。"},
+{m:"M3",q:"以下关于「软化只能用清水稀释」理由，正确的是？",o:["清水便宜","防止护理成分形成膜包裹阻隔药水","让头发更湿","稀释更均匀"],a:1,e:"原文：清水稀释避免护理成分成膜包裹、确保药水真实渗透到皮质层。"},
+
+// ===== 模块4 四大烫型体系（53-64，共12题） =====
+{m:"M4",q:"门店共有几大烫型体系？",o:["两大","三大","四大","五大"],a:2,e:"原文：四大烫型体系——冷烫、热烫、离子烫、氢烫。"},
+{m:"M4",q:"冷烫的反应温度特点是？",o:["高温反应","常温反应","低温反应","梯度升温"],a:1,e:"原文：冷烫常温反应。"},
+{m:"M4",q:"冷烫卷度的典型表现是？",o:["干湿双弹","湿卷干塌","永久拉直","干涩无卷"],a:1,e:"原文：冷烫湿卷干塌。"},
+{m:"M4",q:"冷烫主打的发型效果定位是？",o:["精致卷度","纹理蓬松","永久拉直","厚重大卷"],a:1,e:"原文：冷烫主打纹理蓬松。"},
+{m:"M4",q:"热烫的核心反应机制是？",o:["纯物理高温","化学+热力双重记忆","纯氧化反应","只动氢键"],a:1,e:"原文：热烫化学+热力双重记忆。"},
+{m:"M4",q:"热烫的卷度持久表现是？",o:["湿卷干塌","干湿双弹","只在干发明显","只在湿发明显"],a:1,e:"原文：热烫干湿双弹。"},
+{m:"M4",q:"本店主打的高端质感烫型是？",o:["冷烫","热烫","离子烫","氢烫"],a:1,e:"原文：热烫——本店主打高端质感。"},
+{m:"M4",q:"离子烫的物理特点是？",o:["低温常温","高温重置纤维结构","完全无热力","只用化学药水"],a:1,e:"原文：离子烫高温重置纤维结构。"},
+{m:"M4",q:"离子烫的发型效果是？",o:["蓬松卷度","永久拉直","微卷","干湿双弹"],a:1,e:"原文：离子烫永久拉直。"},
+{m:"M4",q:"氢烫主要通过改变什么完成造型？",o:["二硫键","氢键","盐键","肽键"],a:1,e:"原文：氢烫氢键塑形。"},
+{m:"M4",q:"氢烫对头发的损伤程度是？",o:["重度损伤","中度损伤","零损伤","轻度损伤"],a:2,e:"原文：氢烫零损伤。"},
+{m:"M4",q:"氢烫的卷度质感定位是？",o:["大波浪","微卷轻质感","纹理蓬松","永久拉直"],a:1,e:"原文：氢烫微卷轻质感。"},
+
+// ===== 模块5 药水五档稀释体系（65-78，共14题） =====
+{m:"M5",q:"本店所有软化浓度，统一用什么调节？",o:["普通自来水","纯净水","酸性精华","蛋白原液"],a:1,e:"原文：本店所有软化浓度，仅用纯净水调节。"},
+{m:"M5",q:"针对粗硬抗拒发，软化浓度应该是？",o:["10:1","10:3","原液操作","10:10"],a:2,e:"原文：粗硬抗拒发——原液操作。"},
+{m:"M5",q:"健康原发的标准稀释比例区间是？",o:["原液","10:1～10:3","10:5～10:10","10:10～10:1000"],a:1,e:"原文：健康原发10:1～10:3。"},
+{m:"M5",q:"1-2度轻损发应使用的稀释比例区间是？",o:["原液","10:1～10:3","10:3～10:5","10:5～10:10"],a:2,e:"原文：1-2度轻损10:3～10:5。"},
+{m:"M5",q:"3-4度中损发的稀释比例区间是？",o:["10:1～10:3","10:3～10:5","10:5～10:10","10:10～10:1000"],a:2,e:"原文：3-4度中损10:5～10:10。"},
+{m:"M5",q:"5-7度重度漂损发的稀释比例区间是？",o:["10:3～10:5","10:5～10:10","10:10～10:1000","原液操作"],a:2,e:"原文：5-7度重度漂损10:10～10:1000。"},
+{m:"M5",q:"顾客发质粗硬难软化，多次实验药水都吃不进，应使用？",o:["10:10超轻稀释","10:3稀释","原液操作","加入护理蛋白"],a:2,e:"原文：粗硬抗拒发——原液操作。"},
+{m:"M5",q:"顾客头发健康无染烫底子，应使用稀释档？",o:["原液","10:1～10:3","10:5～10:10","10:10～10:1000"],a:1,e:"原文：健康原发10:1～10:3。"},
+{m:"M5",q:"顾客曾轻度漂染1-2次留下轻损，应选择？",o:["原液","10:3～10:5","10:5～10:10","10:10～10:1000"],a:1,e:"原文：1-2度轻损10:3～10:5。"},
+{m:"M5",q:"顾客有3-4度漂染中损底子，对应稀释档是？",o:["原液","10:1～10:3","10:5～10:10","10:10～10:1000"],a:2,e:"原文：3-4度中损10:5～10:10。"},
+{m:"M5",q:"顾客头发5次以上重度漂染严重受损，软化方案是？",o:["原液操作","10:3～10:5","10:5～10:10","10:10～10:1000"],a:3,e:"原文：5-7度重度漂损10:10～10:1000。"},
+{m:"M5",q:"门店稀释药水时严禁加入下列哪类？",o:["纯净水","清水","蛋白/护理/修复类成分","空气"],a:2,e:"原文：软化全程禁止加入任何护理、蛋白、修复类产品。"},
+{m:"M5",q:"五档稀释的分类依据是？",o:["头发长度","头发颜色","发质受损程度","顾客年龄"],a:2,e:"原文：五档对应从粗硬抗拒发到重度漂损的不同发质状态。"},
+{m:"M5",q:"以下关于稀释体系的描述，正确的是？",o:["发质越好稀释越多","发质越受损稀释越多（直至10:1000）","所有发质都用原液","用自来水稀释更稳"],a:1,e:"原文：受损越严重稀释越重，5-7度重损可达10:1000。"},
+
+// ===== 模块6 沙性自然卷破冰处理（79-90，共12题） =====
+{m:"M6",q:"沙性自然卷发质的典型结构特点不包括？",o:["毛鳞片极度紊乱","发丝空洞大","极易脱水","发丝极度紧实饱满"],a:3,e:"原文：沙性自然卷毛鳞片极度紊乱、发丝空洞大、极易脱水、极易干枯碳化。"},
+{m:"M6",q:"沙性发质操作的第一步是？",o:["直接上浓药","破冰处理","直接卷杠","直接定型"],a:1,e:"原文：沙性操作第一步——先做破冰处理。"},
+{m:"M6",q:"沙性发质破冰使用的稀释比例是？",o:["原液","10:3","10:10超轻稀释","10:1000"],a:2,e:"原文：破冰使用10:10超轻稀释药水。"},
+{m:"M6",q:"破冰药水如何使用？",o:["局部点涂","整体快速梳理破冰","只涂发根","闷蒸2小时"],a:1,e:"原文：使用10:10超轻稀释药水，整体快速梳理破冰。"},
+{m:"M6",q:"沙性发质破冰的第一个目的是？",o:["染色","打开杂乱毛鳞片、统一发丝结构","重组二硫键","增加蓬松度"],a:1,e:"原文：破冰目的1——打开杂乱毛鳞片、统一发丝结构。"},
+{m:"M6",q:"沙性破冰的第二个目的是？",o:["提前锁住发丝水分","染色","拉直发丝","打开盐键"],a:0,e:"原文：破冰目的2——提前锁住发丝水分。"},
+{m:"M6",q:"沙性破冰的第三个目的是？",o:["增加髓质层","防止后续软化过程中蛋白质大量流失","重组氢键","降低发丝韧性"],a:1,e:"原文：破冰目的3——防止后续软化过程中蛋白质大量流失。"},
+{m:"M6",q:"沙发烫炸、干枯、毛躁的核心原因是？",o:["没破冰、直接上浓药、发丝快速脱水、蛋白流失","卷杠太大","顾客头皮太敏感","定型剂太多"],a:0,e:"原文：沙发烫炸核心原因——没破冰、直接上浓药、发丝快速脱水、蛋白流失、结构崩塌。"},
+{m:"M6",q:"破冰完成后下一步操作是？",o:["直接卷杠","直接定型","根据发质状态正常涂抹标准软化剂","继续破冰3轮"],a:2,e:"原文：破冰完成、结构稳定、锁水到位后，再根据发质状态正常涂抹标准软化剂。"},
+{m:"M6",q:"操作过程中发现发色泛黄、发干，应该？",o:["立即停水","继续操作","立刻喷水保湿","加大药水浓度"],a:2,e:"原文：一旦出现泛黄、发干，立刻喷水保湿，杜绝脱水损伤。"},
+{m:"M6",q:"刘海、面部侧区极度细软发质的处理原则是？",o:["浓度调更高","必须单独调低浓度，预防软化过度","和后区一致","干发操作"],a:1,e:"原文：刘海、面部侧区极度细软发质，必须单独调低浓度，预防软化过度。"},
+{m:"M6",q:"为什么沙性发质极易干枯碳化？",o:["毛鳞片紊乱、空洞大、极易脱水","髓质层过厚","盐键过多","二硫键过强"],a:0,e:"原文：沙性自然卷毛鳞片极度紊乱、发丝空洞大、极易脱水、极易干枯碳化。"},
+
+// ===== 模块7 双维诊断（91-98，共8题） =====
+{m:"M7",q:"门店发质判断的核心原则是？",o:["凭肉眼目测","必须杜绝肉眼目测，双维度检测","只看顾客描述","只看染发底色"],a:1,e:"原文：所有发质判断，杜绝肉眼目测，必须双维度检测。"},
+{m:"M7",q:"干发拉伸测试取多少根发丝？",o:["5根","10根","20根","50根"],a:2,e:"原文：取20根发丝轻柔拉伸。"},
+{m:"M7",q:"健康发质干发拉伸表现是？",o:["拉伸1.2倍，回弹有力不断","拉伸1.1倍，柔和回弹","绵软无回弹","直接断裂"],a:0,e:"原文：健康发拉伸1.2倍，回弹有力不断。"},
+{m:"M7",q:"轻损发质干发拉伸表现是？",o:["拉伸1.2倍有力回弹","拉伸1.1倍回弹柔和","绵软无回弹","拉不动"],a:1,e:"原文：轻损发拉伸1.1倍，回弹柔和。"},
+{m:"M7",q:"中重损发质拉伸表现是？",o:["1.2倍有力回弹","1.1倍柔和回弹","绵软无力、无回弹、易断","拉伸1.5倍以上"],a:2,e:"原文：中重损发绵软无力、无回弹、易断。"},
+{m:"M7",q:"湿发渗透复核的检测方法是？",o:["剪一段做实验","喷水打湿观察","染色测试","拉伸2倍"],a:1,e:"原文：湿发渗透复核——喷水打湿观察。"},
+{m:"M7",q:"抗拒发湿检的典型表现是？",o:["吸水均匀","吸水慢、挂水珠、难渗透","极速吸水塌陷","出现染色"],a:1,e:"原文：抗拒发吸水慢、挂水珠、难渗透。"},
+{m:"M7",q:"受损发湿检的典型表现是？",o:["吸水均匀柔韧","挂水珠不吸水","极速吸水、发丝塌陷绵软","完全不变化"],a:2,e:"原文：受损发极速吸水、发丝塌陷绵软。"},
+
+// ===== 模块8 综合应用（99-100，共2题） =====
+{m:"M8",q:"顾客自述沙性自然卷+3-4度漂损底子，正确操作顺序是？",o:["直接上原液软化→卷杠→定型","先10:10破冰→根据发质状态用10:5~10:10软化→卷杠→定型","先用蛋白稀释软化→卷杠→定型","直接干发拉直"],a:1,e:"原文：沙性必须先破冰再标准软化；3-4度中损对应10:5～10:10。"},
+{m:"M8",q:"顾客烫完一周内卷度严重反弹、外软内硬，最可能的根因是？",o:["卷杠太松","软化时加了护理/蛋白产品，形成假性软化","顾客洗头水温太低","头发太短"],a:1,e:"原文：加护理蛋白会成膜包裹、阻隔药水→假性软化→外软内硬→反弹不持久。"}
+];
+
+const MOD_NAMES={
+  M1:"头发3层结构",
+  M2:"四大链键系统",
+  M3:"烫发三步化学原理",
+  M4:"四大烫型体系",
+  M5:"药水五档稀释",
+  M6:"沙性自然卷破冰",
+  M7:"双维诊断",
+  M8:"综合应用"
+};
+const MOD_ORDER=["M1","M2","M3","M4","M5","M6","M7","M8"];
+
+let cur=0,ans={},timer,sec=0,done=false,review=false,filter='all';
+const TOTAL=Q.length, PASS=90;
+
+function go(){
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  timer=setInterval(()=>{sec++;document.getElementById('tr').textContent=fmt(sec)},1000);
+  render();
+}
+
+function fmt(s){
+  let m=Math.floor(s/60),ss=s%60;
+  return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+}
+
+function render(){
+  let q=Q[cur], el=document.getElementById('p2');
+  let my=ans[cur], answered=my!==undefined;
+  let modName=MOD_NAMES[q.m]||q.m;
+  let h='<div class="qc"><div class="num">第 <b>'+(cur+1)+'</b> / '+TOTAL+' 题</div>';
+  h+='<div class="modtag">'+modName+'</div>';
+  h+='<div class="qt">'+q.q+'</div><div class="opts">';
+  let letters=['A','B','C','D'];
+  for(let i=0;i<4;i++){
+    let cls='ob';
+    if(answered){
+      cls+=' off';
+      if(i===q.a) cls+=' ok';
+      if(i===my&&my!==q.a) cls+=' no';
+      if(!done&&i===q.a&&my!==q.a) cls+=' hi';
+    }
+    h+='<div class="'+cls+'" onclick="pick('+i+')"><div class="lt">'+letters[i]+'</div><div>'+q.o[i]+'</div></div>';
+  }
+  h+='</div>';
+  if(answered){
+    h+='<div class="exp on">💡 '+(my===q.a?'回答正确！':'❌ 正确答案：'+letters[q.a]+'。')+q.e+'</div>';
+  }else{
+    h+='<div class="exp"></div>';
+  }
+  h+='</div>';
+
+  if(review&&done){
+    let tags='<div class="rvtag"><button class="'+(filter==='all'?'on':'')+'" onclick="flt(\'all\')">全部</button>';
+    tags+='<button class="'+(filter==='wrong'?'on':'')+'" onclick="flt(\'wrong\')">❌ 错题</button>';
+    tags+='<button class="'+(filter==='right'?'on':'')+'" onclick="flt(\'right\')">✅ 对题</button></div>';
+    h=tags+h;
+  }
+
+  el.innerHTML=h;
+
+  document.getElementById('pb').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tl').textContent=(cur+1)+'/'+TOTAL;
+
+  let nb=document.getElementById('bNext');
+  let pb=document.getElementById('bPrev');
+  pb.style.display=cur>0?'block':'none';
+
+  if(cur===TOTAL-1&&!done){
+    nb.textContent='交卷';nb.className='bsub';nb.onclick=submit;
+  }else if(done){
+    nb.textContent=review?'返回成绩':'查看成绩';nb.className='bsub';nb.onclick=showResult;
+  }else{
+    nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)};
+  }
+  if(done&&cur<TOTAL-1){nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)}}
+}
+
+function pick(i){
+  if(ans[cur]!==undefined)return;
+  ans[cur]=i;
+  done||setTimeout(()=>{if(cur<TOTAL-1)nav(1);else render()},600);
+  render();
+}
+
+function nav(d){
+  let nc=cur+d;
+  if(nc<0||nc>TOTAL-1)return;
+  if(review&&filter!=='all'){
+    let dir=d>0?1:-1;
+    let found=false;
+    for(let j=nc;j>=0&&j<TOTAL;j+=dir){
+      let isWrong=ans[j]!==Q[j].a;
+      if(filter==='wrong'&&isWrong){nc=j;found=true;break}
+      if(filter==='right'&&!isWrong){nc=j;found=true;break}
+    }
+    if(!found)return;
+  }
+  cur=nc;render();
+  window.scrollTo(0,0);
+}
+
+function submit(){
+  done=true;review=false;
+  clearInterval(timer);
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('p2').classList.remove('on');
+  document.getElementById('btm').style.display='none';
+  document.getElementById('p3').classList.add('on');
+
+  let right=0;
+  for(let i=0;i<TOTAL;i++) if(ans[i]===Q[i].a) right++;
+  let wrong=TOTAL-right;
+  let score=right;
+  let pass=score>=PASS;
+
+  // 模块得分统计
+  let modStats={};
+  MOD_ORDER.forEach(m=>{modStats[m]={total:0,right:0}});
+  for(let i=0;i<TOTAL;i++){
+    let m=Q[i].m;
+    if(!modStats[m]) modStats[m]={total:0,right:0};
+    modStats[m].total++;
+    if(ans[i]===Q[i].a) modStats[m].right++;
+  }
+
+  let el=document.getElementById('p3');
+  let h='<div class="rp">';
+  h+='<div class="circle '+(pass?'pass':'fail')+'"><div class="sn">'+score+'</div><div class="sl">分</div></div>';
+  h+='<div class="rt">'+(pass?'🎉 恭喜通过':'💪 需要重考')+'</div>';
+  h+='<div class="rs">'+(pass?'90分及格线，你已达标':'距及格还差'+(PASS-score)+'分，请重新考试')+'</div>';
+  h+='<div class="sg"><div class="sc"><div class="sv g">'+right+'</div><div class="svl">答对</div></div>';
+  h+='<div class="sc"><div class="sv r">'+wrong+'</div><div class="svl">答错</div></div>';
+  h+='<div class="sc"><div class="sv b">'+fmt(sec)+'</div><div class="svl">用时</div></div></div>';
+
+  // 模块明细
+  h+='<div class="mod-title">📊 八大模块得分明细</div>';
+  MOD_ORDER.forEach(m=>{
+    let s=modStats[m]; if(!s||s.total===0) return;
+    let pct=Math.round(s.right/s.total*100);
+    let weak=pct<60?'weak':'';
+    h+='<div class="mod-card '+weak+'">';
+    h+='<div class="mh"><span class="mn">'+MOD_NAMES[m]+'</span><span class="ms">'+s.right+'/'+s.total+' · '+pct+'%</span></div>';
+    h+='<div class="mbar"><div style="width:'+pct+'%"></div></div>';
+    h+='</div>';
+  });
+
+  h+='<div style="margin:18px 0 16px">';
+  h+='<button class="rbtn rreview" onclick="reviewExam()">📖 查看解析</button>';
+  h+='<button class="rbtn rretry" onclick="retry()">🔄 重新考试</button>';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+function reviewExam(){
+  review=true;filter='all';cur=0;
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  render();
+}
+
+function retry(){
+  cur=0;ans={};sec=0;done=false;review=false;filter='all';
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p3').innerHTML='';
+  document.getElementById('p1').classList.add('on');
+  document.getElementById('pb').style.width='0%';
+  document.getElementById('tl').textContent='100题 · 90分及格 · 满分100';
+  document.getElementById('tr').textContent='00:00';
+  clearInterval(timer);
+}
+
+function flt(f){
+  filter=f;render();
+}
+</script>
+</body>
+</html>
