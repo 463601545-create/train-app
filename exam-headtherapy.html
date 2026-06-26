@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>头疗做客流程内训考核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#fff1f2;color:#333;min-height:100vh;overflow-x:hidden}
+.top{background:linear-gradient(135deg,#e11d48,#be123c);color:#fff;padding:14px 16px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top h1{font-size:17px;font-weight:700;text-align:center}
+.top .info{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;opacity:.9}
+.top .bar{height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:8px}
+.top .bar div{height:100%;background:#fda4af;border-radius:2px;transition:width .3s}
+.page{padding:64px 12px 90px;display:none}
+.page.on{display:block}
+.s1{text-align:center;padding:60px 16px 40px}
+.s1 .ico{font-size:56px;margin-bottom:12px}
+.s1 h2{font-size:22px;font-weight:800;color:#be123c}
+.s1 .desc{font-size:13px;color:#888;margin:8px 0 28px;line-height:1.6}
+.s1 .box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:28px;text-align:left;box-shadow:0 1px 4px rgba(225,29,72,.10)}
+.s1 .box p{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #fce7e9}
+.s1 .box p:last-child{border:none}
+.s1 .box span:last-child{font-weight:700;color:#be123c}
+.gobtn{background:linear-gradient(135deg,#e11d48,#be123c);color:#fff;border:none;padding:15px 56px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(225,29,72,.3)}
+.gobtn:active{transform:scale(.97)}
+.modtag{display:inline-block;font-size:11px;padding:3px 8px;background:#ffe4e6;color:#be123c;border-radius:10px;font-weight:600;margin-bottom:8px;margin-right:6px}
+.typetag{display:inline-block;font-size:11px;padding:3px 8px;background:#fff1f2;color:#e11d48;border:1px solid #fda4af;border-radius:10px;font-weight:600;margin-bottom:8px}
+.qc{background:#fff;border-radius:12px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(225,29,72,.06)}
+.qc .num{font-size:12px;color:#999;margin-bottom:6px}
+.qc .num b{color:#be123c;font-size:15px}
+.qc .qt{font-size:15.5px;line-height:1.7;font-weight:600;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.ob{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #fce7e9;border-radius:10px;background:#fff;font-size:14.5px;line-height:1.55;cursor:pointer;transition:all .15s;text-align:left}
+.ob:active{transform:scale(.98)}
+.ob .lt{min-width:26px;height:26px;border-radius:50%;border:2px solid #fda4af;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;transition:all .15s}
+.ob.ok{border-color:#16a34a;background:#f0fdf4}
+.ob.ok .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.no{border-color:#dc2626;background:#fef2f2}
+.ob.no .lt{border-color:#dc2626;background:#dc2626;color:#fff}
+.ob.hi{border-color:#16a34a;background:#f0fdf4}
+.ob.hi .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.off{pointer-events:none}
+.exp{margin-top:12px;padding:10px 12px;background:#fff1f2;border-left:3px solid #e11d48;border-radius:0 8px 8px 0;font-size:13px;line-height:1.6;color:#555;display:none}
+.exp.on{display:block}
+.btm{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px 20px;box-shadow:0 -2px 8px rgba(225,29,72,.10);display:none;z-index:200}
+.btm .row{display:flex;gap:10px}
+.btm button{flex:1;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.btm button:active{transform:scale(.97)}
+.bprev{background:#fce7e9;color:#be123c}
+.bnext{background:#e11d48;color:#fff}
+.bsub{background:#16a34a;color:#fff}
+.bsub:disabled{background:#9ca3af}
+.rp{text-align:center;padding:30px 16px 100px}
+.rp .circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #fce7e9}
+.rp .circle.pass{border-color:#16a34a}
+.rp .circle.fail{border-color:#dc2626}
+.rp .circle .sn{font-size:42px;font-weight:800}
+.rp .circle .sl{font-size:12px;color:#999;margin-top:2px}
+.rp .rt{font-size:20px;font-weight:800;margin-bottom:6px}
+.rp .rs{font-size:13px;color:#888;margin-bottom:20px}
+.rp .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.rp .sc{background:#fff;border-radius:10px;padding:14px 8px;box-shadow:0 1px 3px rgba(225,29,72,.06)}
+.rp .sc .sv{font-size:22px;font-weight:800}
+.rp .sc .sv.g{color:#16a34a}
+.rp .sc .sv.r{color:#dc2626}
+.rp .sc .sv.b{color:#e11d48}
+.rp .sc .svl{font-size:11px;color:#999;margin-top:2px}
+.rp .tg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.rp .tc{background:#fff;border-radius:10px;padding:12px 8px;box-shadow:0 1px 3px rgba(225,29,72,.06)}
+.rp .tc .tn{font-size:12px;color:#999}
+.rp .tc .tv{font-size:18px;font-weight:800;color:#be123c;margin-top:3px}
+.rp .tc .tr{font-size:11px;color:#888;margin-top:2px}
+.mod-title{font-size:13px;font-weight:700;color:#444;margin:10px 0 8px;text-align:left;padding-left:4px}
+.mod-card{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(225,29,72,.05)}
+.mod-card .mh{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;margin-bottom:6px}
+.mod-card .mh .mn{color:#333}
+.mod-card .mh .ms{color:#be123c;font-weight:700}
+.mod-card .mbar{height:6px;background:#fce7e9;border-radius:3px;overflow:hidden}
+.mod-card .mbar div{height:100%;background:linear-gradient(90deg,#fda4af,#e11d48);border-radius:3px;transition:width .6s}
+.mod-card.weak .mbar div{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.mod-card.weak .mh .ms{color:#dc2626}
+.rbtn{display:inline-block;padding:13px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin:4px}
+.rreview{background:#fce7e9;color:#be123c}
+.rretry{background:linear-gradient(135deg,#e11d48,#be123c);color:#fff}
+.rvtag{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px}
+.rvtag button{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #fce7e9;background:#fff;color:#888}
+.rvtag button.on{background:#be123c;color:#fff;border-color:#be123c}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+<h1>🌸 头疗做客流程内训考核</h1>
+<div class="info"><span id="tl">50题 · 90分及格 · 满分100</span><span id="tr">00:00</span></div>
+<div class="bar"><div id="pb" style="width:0%"></div></div>
+</div>
+
+<div class="page on" id="p1">
+<div class="s1">
+<div class="ico">🌸</div>
+<h2>头疗做客流程内训考核</h2>
+<p class="desc">8步流程意义 / 状态与接待 / 沟通设计 / 八大需求 / 项目四大类<br>护理前拍照 / 五步确认 / 满意度明确 / 微信添加 / 储值开卡<br>50题（30单选+20判断）· 90分及格 · 满分100</p>
+<div class="box">
+<p><span>题目数量</span><span>50题</span></p>
+<p><span>题目类型</span><span>单选30 / 判断20</span></p>
+<p><span>每题分值</span><span>2分</span></p>
+<p><span>及格分数</span><span>90分</span></p>
+<p><span>答题方式</span><span>逐题作答·即时反馈</span></p>
+</div>
+<button class="gobtn" onclick="go()">开始考试</button>
+</div>
+</div>
+
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+
+<div class="btm" id="btm">
+<div class="row">
+<button class="bprev" id="bPrev" onclick="nav(-1)">上一题</button>
+<button class="bnext" id="bNext" onclick="nav(1)">下一题</button>
+</div>
+</div>
+
+<script>
+const Q=[
+// ===== M1 整体流程意义（6题：4单选+2判断） =====
+{type:"single",m:"m1",q:"头疗做客流程整体内容意义共有几项？",o:["6项","7项","8项","10项"],a:2,e:"原文：整体内容意义共8项——状态、接待、沟通设计、护理前拍照、5步确认、护理后拍照、满意度明确、微信添加。"},
+{type:"single",m:"m1",q:"头疗做客8步流程中，紧跟『接待』之后的环节是？",o:["状态","沟通设计","护理前拍照","5步确认"],a:1,e:"原文顺序：状态→接待→沟通设计→护理前拍照→5步确认→护理后拍照→满意度明确→微信添加。"},
+{type:"single",m:"m1",q:"『护理后拍照』在流程中的核心价值是？",o:["巩固顾客好感打通转化链路","直观体现服务价值、加深顾客认可","沉淀私域客户实现复购转介绍","精准匹配护理项目"],a:1,e:"原文：护理后拍照——直观体现服务价值，加深顾客认可（前后对比拉开效果差距）。"},
+{type:"single",m:"m1",q:"『沟通设计』环节在整体流程中的核心价值是？",o:["统一服务精气神","降低顾客陌生感","精准匹配护理项目，规避服务不符预期问题","沉淀私域客户"],a:2,e:"原文：沟通设计——精准匹配护理项目，规避服务不符预期问题（有效了解头皮头部需求、明确护理方向、树立专业形象、减少服务方向出错）。"},
+{type:"judge",m:"m1",q:"『状态』被称为行动力量的源泉，作用是统一服务精气神、奠定整场服务舒适基调。",o:["正确","错误"],a:0,e:"原文：状态（行动力量的源泉）——统一服务精气神，奠定整场服务舒适基调。"},
+{type:"judge",m:"m1",q:"『微信添加』是普通头疗师必备的入门基础能力，每位新人都已掌握。",o:["正确","错误"],a:1,e:"原文：微信添加是与普通头疗师拉开差距、搭建专属私域，是优质头疗师必备基础能力。"},
+
+// ===== M2 状态（4题：2单选+2判断） =====
+{type:"single",m:"m2",q:"关于服务过程中的状态要求，下列描述完全正确的是？",o:["顾客没看时可短暂玩手机休息","主动积极、面带微笑、语调轻柔、肢体亲和、站姿坐姿端正","顾客没问就不主动说话","累了可以稍显敷衍"],a:1,e:"原文：全程保持主动积极、情绪愉悦、热情大方、面带微笑、语调轻柔、肢体亲和，站姿坐姿端正。"},
+{type:"single",m:"m2",q:"原文对头疗师服务时『语调』的明确要求是？",o:["高声洪亮","严肃低沉","急促快速","轻柔"],a:3,e:"原文：全程保持……语调轻柔、肢体亲和。"},
+{type:"judge",m:"m2",q:"服务过程中允许在顾客不注意时低头玩手机短暂休息。",o:["正确","错误"],a:1,e:"原文明确：无不耐烦、敷衍、低头玩手机状态。"},
+{type:"judge",m:"m2",q:"头疗师全程应保持情绪愉悦、热情大方、肢体亲和，并杜绝不耐烦与敷衍。",o:["正确","错误"],a:0,e:"原文状态准则：主动积极、情绪愉悦、热情大方、肢体亲和。"},
+
+// ===== M3 接待（3题：2单选+1判断） =====
+{type:"single",m:"m3",q:"顾客进店时，接待环节的标准欢迎语是？",o:["请问需要点什么？","你好欢迎光临，请问有预约吗？/请问你有指定的头疗师吗？","请坐随便看看","您好今天做什么项目？"],a:1,e:"原文接待两句标准欢迎语：1、你好欢迎光临，请问有预约吗？2、你好欢迎光临，请问你有指定的头疗师吗？"},
+{type:"single",m:"m3",q:"接待动作流程中，『主动引导顾客到指定接待区』之后的下一步动作是？",o:["递茶水","安排舒适落座","对接专属头疗师","让顾客填表"],a:0,e:"原文动作流程：主动引导接待区→递茶水→安排舒适落座→对接专属头疗师。"},
+{type:"judge",m:"m3",q:"接待动作流程是：主动引导顾客到指定接待区→递茶水→安排舒适落座→对接专属头疗师。",o:["正确","错误"],a:0,e:"原文：动作流程——主动引导接待区、递茶水、安排舒适落座，及时对接专属头疗师。"},
+
+// ===== M4 沟通设计（15题：9单选+6判断） =====
+{type:"single",m:"m4",q:"门店沟通设计共分为几大类话术？",o:["1类","2类","3类","4类"],a:1,e:"原文：沟通设计（两类）——自主需求型、图片/项目指定型。"},
+{type:"single",m:"m4",q:"门店所有头疗项目分为哪四大类？",o:["控油净屑、养发固发、安神助眠、肩颈通淤","头皮深清、补水修复、卷度塑形、染色护色","控油、止痒、生发、洗护","防脱、染色、烫发、修剪"],a:0,e:"原文：项目四大类——控油净屑、养发固发、安神助眠、肩颈通淤。"},
+{type:"single",m:"m4",q:"八大需求询问中，A项主要询问的内容是？",o:["头皮困扰（头油头痒）","洗护频率与过敏","平时作息、工作压力、偏头痛、头晕、失眠多梦","力度偏好"],a:2,e:"原文A：平时作息、工作压力大吗？有没有偏头痛、头晕、失眠多梦？"},
+{type:"single",m:"m4",q:"八大需求询问中，B项关注的核心是？",o:["头油、头痒、头屑、脱发、头皮紧绷、毛囊红肿等头皮困扰","顾客年龄","收入水平","项目偏好"],a:0,e:"原文B：日常头皮最困扰你的问题是什么？（头油、头痒、头屑、脱发、头皮紧绷、毛囊红肿）"},
+{type:"single",m:"m4",q:"八大需求询问中，C项关注的核心内容是？",o:["作息压力情况","头皮困扰类型","平时洗头频率、自用洗护产品、头皮是否容易过敏","禁忌情况"],a:2,e:"原文C：平时洗头频率、自用洗护产品是什么？头皮是否容易过敏？"},
+{type:"single",m:"m4",q:"八大需求询问中，F项关于禁忌的内容包括？",o:["是否喜欢温热热敷","护理力度偏好","是否有伤口、高血压、孕期、颈椎旧伤等禁忌","想做哪些部位"],a:2,e:"原文F：头部护理禁忌——是否有伤口、高血压、孕期、颈椎旧伤等禁忌？"},
+{type:"single",m:"m4",q:"八大需求询问中，H项询问的是？",o:["是否有禁忌","还有其他想要兼顾调理的部位吗（肩颈/太阳穴/后颈）","力度偏好","深度调理还是放松"],a:1,e:"原文H：还有其他想要兼顾调理的部位吗？（肩颈/太阳穴/后颈）"},
+{type:"single",m:"m4",q:"顾客自带项目图片/有固定喜好时，应先让顾客挑几个心仪项目结合体质适配？",o:["1个","2个","3个","5个"],a:2,e:"原文：让顾客先挑3个心仪项目，结合头皮检测+体质优化适配。"},
+{type:"single",m:"m4",q:"服务预防针的核心作用是？",o:["推销高价项目","告知体感差异并约定全程可随时叫停，规避体验落差","加快服务流程","收集顾客投诉"],a:1,e:"原文预防针：每个人头皮屏障、体质耐受度、劳损程度不一样，同款项目体感和效果会差异化，全程不舒服随时叫停调整。"},
+{type:"judge",m:"m4",q:"无论顾客是自主需求型还是图片指定型，打完预防针后都需沿用第一种问诊话术深挖细节需求。",o:["正确","错误"],a:0,e:"原文：打完预防针后，沿用第一种问诊话术深挖细节需求。"},
+{type:"judge",m:"m4",q:"服务预防针是可有可无的环节，头疗师可视心情决定是否说。",o:["正确","错误"],a:1,e:"原文明确标注『服务预防针（必说）』——属于必说环节。"},
+{type:"judge",m:"m4",q:"八大需求询问中的G项是询问顾客喜欢温热热敷、草本熏蒸还是常温按摩护理。",o:["正确","错误"],a:0,e:"原文G：喜欢温热热敷、草本熏蒸，还是常温按摩护理？"},
+{type:"judge",m:"m4",q:"八大需求询问中的D项核心是问顾客今天想做深度调理改善问题还是单纯放松解压。",o:["正确","错误"],a:0,e:"原文D：今天想做深度调理改善问题，还是单纯放松解压？"},
+{type:"judge",m:"m4",q:"八大需求询问中的E项是询问顾客护理力度偏好：偏重解压还是轻柔舒缓养生。",o:["正确","错误"],a:0,e:"原文E：护理偏好——力度偏重解压，还是轻柔舒缓养生？"},
+{type:"judge",m:"m4",q:"沟通设计中铺垫环节应直接进入项目销售，不必做头疗师自我介绍。",o:["正确","错误"],a:1,e:"原文铺垫话术：『我是店里的头疗师XX，做得多的是头皮养护、肩颈放松……』必须主动自我介绍铺垫专业项。"},
+
+// ===== M5 护理前拍照（3题：2单选+1判断） =====
+{type:"single",m:"m5",q:"护理前拍照需要拍摄几组标准头皮原图？",o:["1组","2组","3组","5组"],a:2,e:"原文：拍摄3组标准头皮原图，留存对比。"},
+{type:"single",m:"m5",q:"护理前拍照的拍摄要求，下列描述完整正确的是？",o:["只拍头顶毛囊，光线随意","顾客正面+左右侧头皮特写+头顶毛囊特写，光线明亮、背景干净","只拍侧脸即可","背景不重要，重点在角度"],a:1,e:"原文拍摄要求：顾客正面+左右侧头皮特写、头顶毛囊特写，光线明亮、背景干净，拍3组标准头皮原图。"},
+{type:"judge",m:"m5",q:"护理前拍照只拍头顶毛囊特写就够了，正面和左右侧可省略。",o:["正确","错误"],a:1,e:"原文拍摄要求：顾客正面+左右侧头皮特写+头顶毛囊特写，缺一不可。"},
+
+// ===== M6 五步确认（12题：7单选+5判断） =====
+{type:"single",m:"m6",q:"操作流程五步确认的正确顺序是？",o:["温度→力度→部位→时长→体感","力度→温度→部位→时长→体感","力度→部位→温度→体感→时长","体感→力度→温度→部位→时长"],a:1,e:"原文：操作流程五步确认（顺序）——力度→温度→部位→时长→体感。"},
+{type:"single",m:"m6",q:"草本头疗药液的标准温度是？",o:["30度","40度","50度","60度"],a:1,e:"原文：现在调配草本头疗药液，温度控制在40度温和温度，避免烫头皮。"},
+{type:"single",m:"m6",q:"针对敏感头皮，正确的操作是？",o:["提高药液浓度增强效果","降低药液浓度、调低温度，温和养护","维持标准浓度温度不变","完全不上药"],a:1,e:"原文：针对敏感头皮，降低药液浓度、调低温度，温和养护。"},
+{type:"single",m:"m6",q:"五步确认中『部位确认』的典型话术不包括以下哪一项？",o:["重点疏通后颈、风池穴位缓解头部酸胀","兼顾太阳穴安神按摩改善失眠","避开头皮泛红破损位置，只做周边舒缓","温度调高一点疏通经络效果更好"],a:3,e:"原文中部位确认聚焦：重点疏通后颈风池/兼顾太阳穴安神/避开泛红破损位置。温度调整属于温度确认环节。"},
+{type:"single",m:"m6",q:"『整体体感确认』环节的话术核心包括？",o:["接近尾声力度温度满意度+冲洗吹干后头皮清爽放松感+有无需要再微调补按","直接结账推销储值卡","只问还需不需要","只介绍下一次项目"],a:0,e:"原文体感确认：整套接近尾声力度温度满意度、冲洗药液+吹干后清爽放松感、护理完成有无需要微调补按。"},
+{type:"single",m:"m6",q:"顾客希望熏蒸/热敷温度调高一点以增强经络疏通效果，正确的标准话术是？",o:["二话不说直接拧到最高","熏蒸/热敷温度调高一点，疏通经络效果更好，头皮能接受吗？","温度可以调到50度试试","坚决不调，必须40度"],a:1,e:"原文用料温度确认2：熏蒸/热敷温度调高一点，疏通经络效果更好，头皮能接受吗？"},
+{type:"single",m:"m6",q:"顾客要求肩颈/头部按压力度偏重放松，对应的标准话术是？",o:["立刻加大到最大力度","调整肩颈/头部按压力度，偏重放松一点，可以吗？","让顾客自己调整","一律拒绝调整"],a:1,e:"原文力度确认2：调整肩颈/头部按压力度，偏重放松一点，可以吗？"},
+{type:"judge",m:"m6",q:"为了疏通经络效果更好，草本头疗药液温度应直接调到50度以上。",o:["正确","错误"],a:1,e:"原文：温度控制在40度温和温度，避免烫头皮。50度会烫伤头皮，错误。"},
+{type:"judge",m:"m6",q:"五步确认中如果时间紧，可以跳过『部位确认』直接做时长沟通。",o:["正确","错误"],a:1,e:"原文五步顺序固定：力度→温度→部位→时长→体感，缺一不可。"},
+{type:"judge",m:"m6",q:"五步确认强调全程不舒服可随时叫停调整，顾客中途任何环节都能要求修改。",o:["正确","错误"],a:0,e:"原文：力度不合适随时说我立刻调整；全程不舒服随时叫停调整。"},
+{type:"judge",m:"m6",q:"时长确认环节，对赶时间的顾客应保留核心调理步骤、精简辅助流程。",o:["正确","错误"],a:0,e:"原文：着急赶时间，精简辅助流程，保留核心调理步骤，可以吗？"},
+{type:"judge",m:"m6",q:"力度确认开场标准话术为：『目前是基础按摩力度，适配大众体感，感受一下轻重合适吗？』",o:["正确","错误"],a:0,e:"原文力度确认1：目前是基础按摩力度，适配大众体感，感受一下轻重合适吗？"},
+
+// ===== M7 满意度明确（2题：1单选+1判断） =====
+{type:"single",m:"m7",q:"满意度明确话术的核心要点是？",o:["直接推销储值卡","专业诠释护理价值并观察顾客神态、肢体反馈，精准捕捉满意程度","让顾客自己评价不打扰","沉默不说让顾客感受"],a:1,e:"原文：专业诠释护理价值（头部紧绷消散、头皮油脂清理干净、肩颈经络疏通、改善熬夜头晕），观察顾客神态、肢体反馈，精准捕捉满意程度。"},
+{type:"judge",m:"m7",q:"满意度明确环节只需口头问『满意吗』，不必观察顾客神态、肢体反馈。",o:["正确","错误"],a:1,e:"原文明确：需观察顾客神态、肢体反馈，精准捕捉满意程度。"},
+
+// ===== M8 微信添加（3题：2单选+1判断） =====
+{type:"single",m:"m8",q:"顾客明确说『特别满意』，应该用哪个微信添加场景话术？",o:["场景1（认可一般）：提前预留护理间不排队","场景2（明确满意）：定制专属养生护理方案","场景3（高度夸赞）：朋友推荐+优先服务+亲友专属优惠","无需加微信"],a:2,e:"原文场景3——顾客高度夸赞/效果认可（『特别满意』）：加微信，朋友推荐头皮调理、解压放松需求，给亲友安排优先服务、专属优惠。"},
+{type:"single",m:"m8",q:"门店统一的微信备注格式，下列哪一项符合标准？",o:["仅记录顾客手机号","26/6/23姓名/头疗项目（安神助眠头疗）","只写姓名","只写做的项目"],a:1,e:"原文：微信统一备注格式——26/6/23姓名/头疗项目（安神助眠头疗），即日期/姓名/头疗项目（项目名）。"},
+{type:"judge",m:"m8",q:"顾客只表示『还可以』时，可以不加微信直接送客。",o:["正确","错误"],a:1,e:"原文场景1——『还可以』也需主动加微信，后续做头疗/调整力度/预约档期可提前预留护理间不用排队。"},
+
+// ===== M9 储值开卡（2题：1单选+1判断） =====
+{type:"single",m:"m9",q:"门店头疗专属会员的最低开通门槛是？",o:["预存3次","预存5次","预存10次","预存20次"],a:1,e:"原文：门店只做适合的疗程储值，最低仅需预存5次即可开通头疗专属会员。"},
+{type:"judge",m:"m9",q:"储值开卡套餐余量仅限本人使用，不可家人通用。",o:["正确","错误"],a:1,e:"原文：套餐余量全家人通用，长期做头皮养护、身体放松划算，消费透明无捆绑。"}
+];
+
+const MOD_NAMES={
+  m1:"整体流程意义",
+  m2:"状态",
+  m3:"接待",
+  m4:"沟通设计",
+  m5:"护理前拍照",
+  m6:"五步确认",
+  m7:"满意度明确",
+  m8:"微信添加",
+  m9:"储值开卡"
+};
+const MOD_ORDER=["m1","m2","m3","m4","m5","m6","m7","m8","m9"];
+const TYPE_NAMES={single:"单选",judge:"判断"};
+
+let cur=0,ans={},timer,sec=0,done=false,review=false,filter='all';
+const TOTAL=Q.length, PASS=90, PER=2;
+
+function isCorrect(i){
+  let q=Q[i],my=ans[i];
+  if(my===undefined||my===null) return false;
+  return my===q.a;
+}
+
+function go(){
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  timer=setInterval(()=>{sec++;document.getElementById('tr').textContent=fmt(sec)},1000);
+  render();
+}
+
+function fmt(s){
+  let m=Math.floor(s/60),ss=s%60;
+  return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+}
+
+function render(){
+  let q=Q[cur], el=document.getElementById('p2');
+  let my=ans[cur], answered=my!==undefined;
+  let modName=MOD_NAMES[q.m]||q.m;
+  let typeName=TYPE_NAMES[q.type]||q.type;
+  let h='<div class="qc"><div class="num">第 <b>'+(cur+1)+'</b> / '+TOTAL+' 题</div>';
+  h+='<span class="modtag">'+modName+'</span><span class="typetag">'+typeName+'</span>';
+  h+='<div class="qt">'+q.q+'</div>';
+
+  h+='<div class="opts">';
+  let letters=q.type==='judge'?['✓','✗']:['A','B','C','D'];
+  let optCount=q.o.length;
+  for(let i=0;i<optCount;i++){
+    let cls='ob';
+    if(answered){
+      cls+=' off';
+      if(i===q.a) cls+=' ok';
+      if(i===my&&my!==q.a) cls+=' no';
+      if(!done&&i===q.a&&my!==q.a) cls+=' hi';
+    }
+    h+='<div class="'+cls+'" onclick="pick('+i+')"><div class="lt">'+letters[i]+'</div><div>'+q.o[i]+'</div></div>';
+  }
+  h+='</div>';
+  if(answered){
+    let mark=my===q.a?'回答正确！':'❌ 正确答案：'+letters[q.a]+'。';
+    h+='<div class="exp on">💡 '+mark+q.e+'</div>';
+  }
+  h+='</div>';
+
+  if(review&&done){
+    let tags='<div class="rvtag"><button class="'+(filter==='all'?'on':'')+'" onclick="flt(\'all\')">全部</button>';
+    tags+='<button class="'+(filter==='wrong'?'on':'')+'" onclick="flt(\'wrong\')">❌ 错题</button>';
+    tags+='<button class="'+(filter==='right'?'on':'')+'" onclick="flt(\'right\')">✅ 对题</button></div>';
+    h=tags+h;
+  }
+
+  el.innerHTML=h;
+
+  document.getElementById('pb').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tl').textContent=(cur+1)+'/'+TOTAL;
+
+  let nb=document.getElementById('bNext');
+  let pb=document.getElementById('bPrev');
+  pb.style.display=cur>0?'block':'none';
+
+  if(cur===TOTAL-1&&!done){
+    nb.textContent='交卷';nb.className='bsub';nb.onclick=submit;
+  }else if(done){
+    nb.textContent=review?'返回成绩':'查看成绩';nb.className='bsub';nb.onclick=showResult;
+  }else{
+    nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)};
+  }
+  if(done&&cur<TOTAL-1){nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)}}
+}
+
+function pick(i){
+  if(ans[cur]!==undefined)return;
+  ans[cur]=i;
+  done||setTimeout(()=>{if(cur<TOTAL-1)nav(1);else render()},600);
+  render();
+}
+
+function nav(d){
+  let nc=cur+d;
+  if(nc<0||nc>TOTAL-1)return;
+  if(review&&filter!=='all'){
+    let dir=d>0?1:-1;
+    let found=false;
+    for(let j=nc;j>=0&&j<TOTAL;j+=dir){
+      let isWrong=!isCorrect(j);
+      if(filter==='wrong'&&isWrong){nc=j;found=true;break}
+      if(filter==='right'&&!isWrong){nc=j;found=true;break}
+    }
+    if(!found)return;
+  }
+  cur=nc;render();
+  window.scrollTo(0,0);
+}
+
+function submit(){
+  done=true;review=false;
+  clearInterval(timer);
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('p2').classList.remove('on');
+  document.getElementById('btm').style.display='none';
+  document.getElementById('p3').classList.add('on');
+
+  let right=0;
+  for(let i=0;i<TOTAL;i++) if(isCorrect(i)) right++;
+  let wrong=TOTAL-right;
+  let score=right*PER;
+  let pass=score>=PASS;
+
+  // 模块得分统计
+  let modStats={};
+  MOD_ORDER.forEach(m=>{modStats[m]={total:0,right:0}});
+  for(let i=0;i<TOTAL;i++){
+    let m=Q[i].m;
+    if(!modStats[m]) modStats[m]={total:0,right:0};
+    modStats[m].total++;
+    if(isCorrect(i)) modStats[m].right++;
+  }
+
+  // 分题型正确率
+  let typeStats={single:{total:0,right:0},judge:{total:0,right:0}};
+  for(let i=0;i<TOTAL;i++){
+    let t=Q[i].type;
+    if(!typeStats[t]) typeStats[t]={total:0,right:0};
+    typeStats[t].total++;
+    if(isCorrect(i)) typeStats[t].right++;
+  }
+
+  let el=document.getElementById('p3');
+  let h='<div class="rp">';
+  h+='<div class="circle '+(pass?'pass':'fail')+'"><div class="sn">'+score+'</div><div class="sl">分</div></div>';
+  h+='<div class="rt">'+(pass?'🎉 恭喜通过':'💪 需要重考')+'</div>';
+  h+='<div class="rs">'+(pass?'已达90分及格线，专业过硬':'距及格还差 '+(PASS-score)+' 分，请重新考试')+'</div>';
+  h+='<div class="sg"><div class="sc"><div class="sv g">'+right+'</div><div class="svl">答对</div></div>';
+  h+='<div class="sc"><div class="sv r">'+wrong+'</div><div class="svl">答错</div></div>';
+  h+='<div class="sc"><div class="sv b">'+fmt(sec)+'</div><div class="svl">用时</div></div></div>';
+
+  // 分题型正确率
+  h+='<div class="mod-title">📝 分题型正确率</div>';
+  h+='<div class="tg">';
+  ['single','judge'].forEach(t=>{
+    let s=typeStats[t];
+    let pct=s.total?Math.round(s.right/s.total*100):0;
+    h+='<div class="tc"><div class="tn">'+TYPE_NAMES[t]+'</div><div class="tv">'+s.right+'/'+s.total+'</div><div class="tr">'+pct+'%</div></div>';
+  });
+  h+='</div>';
+
+  // 模块明细
+  h+='<div class="mod-title">📊 九大模块得分明细</div>';
+  MOD_ORDER.forEach(m=>{
+    let s=modStats[m]; if(!s||s.total===0) return;
+    let pct=Math.round(s.right/s.total*100);
+    let weak=pct<60?'weak':'';
+    h+='<div class="mod-card '+weak+'">';
+    h+='<div class="mh"><span class="mn">'+MOD_NAMES[m]+'</span><span class="ms">'+s.right+'/'+s.total+' · '+pct+'%</span></div>';
+    h+='<div class="mbar"><div style="width:'+pct+'%"></div></div>';
+    h+='</div>';
+  });
+
+  h+='<div style="margin:18px 0 16px">';
+  h+='<button class="rbtn rreview" onclick="reviewExam()">📖 查看解析</button>';
+  h+='<button class="rbtn rretry" onclick="retry()">🔄 重新考试</button>';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+function reviewExam(){
+  review=true;filter='all';cur=0;
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  render();
+}
+
+function retry(){
+  cur=0;ans={};sec=0;done=false;review=false;filter='all';
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p3').innerHTML='';
+  document.getElementById('p1').classList.add('on');
+  document.getElementById('pb').style.width='0%';
+  document.getElementById('tl').textContent='50题 · 90分及格 · 满分100';
+  document.getElementById('tr').textContent='00:00';
+  clearInterval(timer);
+}
+
+function flt(f){
+  filter=f;render();
+}
+</script>
+</body>
+</html>
