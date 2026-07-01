@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>热烫3.0全流程标准化考核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#ecfdf5;color:#333;min-height:100vh;overflow-x:hidden}
+.top{background:linear-gradient(135deg,#059669,#047857);color:#fff;padding:14px 16px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top h1{font-size:17px;font-weight:700;text-align:center}
+.top .info{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;opacity:.9}
+.top .bar{height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:8px}
+.top .bar div{height:100%;background:#6ee7b7;border-radius:2px;transition:width .3s}
+.page{padding:64px 12px 90px;display:none}
+.page.on{display:block}
+.s1{text-align:center;padding:60px 16px 40px}
+.s1 .ico{font-size:56px;margin-bottom:12px}
+.s1 h2{font-size:22px;font-weight:800;color:#047857}
+.s1 .desc{font-size:13px;color:#666;margin:8px 0 28px;line-height:1.6}
+.s1 .box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:28px;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.s1 .box p{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #f3f3f3}
+.s1 .box p:last-child{border:none}
+.s1 .box span:last-child{font-weight:700;color:#047857}
+.gobtn{background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;padding:15px 56px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(5,150,105,.3)}
+.gobtn:active{transform:scale(.97)}
+.modtag{display:inline-block;font-size:11px;padding:3px 8px;background:#d1fae5;color:#047857;border-radius:10px;font-weight:600;margin-bottom:8px}
+.qc{background:#fff;border-radius:12px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qc .num{font-size:12px;color:#999;margin-bottom:6px}
+.qc .num b{color:#047857;font-size:15px}
+.qc .qt{font-size:15.5px;line-height:1.7;font-weight:600;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.ob{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;background:#fff;font-size:14.5px;line-height:1.55;cursor:pointer;transition:all .15s;text-align:left}
+.ob:active{transform:scale(.98)}
+.ob .lt{min-width:26px;height:26px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;transition:all .15s}
+.ob.ok{border-color:#16a34a;background:#f0fdf4}
+.ob.ok .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.no{border-color:#dc2626;background:#fef2f2}
+.ob.no .lt{border-color:#dc2626;background:#dc2626;color:#fff}
+.ob.hi{border-color:#16a34a;background:#f0fdf4}
+.ob.hi .lt{border-color:#16a34a;background:#16a34a;color:#fff}
+.ob.off{pointer-events:none}
+.exp{margin-top:12px;padding:10px 12px;background:#ecfdf5;border-left:3px solid #6ee7b7;border-radius:0 8px 8px 0;font-size:13px;line-height:1.6;color:#555;display:none}
+.exp.on{display:block}
+.btm{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px 20px;box-shadow:0 -2px 8px rgba(0,0,0,.08);display:none;z-index:200}
+.btm .row{display:flex;gap:10px}
+.btm button{flex:1;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.btm button:active{transform:scale(.97)}
+.bprev{background:#f3f4f6;color:#666}
+.bnext{background:#059669;color:#fff}
+.bsub{background:#16a34a;color:#fff}
+.bsub:disabled{background:#9ca3af}
+.rp{text-align:center;padding:30px 16px 100px}
+.rp .circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #e5e7eb}
+.rp .circle.pass{border-color:#16a34a}
+.rp .circle.fail{border-color:#dc2626}
+.rp .circle .sn{font-size:42px;font-weight:800}
+.rp .circle .sl{font-size:12px;color:#999;margin-top:2px}
+.rp .rt{font-size:20px;font-weight:800;margin-bottom:6px}
+.rp .rs{font-size:13px;color:#888;margin-bottom:20px}
+.rp .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px}
+.rp .sc{background:#fff;border-radius:10px;padding:14px 8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.rp .sc .sv{font-size:22px;font-weight:800}
+.rp .sc .sv.g{color:#16a34a}
+.rp .sc .sv.r{color:#dc2626}
+.rp .sc .sv.b{color:#059669}
+.rp .sc .svl{font-size:11px;color:#999;margin-top:2px}
+.mod-title{font-size:13px;font-weight:700;color:#444;margin:10px 0 8px;text-align:left;padding-left:4px}
+.mod-card{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.mod-card .mh{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;margin-bottom:6px}
+.mod-card .mh .mn{color:#333}
+.mod-card .mh .ms{color:#047857;font-weight:700}
+.mod-card .mbar{height:6px;background:#f3f4f6;border-radius:3px;overflow:hidden}
+.mod-card .mbar div{height:100%;background:linear-gradient(90deg,#6ee7b7,#059669);border-radius:3px;transition:width .6s}
+.mod-card.weak .mbar div{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.mod-card.weak .mh .ms{color:#dc2626}
+.rbtn{display:inline-block;padding:13px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin:4px}
+.rreview{background:#f3f4f6;color:#333}
+.rretry{background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.rvtag{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px}
+.rvtag button{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#666}
+.rvtag button.on{background:#047857;color:#fff;border-color:#047857}
+</style>
+</head>
+<body>
+
+<div class="top" id="top">
+<h1>🌿 热烫3.0全流程标准化考核</h1>
+<div class="info"><span id="tl">100题 · 60分及格 · 满分100</span><span id="tr">00:00</span></div>
+<div class="bar"><div id="pb" style="width:0%"></div></div>
+</div>
+
+<div class="page on" id="p1">
+<div class="s1">
+<div class="ico">🌿</div>
+<h2>热烫3.0全流程标准化考核</h2>
+<p class="desc">双维诊断 / 药水配比 / 湿发软化 / 五大卷杠手法<br>加热定型 / 冷却拆杠 / 吹造型 / 雷区红线<br>100题单选 · 60分及格 · 满分100</p>
+<div class="box">
+<p><span>题目数量</span><span>100题</span></p>
+<p><span>题目类型</span><span>四选一单选</span></p>
+<p><span>每题分值</span><span>1分</span></p>
+<p><span>及格分数</span><span>60分</span></p>
+<p><span>答题方式</span><span>逐题作答·即时反馈</span></p>
+</div>
+<button class="gobtn" onclick="go()">开始考试</button>
+</div>
+</div>
+
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+
+<div class="btm" id="btm">
+<div class="row">
+<button class="bprev" id="bPrev" onclick="nav(-1)">上一题</button>
+<button class="bnext" id="bNext" onclick="nav(1)">下一题</button>
+</div>
+</div>
+
+<script>
+const Q=[
+// ===== 模块1 双维诊断（干检+湿检） 10题 =====
+{type:"single",m:"M1",q:"门店发质判断的根本原则是？",o:["凭肉眼目测经验判断","只看顾客描述过往烫染史","杜绝肉眼目测，干检+湿检双维度检测","只做湿检足够"],a:2,e:"原文：所有发质判断，杜绝肉眼目测，必须双维度检测（干检+湿检）。"},
+{type:"single",m:"M1",q:"干发拉伸测试应取多少根发丝进行轻柔拉伸？",o:["5根","10根","20根","50根"],a:2,e:"原文：干发拉伸测试取20根发丝轻柔拉伸。"},
+{type:"single",m:"M1",q:"健康发在干发拉伸测试中的表现是？",o:["拉伸1.1倍柔和回弹","拉伸1.2倍，回弹有力不断","拉伸1.5倍不断","绵软无回弹"],a:1,e:"原文：健康发拉伸1.2倍，回弹有力不断。"},
+{type:"single",m:"M1",q:"轻损发干发拉伸测试的典型表现是？",o:["拉伸1.2倍有力回弹","拉伸1.1倍，回弹柔和","完全无回弹","一拉即断"],a:1,e:"原文：轻损发拉伸1.1倍，回弹柔和。"},
+{type:"single",m:"M1",q:"中重损发拉伸测试的典型表现是？",o:["拉伸1.2倍有力回弹","拉伸1.1倍柔和回弹","绵软无力、无回弹、易断","拉伸1.5倍不断"],a:2,e:"原文：中重损发绵软无力、无回弹、易断。"},
+{type:"single",m:"M1",q:"湿发渗透复核的正确操作方式是？",o:["干发直接目测","喷水打湿观察吸水表现","涂药水后观察","拉伸2倍观察"],a:1,e:"原文：湿发渗透复核——喷水打湿观察。"},
+{type:"single",m:"M1",q:"抗拒发在湿检中的典型表现是？",o:["吸水均匀发丝柔韧","吸水慢、挂水珠、难渗透","极速吸水、发丝塌陷","拉伸即断"],a:1,e:"原文：抗拒发吸水慢、挂水珠、难渗透。"},
+{type:"single",m:"M1",q:"健康发在湿检中的典型表现是？",o:["挂水珠不吸水","极速吸水塌陷","吸水均匀、发丝柔韧","完全不吸水"],a:2,e:"原文：健康发吸水均匀、发丝柔韧。"},
+{type:"single",m:"M1",q:"受损发在湿检中的典型表现是？",o:["挂水珠、难渗透","吸水均匀柔韧","极速吸水、发丝塌陷绵软","完全不变化"],a:2,e:"原文：受损发极速吸水、发丝塌陷绵软。"},
+{type:"single",m:"M1",q:"双维诊断的结论主要用来决定？",o:["只决定收费定档","先判结构，再定药水、定时长、定温度","只决定卷杠大小","只决定定型时长"],a:1,e:"原文：先判结构，再定药水、定时长、定温度。"},
+
+// ===== 模块2 药水纯水配比 5题 =====
+{type:"single",m:"M2",q:"软化全程只允许添加什么来调节药性强度？",o:["蛋白护理原液","清水/纯水","修复精华","酸性护发素"],a:1,e:"原文：软化全程零护理添加，只靠清水调节药性强度。"},
+{type:"single",m:"M2",q:"软化过程中严禁添加下列哪一类产品？",o:["清水","纯净水","任何护理、蛋白、修复类产品","空气"],a:2,e:"原文：软化全程零护理添加，只靠清水调节药性强度。"},
+{type:"single",m:"M2",q:"门店药水配比的执行方式是？",o:["凭手感调节","严格按照理论标准执行","顾客要求就调","时间越长越浓"],a:1,e:"原文：严格按照理论标准执行，软化全程零护理添加。"},
+{type:"single",m:"M2",q:"药水稀释适配的核心依据是？",o:["顾客年龄","头发长度","不同受损程度","发色深浅"],a:2,e:"原文：适配不同受损程度。"},
+{type:"single",m:"M2",q:"软化零护理添加的核心目的是？",o:["让顾客省钱","保证药水真实渗透，避免成膜阻隔","加快操作速度","让药水更浓"],a:1,e:"原文：软化只靠清水调节药性强度，避免护理成分形成膜阻隔药水。"},
+
+// ===== 模块3 湿发软化涂抹 12题 =====
+{type:"single",m:"M3",q:"软化前头发的正确前置状态是？",o:["完全干发","半湿半干","全头湿透、按压控水、不滴水、高含水状态","只喷水局部"],a:2,e:"原文：软化前全头湿透、按压控水、不滴水、高含水状态。"},
+{type:"single",m:"M3",q:"全头湿透后上药前应该如何处理？",o:["直接上药","用毛巾按压控水至不滴水","完全吹干再上药","揉搓拧干"],a:1,e:"原文：全头湿透、按压控水、不滴水，高含水状态。"},
+{type:"single",m:"M3",q:"单片药水涂抹的标准厚度是？",o:["0.3cm","0.5cm","0.8cm","1.5cm"],a:2,e:"原文：单片厚度0.8cm，薄涂均匀不堆积不漏涂。"},
+{type:"single",m:"M3",q:"药水涂抹的正确原则是？",o:["厚涂堆积保安全","薄涂、均匀、不堆积、不漏涂","越厚越好","集中涂抹发根"],a:1,e:"原文：单片厚度0.8cm，薄涂、均匀、不堆积、不漏涂。"},
+{type:"single",m:"M3",q:"药水厚涂堆积会导致的直接后果是？",o:["卷度更持久","局部药性超标=烧发、棉化","药水更省","反应更均匀"],a:1,e:"原文：厚药堆积=局部药性超标=烧发、棉化。"},
+{type:"single",m:"M3",q:"抗拒粗硬发的软化涂抹正确顺序是？",o:["先发根→再发尾→最后中段","先发中主干→8分钟补发根→最后轻带发尾","全头一次性厚涂","只涂发根"],a:1,e:"原文：抗拒粗硬发先发中主干→8分钟补发根→最后轻带发尾。"},
+{type:"single",m:"M3",q:"抗拒粗硬发发中涂完后，发根补涂的正确时间点是？",o:["立即","3分钟后","8分钟后","15分钟后"],a:2,e:"原文：抗拒粗硬发先发中→8分钟后补发根。"},
+{type:"single",m:"M3",q:"健康发软化时发根应预留多少不涂药？",o:["0.5cm","1cm","1.5cm","2cm"],a:1,e:"原文：健康发预留1cm发根，只涂发干，保护发根支撑力。"},
+{type:"single",m:"M3",q:"健康发软化涂抹的核心原则是？",o:["发根重点涂","预留1cm发根、只涂发干，保护发根支撑力","全头厚涂包裹","只涂发尾"],a:1,e:"原文：健康发预留1cm发根，只涂发干，保护发根支撑力。"},
+{type:"single",m:"M3",q:"受损发软化涂抹时发根应预留多少？",o:["0.5cm","1cm","1.5cm","3cm"],a:2,e:"原文：受损发先涂健康段、预留1.5cm发根、最后5分钟补发尾。"},
+{type:"single",m:"M3",q:"受损发发尾正确的补涂时间点是？",o:["一开始就涂满","中段补涂","最后5分钟补发尾","冲水前立即补"],a:2,e:"原文：受损发最后5分钟补发尾。"},
+{type:"single",m:"M3",q:"软化过程中若发丝出现发干，正确的处理是？",o:["继续等待反应完成","立刻喷水补湿","立即冲水中止","加大药水量"],a:1,e:"原文：软化过程一旦发丝发干，立刻喷水补湿。软化脱水=蛋白流失。"},
+
+// ===== 模块4 软化监测与冲净 11题 =====
+{type:"single",m:"M4",q:"软化脱水会导致什么不可逆后果，是所有烫后不亮/不柔/毛躁的根源？",o:["卷度更持久","蛋白流失=永久性干枯无质感","光泽增强","发丝更粗硬"],a:1,e:"原文：软化脱水=蛋白流失=永久性干枯无质感。所有烫后不亮/不柔/毛躁大部分源于软化脱水。"},
+{type:"single",m:"M4",q:"软化监测的观察频率是？",o:["每5分钟","每3分钟","每10分钟","全程不用观察"],a:1,e:"原文：全程人不离岗，每3分钟观察一次软化进度。"},
+{type:"single",m:"M4",q:"健康粗硬发软化达标的双重测试标准是？",o:["只绕指1圈","绕指两圈自然S回弹、拉伸1.2倍不断","拉伸2倍不断","只做目测"],a:1,e:"原文：健康粗硬绕指两圈自然S回弹、拉伸1.2倍不断。"},
+{type:"single",m:"M4",q:"轻损发质软化达标的测试标准是？",o:["绕指1圈+拉伸2倍","柔和回弹+拉伸1.1倍","绵软无回弹","拉伸1.5倍"],a:1,e:"原文：轻损发柔和回弹、拉伸1.1倍。"},
+{type:"single",m:"M4",q:"中重损发质软化监测的核心禁忌是？",o:["允许拉伸2倍","只做绕指测试，禁止拉伸避免断发","可以拉伸1.2倍","只用目测"],a:1,e:"原文：中重损只做绕指测试，禁止拉伸，避免断发。"},
+{type:"single",m:"M4",q:"软化操作的核心操作准则是？",o:["越透越好","宁欠勿过，留弹性、不留损伤","宁过勿欠","严格达到药水说明书时长"],a:1,e:"原文：宁欠勿过，留弹性、不留损伤。"},
+{type:"single",m:"M4",q:"软化达标后正确的下一步动作是？",o:["静置10分钟继续反应","立刻冲水，禁止带药搁置氧化","继续闷蒸5分钟","直接卷杠"],a:1,e:"原文：软化达标立刻冲水，禁止带药搁置氧化。"},
+{type:"single",m:"M4",q:"冲净时的水温应恒定在？",o:["25-30℃","30-35℃","35-38℃","40-45℃"],a:2,e:"原文：水温恒定35–38℃。"},
+{type:"single",m:"M4",q:"冲净的正确方向是？",o:["逆毛鳞片自下而上","顺毛鳞片自上而下","左右横向搓洗","无固定方向"],a:1,e:"原文：顺毛鳞片自上而下冲洗。"},
+{type:"single",m:"M4",q:"健康发的冲洗时长要求是？",o:["≥1分钟","≥3分钟","≥5分钟","≥10分钟"],a:1,e:"原文：健康发冲洗≥3分钟。"},
+{type:"single",m:"M4",q:"受损发的冲洗时长要求是？",o:["≥1分钟","≥3分钟","≥5分钟","≥10分钟"],a:2,e:"原文：受损发冲洗≥5分钟。"},
+
+// ===== 模块5 卷杠选型底层逻辑 7题 =====
+{type:"single",m:"M5",q:"冲净后使用酸性护发素中和碱性残留应停放多久？",o:["30秒","1分钟","2-3分钟","5-8分钟"],a:2,e:"原文：冲净后必须使用酸性护发素中和停放2–3分钟；中和碱性残留、杜绝后续高温二次灼伤。毛巾按压吸水、禁止揉搓。"},
+{type:"single",m:"M5",q:"发量越多，卷杠选型和角度的正确对应是？",o:["大杠、高角度","小杠、低角度","大杠、低角度","小杠、高角度"],a:1,e:"原文：发量越多，杠子越小、角度越低。"},
+{type:"single",m:"M5",q:"发量越少，卷杠选型和角度的正确对应是？",o:["小杠、低角度","大杠、低角度","大杠、高角度","小杠、高角度"],a:2,e:"原文：发量越少，杠子越大、角度越高。"},
+{type:"single",m:"M5",q:"发质越健康，卷杠张力应控制在？",o:["零张力","张力紧、可承受紧密卷","轻带即可","完全松散"],a:1,e:"原文：发质越健康，张力越紧。"},
+{type:"single",m:"M5",q:"发质越受损，卷杠张力应控制在？",o:["张力越紧","零张力、轻带即可","高张力拉伸","越紧越持久"],a:1,e:"原文：发质越受损，零张力、轻带即可。"},
+{type:"single",m:"M5",q:"长发的卷杠层次与手法方向应是？",o:["低层次、缠绕扭转","高层次、主打平卷质感","低层次、平卷","高层次、缠绕"],a:1,e:"原文：长发走高层次、主打平卷质感。"},
+{type:"single",m:"M5",q:"关于卷杠薄厚片与层次圈数关系，下列说法正确的是？",o:["大杠必须厚片、小杠只能薄片","大杠必须薄片、小杠可适度厚片；层次越高圈数越少","层次越高圈数越多","与层次无关"],a:1,e:"原文：大杠必须薄片、小杠可适度厚片；层次越高、圈数越少。"},
+
+// ===== 模块6 五大卷杠手法 20题（每种4题）=====
+// 平卷法 (4题)
+{type:"single",m:"M6",q:"【平卷法】的标准操作角度是？",o:["45度斜向提拉","90度垂直提拉、杠体平行、全圈等张力重叠","30度低角度","180度水平提拉"],a:1,e:"原文：平卷法90度垂直提拉、杠体平行、全圈等张力重叠。"},
+{type:"single",m:"M6",q:"【平卷法】的典型卷型是？",o:["细长螺旋S型","标准C型、大S型","连环细密S","立体水波纹S"],a:1,e:"原文：平卷法卷型——标准C型、大S型。"},
+{type:"single",m:"M6",q:"【平卷法】最适配的发型场景是？",o:["羊毛卷复古小卷","长发大波浪、质感烫、气质风","细软塌弹性差","水波纹蛋蛋卷"],a:1,e:"原文：平卷法适配长发大波浪、质感烫、气质风。核心定位——发尾质感。"},
+{type:"single",m:"M6",q:"【平卷法】的圈数红线是？",o:["不低于3圈","不低于2.5圈","不超过3.5圈","必须5圈以上"],a:2,e:"原文：平卷圈数不超3.5圈，避免发根压塌。"},
+// 半重叠 (4题)
+{type:"single",m:"M6",q:"【半重叠卷法】的标准操作角度是？",o:["90度垂直","45度斜向提拉、每圈重叠二分之一","低角度紧贴","全程360度螺旋"],a:1,e:"原文：半重叠卷法45度斜向提拉、每圈重叠1/2。"},
+{type:"single",m:"M6",q:"【半重叠卷法】的典型卷型是？",o:["连环细密S型","细长螺旋S","浅S、柔和大C","立体水波纹S"],a:2,e:"原文：半重叠卷型——浅S、柔和大C。"},
+{type:"single",m:"M6",q:"【半重叠卷法】的核心定位是？",o:["发尾极致质感","发中蓬松与动感、空气感慵懒","弹性最强持久最高","发量倍增复古立体"],a:1,e:"原文：半重叠专做发中蓬松与动感（空气感慵懒自然）。"},
+{type:"single",m:"M6",q:"【半重叠卷法】的圈数下限是？",o:["不低于2.5圈","不低于3圈","不超过3.5圈","不低于1圈"],a:0,e:"原文：半重叠不低于2.5圈，保证发中纹理支撑力。"},
+// 全重叠紧致 (4题)
+{type:"single",m:"M6",q:"【全重叠紧致卷法】的正确操作方式是？",o:["90度垂直等张力","45度斜向重叠","低角度、密圈全重叠、紧贴杠体、均匀张力","全程360度螺旋"],a:2,e:"原文：全重叠紧致低角度、密圈全重叠、紧贴杠体均匀张力。"},
+{type:"single",m:"M6",q:"【全重叠紧致卷法】的卷型特征是？",o:["大S型","连环细密S型","细长螺旋S","立体水波纹"],a:1,e:"原文：全重叠紧致——连环细密S型。"},
+{type:"single",m:"M6",q:"【全重叠紧致卷法】的核心效果优势是？",o:["空气感慵懒","弹性最强、持久度最高、回缩力极佳","发尾质感极致","蓬松度最大化"],a:1,e:"原文：全重叠紧致弹性最强、持久度最高、回缩力极佳。"},
+{type:"single",m:"M6",q:"【全重叠紧致卷法】最适配的发质是？",o:["粗硬抗拒","细软塌、弹性差、难定型","中长健康","5-7度重损"],a:1,e:"原文：全重叠紧致适配细软塌、弹性差、难定型发质。"},
+// 半拧转 (4题)
+{type:"single",m:"M6",q:"【半拧转法】的操作要点是？",o:["全程360度螺旋","发根平卷定型+发中180度半扭转+发尾平顺收尾","90度垂直等张力","低角度密圈全重叠"],a:1,e:"原文：半拧转法发根平卷定型、发中180度半扭转、发尾平顺收尾。"},
+{type:"single",m:"M6",q:"【半拧转法】的典型卷型是？",o:["大C型","规整立体水波纹S型","细长螺旋S","浅S柔和大C"],a:1,e:"原文：半拧转法卷型——规整立体水波纹S型。"},
+{type:"single",m:"M6",q:"【半拧转法】的核心效果是？",o:["空气感慵懒","光泽度极佳、动感细腻、不凌乱","弹性最强","发量倍增"],a:1,e:"原文：半拧转法光泽度极佳、动感细腻、不凌乱。"},
+{type:"single",m:"M6",q:"【半拧转法】最适配的造型是？",o:["长发大波浪","法式中短氛围感","水波纹、蛋蛋卷、质感动感烫","羊毛卷复古小卷"],a:2,e:"原文：半拧转法适配水波纹、蛋蛋卷、质感动感烫。"},
+// 全程绕卷 (4题)
+{type:"single",m:"M6",q:"【全程绕卷（全扭转）】的操作方式是？",o:["90度垂直等张力","45度斜向重叠","薄片斜向、全程360度螺旋缠绕","低角度密圈重叠"],a:2,e:"原文：全程绕卷薄片斜向、全程360度螺旋缠绕。"},
+{type:"single",m:"M6",q:"【全程绕卷】的卷型特点是？",o:["大C型","连环细密S","细长立体螺旋S卷","规整水波纹S"],a:2,e:"原文：全程绕卷卷型——细长立体螺旋S卷。"},
+{type:"single",m:"M6",q:"【全程绕卷】的效果特点是？",o:["发尾极致光滑","复古立体、发量倍增、辨识度极高","空气感慵懒","弹性最强"],a:1,e:"原文：全程绕卷复古立体、发量倍增、辨识度极高。"},
+{type:"single",m:"M6",q:"【全程绕卷】最适配的造型是？",o:["长发大波浪","羊毛卷、复古小卷、个性造型","细软塌弹性差","水波纹质感烫"],a:1,e:"原文：全程绕卷适配羊毛卷、复古小卷、个性造型。"},
+
+// ===== 模块7 上杠控水 3题 =====
+{type:"single",m:"M7",q:"卷杠完成后排水应使用什么工具？",o:["电吹风高温吹干","吸水纸按压排水","揉搓毛巾","自然阴干"],a:1,e:"原文：卷杠完成后，吸水纸按压排水。"},
+{type:"single",m:"M7",q:"上杠时发丝的标准含水率是？",o:["完全湿透","40%微潮、无游离积水","80%以上","完全干燥"],a:1,e:"原文：发丝标准含水率40%微潮、无游离积水。"},
+{type:"single",m:"M7",q:"上杠时水分过多和过少的直接后果分别是？",o:["都会使卷度更紧","水多→卷度松散；水少→干枯毛躁","水多→毛躁；水少→更持久","水多→更持久；水少→更蓬松"],a:1,e:"原文：水分过多卷度松散，水分过少干枯毛躁。"},
+
+// ===== 模块8 加热逻辑 12题 =====
+{type:"single",m:"M8",q:"门店在加热环节明确摒弃的错误模式是？",o:["连续恒温20分钟起","间歇散热、短时加热","阶梯升温","先低温再定型"],a:1,e:"原文：本店摒弃间歇散热、短时加热的错误模式。"},
+{type:"single",m:"M8",q:"所有发质加热的起步时长统一为？",o:["10分钟","15分钟","20分钟","30分钟"],a:2,e:"原文：所有发质加热统一20分钟起步。"},
+{type:"single",m:"M8",q:"门店加热的执行方式应为？",o:["每5分钟停机散热","全程连续恒温、无间断、不停机","前10分钟停机后10分钟加热","视顾客感受随时停机"],a:1,e:"原文：全程连续恒温、无间断、不停机。"},
+{type:"single",m:"M8",q:"热烫定型靠的化学原理是？",o:["冷风塑形","热力持续渗透、二硫键稳定重组、蛋白结构固化","氢键重组即可","盐键塑形"],a:1,e:"原文：热烫定型靠的是热力持续渗透、二硫键稳定重组、蛋白结构固化。"},
+{type:"single",m:"M8",q:"粗硬/健康原发的加热温度上限是？",o:["≤80℃","≤90℃","≤110℃","≤130℃"],a:2,e:"原文：粗硬/健康原发恒温≤110℃。"},
+{type:"single",m:"M8",q:"粗硬/健康原发的连续加热时长是？",o:["10-15分钟","20-25分钟","30-40分钟","5-10分钟"],a:1,e:"原文：粗硬/健康原发时长20–25分钟连续加热。"},
+{type:"single",m:"M8",q:"1-2度轻微受损第一阶段的加热温度是？",o:["90-100℃","80℃以下低温","110℃","60℃以下"],a:1,e:"原文：1-2度轻损第一阶段80℃以下低温，彻底烘干发丝内部潮气、锁固毛干结构。"},
+{type:"single",m:"M8",q:"1-2度轻微受损第一阶段80℃低温的作用是？",o:["让药水继续渗透","彻底烘干发丝内部潮气、锁固毛干结构","减少加热时长","冷却发根防塌"],a:1,e:"原文：80℃以下低温彻底烘干发丝内部潮气、锁固毛干结构；第二阶段升温90-100℃持续定型。"},
+{type:"single",m:"M8",q:"3-4度中度受损，先80℃低温慢速烘干后，恒温定型的温度和时长是？",o:["110℃恒温20分钟","90-100℃恒温定型10分钟","80℃继续10分钟","60℃全程"],a:1,e:"原文：3-4度中损先80℃低温慢速烘干，再90–100℃恒温定型10分钟。"},
+{type:"single",m:"M8",q:"5-7度重度漂损发质的加热逻辑核心是？",o:["高温快速定型","阶梯式升温、全程低温慢烘锁水、再90-100℃恒温定型","直接110℃恒温","只加热10分钟"],a:1,e:"原文：5-7度重度漂损阶梯式升温逻辑，全程低温慢烘锁水、稳固空洞结构，再90–100℃恒温定型。"},
+{type:"single",m:"M8",q:"所有受损发质的加热温度红线是？",o:["90℃","100℃","110℃","130℃"],a:2,e:"原文：所有受损发质最高温度不超110℃红线。"},
+{type:"single",m:"M8",q:"受损发质加热时长的处理原则是？",o:["缩短加热时长避免加剧受损","绝不减时间、只加长、慢定型、保健康","统一20分钟不变","按顾客感受调整"],a:1,e:"原文：受损发质绝不减时间，只加长、慢定型、保健康。"},
+
+// ===== 模块9 冷却与拆杠 3题 =====
+{type:"single",m:"M9",q:"加热结束后的冷却方式应是？",o:["冷风高档吹","自然静置冷却","冷水冲","冰袋降温"],a:1,e:"原文：加热结束，自然静置冷却。"},
+{type:"single",m:"M9",q:"冷却的标准时长是？",o:["3-5分钟","5-6分钟","8-10分钟","15-20分钟"],a:2,e:"原文：自然静置冷却8–10分钟，必须完全冷却方可拆杠。"},
+{type:"single",m:"M9",q:"热拆、温拆卷杠的直接后果是？",o:["卷度更持久","必变形、必回弹","光泽更强","卷度更紧"],a:1,e:"原文：热拆、温拆必变形、必回弹。"},
+
+// ===== 模块10 定型标准 8题 =====
+{type:"single",m:"M10",q:"拆杠后的正确处理是？",o:["立刻梳理打散","不梳理、不打散，完整保留卷曲原始形态","只梳发根","打散重新造型"],a:1,e:"原文：拆杠后不梳理、不打散，完整保留卷曲原始形态。"},
+{type:"single",m:"M10",q:"定型剂涂抹的核心要求是？",o:["只涂发根","全方位浸透每一缕卷度，无干区、无遗漏","只涂发中","少量喷洒即可"],a:1,e:"原文：定型剂全方位浸透每一缕卷度，无干区、无遗漏。"},
+{type:"single",m:"M10",q:"健康粗硬发质的定型停放时长是？",o:["5-8分钟","8-10分钟","10-12分钟","12-15分钟"],a:3,e:"原文：健康粗硬定型停放12–15分钟。"},
+{type:"single",m:"M10",q:"轻微受损发质的定型停放时长是？",o:["5-8分钟","8-10分钟","10-12分钟","15-20分钟"],a:2,e:"原文：轻微受损定型停放10–12分钟。"},
+{type:"single",m:"M10",q:"中重受损发质的定型停放时长是？",o:["3-5分钟","8-10分钟","12-15分钟","20分钟"],a:1,e:"原文：中重受损定型停放8–10分钟。"},
+{type:"single",m:"M10",q:"定型冲净后涂抹酸性平衡护发素应停放多久？",o:["30秒","1分钟","3分钟","8分钟"],a:2,e:"原文：冲净后涂抹酸性平衡护发素，停放3分钟，中和碱性残留、强制闭合毛鳞片、恢复顺滑光泽。"},
+{type:"single",m:"M10",q:"中重度受损发质定型后应额外做的特殊处理是？",o:["使用弹力素","厚敷修护膏填充发丝空洞","立刻吹干","二次加热"],a:1,e:"原文：中重度受损发质厚敷修护膏填充发丝空洞，弥补烫中结构损耗。"},
+{type:"single",m:"M10",q:"售后48小时的核心叮嘱是？",o:["每天热水洗头","不扎发、不压发、不沾水、不高温夹板","使用高温电棒重新塑形","尽量扎紧"],a:1,e:"原文：48小时不扎发、不压发、不沾水、不高温夹板，保证卷度稳定固化。"},
+
+// ===== 模块11 吹造型 4题 =====
+{type:"single",m:"M11",q:"八成湿打底状态下，弹力素与精油的正确配比是？",o:["1:1","2:1（弹力素:精油）","1:2","3:1"],a:1,e:"原文：八成湿状态，弹力素:精油=2:1打底。"},
+{type:"single",m:"M11",q:"弹力素+精油打底的涂抹范围是？",o:["全头包括发根","只涂发中发尾，避开发根防塌陷","只涂发根","只涂发尾"],a:1,e:"原文：只涂抹发中发尾，避开发根防塌陷。"},
+{type:"single",m:"M11",q:"吹造型时发根蓬松支撑应使用什么风？",o:["高温热风","冷风","温风逆向吹","中温风"],a:1,e:"原文：先冷风固定发根蓬松支撑。"},
+{type:"single",m:"M11",q:"吹造型塑形阶段的核心禁忌是？",o:["顺卷度纹理温风塑形","逆向吹风破坏鳞片与卷型","冷风收质感","徒手托卷揉捏"],a:1,e:"原文：温风顺着卷度纹理塑形，禁止逆向吹风破坏鳞片与卷型。"},
+
+// ===== 模块12 雷区总结与红线 5题 =====
+{type:"single",m:"M12",q:"关于「平卷」的两个操作红线，下列表述正确的是？",o:["只做小杠、圈数不限","不做小杠、圈数不超3.5圈","大杠平卷、5圈以上","只做小杠、3圈以下"],a:1,e:"原文红线：平卷不做小杠（避免发尾炸毛无质感）+ 平卷不超3.5圈（保护发根空气感）。"},
+{type:"single",m:"M12",q:"关于「缠绕」的两个操作红线，下列表述正确的是？",o:["只做大杠、圈数不限","不做大杠、圈数不低于3圈","大杠缠绕、2圈以下","大杠缠绕、5圈以上"],a:1,e:"原文红线：缠绕不做大杠（避免卷度松散不持久）+ 缠绕不低于3圈（保证卷度饱满持久）。"},
+{type:"single",m:"M12",q:"顾客反馈「卷度不持久」最典型的错误溯源是？",o:["只是定型剂太少","软化不透、加热时长不足、冷却不彻底、定型不匀","洗头太勤","精油涂太多"],a:1,e:"原文5大问题溯源1：卷度不持久=软化不透+加热时长不足+冷却不彻底+定型不匀。"},
+{type:"single",m:"M12",q:"顾客反馈「发根塌陷」最典型的错误溯源是？",o:["精油涂发根","平圈圈数过多、角度过低、发根预留不足","药水稀释过度","定型剂过多"],a:1,e:"原文5大问题溯源3：发根塌陷=平圈圈数过多+角度过低+发根预留不足。"},
+{type:"single",m:"M12",q:"顾客反馈「发尾炸裂」最典型的错误溯源是？",o:["精油涂太多","小杠平卷、发尾张力过大、发尾浸泡超时","定型时长不足","冷却时长不足"],a:1,e:"原文5大问题溯源4：发尾炸裂=小杠平卷+发尾张力过大+发尾浸泡超时。"}
+];
+
+const MOD_NAMES={
+  M1:"双维诊断",
+  M2:"药水纯水配比",
+  M3:"湿发软化涂抹",
+  M4:"软化监测与冲净",
+  M5:"卷杠选型底层逻辑",
+  M6:"五大卷杠手法",
+  M7:"上杠控水",
+  M8:"加热逻辑",
+  M9:"冷却与拆杠",
+  M10:"定型标准",
+  M11:"吹造型",
+  M12:"雷区总结与红线"
+};
+const MOD_ORDER=["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"];
+
+let cur=0,ans={},timer,sec=0,done=false,review=false,filter='all';
+const TOTAL=Q.length, PASS=60;
+
+function go(){
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  timer=setInterval(()=>{sec++;document.getElementById('tr').textContent=fmt(sec)},1000);
+  render();
+}
+
+function fmt(s){
+  let m=Math.floor(s/60),ss=s%60;
+  return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+}
+
+function render(){
+  let q=Q[cur], el=document.getElementById('p2');
+  let my=ans[cur], answered=my!==undefined;
+  let modName=MOD_NAMES[q.m]||q.m;
+  let h='<div class="qc"><div class="num">第 <b>'+(cur+1)+'</b> / '+TOTAL+' 题</div>';
+  h+='<div class="modtag">'+modName+'</div>';
+  h+='<div class="qt">'+q.q+'</div><div class="opts">';
+  let letters=['A','B','C','D'];
+  for(let i=0;i<4;i++){
+    let cls='ob';
+    if(answered){
+      cls+=' off';
+      if(i===q.a) cls+=' ok';
+      if(i===my&&my!==q.a) cls+=' no';
+      if(!done&&i===q.a&&my!==q.a) cls+=' hi';
+    }
+    h+='<div class="'+cls+'" onclick="pick('+i+')"><div class="lt">'+letters[i]+'</div><div>'+q.o[i]+'</div></div>';
+  }
+  h+='</div>';
+  if(answered){
+    h+='<div class="exp on">💡 '+(my===q.a?'回答正确！':'❌ 正确答案：'+letters[q.a]+'。')+q.e+'</div>';
+  }else{
+    h+='<div class="exp"></div>';
+  }
+  h+='</div>';
+
+  if(review&&done){
+    let tags='<div class="rvtag"><button class="'+(filter==='all'?'on':'')+'" onclick="flt(\'all\')">全部</button>';
+    tags+='<button class="'+(filter==='wrong'?'on':'')+'" onclick="flt(\'wrong\')">❌ 错题</button>';
+    tags+='<button class="'+(filter==='right'?'on':'')+'" onclick="flt(\'right\')">✅ 对题</button></div>';
+    h=tags+h;
+  }
+
+  el.innerHTML=h;
+
+  document.getElementById('pb').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tl').textContent=(cur+1)+'/'+TOTAL;
+
+  let nb=document.getElementById('bNext');
+  let pb=document.getElementById('bPrev');
+  pb.style.display=cur>0?'block':'none';
+
+  if(cur===TOTAL-1&&!done){
+    nb.textContent='交卷';nb.className='bsub';nb.onclick=submit;
+  }else if(done){
+    nb.textContent=review?'返回成绩':'查看成绩';nb.className='bsub';nb.onclick=showResult;
+  }else{
+    nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)};
+  }
+  if(done&&cur<TOTAL-1){nb.textContent='下一题';nb.className='bnext';nb.onclick=function(){nav(1)}}
+}
+
+function pick(i){
+  if(ans[cur]!==undefined)return;
+  ans[cur]=i;
+  done||setTimeout(()=>{if(cur<TOTAL-1)nav(1);else render()},600);
+  render();
+}
+
+function nav(d){
+  let nc=cur+d;
+  if(nc<0||nc>TOTAL-1)return;
+  if(review&&filter!=='all'){
+    let dir=d>0?1:-1;
+    let found=false;
+    for(let j=nc;j>=0&&j<TOTAL;j+=dir){
+      let isWrong=ans[j]!==Q[j].a;
+      if(filter==='wrong'&&isWrong){nc=j;found=true;break}
+      if(filter==='right'&&!isWrong){nc=j;found=true;break}
+    }
+    if(!found)return;
+  }
+  cur=nc;render();
+  window.scrollTo(0,0);
+}
+
+function submit(){
+  done=true;review=false;
+  clearInterval(timer);
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('p2').classList.remove('on');
+  document.getElementById('btm').style.display='none';
+  document.getElementById('p3').classList.add('on');
+
+  let right=0;
+  for(let i=0;i<TOTAL;i++) if(ans[i]===Q[i].a) right++;
+  let wrong=TOTAL-right;
+  let score=right;
+  let pass=score>=PASS;
+
+  let modStats={};
+  MOD_ORDER.forEach(m=>{modStats[m]={total:0,right:0}});
+  for(let i=0;i<TOTAL;i++){
+    let m=Q[i].m;
+    if(!modStats[m]) modStats[m]={total:0,right:0};
+    modStats[m].total++;
+    if(ans[i]===Q[i].a) modStats[m].right++;
+  }
+
+  let el=document.getElementById('p3');
+  let h='<div class="rp">';
+  h+='<div class="circle '+(pass?'pass':'fail')+'"><div class="sn">'+score+'</div><div class="sl">分</div></div>';
+  h+='<div class="rt">'+(pass?'🎉 恭喜通过':'💪 需要重考')+'</div>';
+  h+='<div class="rs">'+(pass?'60分及格线，你已达标':'距及格还差'+(PASS-score)+'分，请重新考试')+'</div>';
+  h+='<div class="sg"><div class="sc"><div class="sv g">'+right+'</div><div class="svl">答对</div></div>';
+  h+='<div class="sc"><div class="sv r">'+wrong+'</div><div class="svl">答错</div></div>';
+  h+='<div class="sc"><div class="sv b">'+fmt(sec)+'</div><div class="svl">用时</div></div></div>';
+
+  h+='<div class="mod-title">📊 十二大模块得分明细</div>';
+  MOD_ORDER.forEach(m=>{
+    let s=modStats[m]; if(!s||s.total===0) return;
+    let pct=Math.round(s.right/s.total*100);
+    let weak=pct<60?'weak':'';
+    h+='<div class="mod-card '+weak+'">';
+    h+='<div class="mh"><span class="mn">'+MOD_NAMES[m]+'</span><span class="ms">'+s.right+'/'+s.total+' · '+pct+'%</span></div>';
+    h+='<div class="mbar"><div style="width:'+pct+'%"></div></div>';
+    h+='</div>';
+  });
+
+  h+='<div style="margin:18px 0 16px">';
+  h+='<button class="rbtn rreview" onclick="reviewExam()">📖 查看解析</button>';
+  h+='<button class="rbtn rretry" onclick="retry()">🔄 重新考试</button>';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+function reviewExam(){
+  review=true;filter='all';cur=0;
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.getElementById('btm').style.display='block';
+  render();
+}
+
+function retry(){
+  cur=0;ans={};sec=0;done=false;review=false;filter='all';
+  document.getElementById('p3').classList.remove('on');
+  document.getElementById('p3').innerHTML='';
+  document.getElementById('p1').classList.add('on');
+  document.getElementById('pb').style.width='0%';
+  document.getElementById('tl').textContent='100题 · 60分及格 · 满分100';
+  document.getElementById('tr').textContent='00:00';
+  clearInterval(timer);
+}
+
+function flt(f){
+  filter=f;render();
+}
+</script>
+</body>
+</html>
